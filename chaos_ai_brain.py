@@ -13,11 +13,28 @@ import re
 from typing import Dict, List, Optional, Any, Tuple
 from PIL import Image
 import numpy as np
+import cv2
 
 from chaos_ai_config import ChaosRuleManager
 from chaos_vision import CardInfo, EventChoiceInfo, ResourceInfo
 
 logger = logging.getLogger("ChaosBot.AIBrain")
+
+
+def _normalize_model_name(model_name: Optional[str]) -> str:
+    """Normalize and validate Gemini model name, automatically fixing typos like gemini-2.5-flash."""
+    if not model_name:
+        return "gemini-1.5-flash"
+    m = model_name.strip().lower()
+    if "2.5" in m:
+        return "gemini-1.5-flash"
+    if "2.0" in m or "2-flash" in m:
+        return "gemini-2.0-flash"
+    if "1.5-pro" in m:
+        return "gemini-1.5-pro"
+    if "1.5-flash" in m:
+        return "gemini-1.5-flash"
+    return model_name.strip()
 
 
 class ChaosAIBrain:
@@ -29,8 +46,11 @@ class ChaosAIBrain:
         self._current_api_key = None
 
     def _get_client(self, override_key: Optional[str] = None):
-        """Instantiate Google GenAI client lazily."""
-        api_key = override_key or self.rule_manager.get_api_key()
+        """Instantiate Google GenAI client lazily with sanitized key."""
+        raw_key = override_key or self.rule_manager.get_api_key()
+        if not raw_key:
+            return None
+        api_key = raw_key.strip().strip('"\'')
         if not api_key:
             return None
 
@@ -46,29 +66,40 @@ class ChaosAIBrain:
 
         return self._genai_client
 
-    def test_connection(self, api_key: Optional[str] = None) -> Tuple[bool, str]:
-        """Kiểm tra kết nối và tính hợp lệ của API Key."""
-        key = api_key or self.rule_manager.get_api_key()
-        if not key:
-            return False, "Chưa nhập API Key. Vui lòng nhập Gemini API Key."
+    def test_connection(self, api_key: Optional[str] = None, model_name: Optional[str] = None) -> Tuple[bool, str]:
+        """Kiểm tra kết nối và tính hợp lệ của API Key với model cụ thể."""
+        raw_key = api_key or self.rule_manager.get_api_key()
+        if not raw_key:
+            return False, "Chưa nhập API Key. Vui lòng dán Gemini API Key vào ô nhập."
+
+        clean_key = raw_key.strip().strip('"\'')
+        if not clean_key:
+            return False, "API Key không hợp lệ (chuỗi trống)."
+
+        configured_model = model_name or self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash")
+        target_model = _normalize_model_name(configured_model)
 
         try:
-            client = self._get_client(override_key=key)
+            client = self._get_client(override_key=clean_key)
             if client is None:
-                return False, "Không thể khởi tạo GenAI Client."
+                return False, "Không thể khởi tạo GenAI Client. Vui lòng kiểm tra thư viện google-genai."
 
-            model_name = self.rule_manager.ai_config.get("model_name", "gemini-2.5-flash")
             response = client.models.generate_content(
-                model=model_name,
+                model=target_model,
                 contents="Hello, reply with JSON: {\"status\": \"ok\", \"message\": \"connected\"}"
             )
             if response and response.text:
-                logger.info(f"Test connection response: {response.text}")
-                return True, f"Kết nối Gemini API thành công! (Model: {model_name})"
+                logger.info(f"Test connection response ({target_model}): {response.text}")
+                return True, f"Kết nối Gemini API thành công! (Model: {target_model})"
             return False, "Không nhận được phản hồi từ Gemini API."
         except Exception as e:
-            logger.error(f"Lỗi test kết nối Gemini API: {e}")
-            return False, f"Lỗi kết nối Gemini API: {str(e)}"
+            err_msg = str(e)
+            logger.error(f"Lỗi test kết nối Gemini API ({target_model}): {err_msg}")
+            if "404" in err_msg or "not found" in err_msg.lower():
+                return False, f"Model '{target_model}' không tồn tại hoặc chưa được hỗ trợ. Đề xuất dùng 'gemini-1.5-flash'. (Chi tiết: {err_msg})"
+            if "API_KEY_INVALID" in err_msg or "400" in err_msg or "key not valid" in err_msg.lower():
+                return False, f"API Key không hợp lệ hoặc đã bị vô hiệu hóa. Vui lòng kiểm tra lại trên Google AI Studio. (Chi tiết: {err_msg})"
+            return False, f"Lỗi kết nối Gemini API: {err_msg}"
 
     # ── 3.1. Đóng gói Prompt Động (Dynamic Prompting) ───────────────
 
@@ -163,7 +194,7 @@ Bạn CHỈ ĐƯỢC PHÉP trả về một chuỗi JSON hợp lệ, KHÔNG kèm
                             contents.append(f"Hình ảnh thực tế của {c.name}:")
                             contents.append(pil_img)
 
-                model_name = self.rule_manager.ai_config.get("model_name", "gemini-2.5-flash")
+                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash"))
                 from google.genai import types
                 response = client.models.generate_content(
                     model=model_name,
@@ -234,7 +265,7 @@ Bạn CHỈ ĐƯỢC PHÉP trả về một chuỗi JSON hợp lệ, KHÔNG kèm
                             contents.append(f"Hình ảnh của {c.name}:")
                             contents.append(pil_img)
 
-                model_name = self.rule_manager.ai_config.get("model_name", "gemini-2.5-flash")
+                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash"))
                 from google.genai import types
                 response = client.models.generate_content(
                     model=model_name,
@@ -300,7 +331,7 @@ Bạn CHỈ ĐƯỢC PHÉP trả về một chuỗi JSON hợp lệ, KHÔNG kèm
 
                 user_prompt += "\nHãy chọn hòn đảo tối ưu nhất (top, middle, hoặc bottom). Trả về JSON: {\"action\": \"choose_island\", \"target_island\": \"top\"|\"middle\"|\"bottom\", \"confidence\": 0.9, \"reason\": \"<1 câu tiếng Việt ngắn gọn giải thích lý do>\"}"
 
-                model_name = self.rule_manager.ai_config.get("model_name", "gemini-2.5-flash")
+                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash"))
                 from google.genai import types
                 response = client.models.generate_content(
                     model=model_name,

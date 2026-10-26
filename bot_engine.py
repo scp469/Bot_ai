@@ -517,6 +517,26 @@ class BotEngine:
                     self._halt("Không có đường đi an toàn tới Boss")
                     return False
 
+            # Cho phép Cloud AI (Gemini) phân tích chiến thuật chọn đảo nếu có cấu hình API Key
+            if getattr(self, "enable_chaos_ai", True) and hasattr(self, "chaos_brain") and self.rule_manager.get_api_key():
+                try:
+                    from chaos_vision import ResourceInfo
+                    res_info = ResourceInfo(hp_percent=hp_percent, is_low_hp=is_low_hp, credits=0)
+                    ai_decision = self.chaos_brain.decide_island(evaluations, res_info, fallback_island=best_island)
+                    if ai_decision and "target_island" in ai_decision:
+                        target_str = str(ai_decision["target_island"]).lower()
+                        for cand in roots.keys():
+                            if cand.value.lower() == target_str:
+                                best_island = cand
+                                reason = ai_decision.get("reason", "Chiến thuật tối ưu")
+                                self.log(f"🤖 [AI Map] Cloud AI chọn Đảo {cand.value.upper()} | Lý do: {reason}")
+                                break
+                        self.last_ai_decision = ai_decision
+                        if self.on_ai_decision:
+                            self.on_ai_decision(ai_decision)
+                except Exception as e_ai_map:
+                    self.logger.warning(f"Lỗi AI đánh giá đảo: {e_ai_map}")
+
             # Ghi nhận chỉ số thống kê Chaos
             best_eval = evaluations.get(best_island)
             score = best_eval.best_score if (best_eval and best_eval.best_score != float("-inf")) else 0.0

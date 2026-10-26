@@ -97,7 +97,10 @@ class BotGUI:
         self.engine.on_ai_decision = self._handle_ai_decision
         current_api_key = self.engine.rule_manager.get_api_key()
         self.api_key_var = ctk.StringVar(value=current_api_key)
-        self.ai_model_var = ctk.StringVar(value=self.engine.rule_manager.ai_config.get("model_name", "gemini-2.5-flash"))
+        default_model = self.engine.rule_manager.ai_config.get("model_name", "gemini-1.5-flash")
+        if "2.5" in default_model:
+            default_model = "gemini-1.5-flash"
+        self.ai_model_var = ctk.StringVar(value=default_model)
         self.show_api_key_var = ctk.BooleanVar(value=False)
         self.auto_pick_epiphany_var = ctk.BooleanVar(value=True)
 
@@ -380,7 +383,7 @@ class BotGUI:
 
         self.opt_ai_model = ctk.CTkOptionMenu(
             row_model,
-            values=["gemini-2.5-flash", "gemini-1.5-flash"],
+            values=["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"],
             variable=self.ai_model_var,
             fg_color=COLOR_BG_INPUT,
             button_color=COLOR_ACCENT_DIM,
@@ -951,6 +954,29 @@ class BotGUI:
         except ValueError:
             self.engine.hybrid_pad = HYBRID_VERIFICATION_PAD
 
+        # Auto-sync API Key and model if user pasted them into UI
+        gui_key = self.api_key_var.get().strip().strip('"\'')
+        gui_model = self.ai_model_var.get().strip()
+        if "2.5" in gui_model:
+            gui_model = "gemini-1.5-flash"
+            self.ai_model_var.set(gui_model)
+
+        if gui_key:
+            saved_key = self.engine.rule_manager.get_api_key()
+            saved_model = self.engine.rule_manager.ai_config.get("model_name", "")
+            if gui_key != saved_key or gui_model != saved_model:
+                self.engine.rule_manager.save_ai_config(api_key=gui_key, model_name=gui_model)
+                self._handle_log(f"🔑 Đã lưu cấu hình Gemini API Key (Model: {gui_model}).")
+
+        # Telemetry & Status Logging for Chaos AI
+        if selected_mode == Mode.CHAOS:
+            active_key = self.engine.rule_manager.get_api_key()
+            active_model = self.engine.rule_manager.ai_config.get("model_name", "gemini-1.5-flash")
+            if active_key:
+                self._handle_log(f"🤖 [Chaos AI] Đã kích hoạt Bộ não Cloud AI (Model: {active_model}).")
+            else:
+                self._handle_log("⚠️ [Chaos AI] Chưa có API Key! Đang chạy chế độ Dự phòng Offline Heuristics.")
+
         # Update buttons state
         self.btn_start.configure(state="disabled")
         self.btn_stop.configure(state="normal")
@@ -1135,23 +1161,31 @@ class BotGUI:
             self.btn_toggle_key.configure(text="👁 Hiện")
 
     def _on_test_ai_clicked(self):
-        """Kiểm tra kết nối Gemini API trong background thread."""
-        api_key = self.api_key_var.get().strip()
+        """Kiểm tra kết nối Gemini API trong background thread và tự động lưu cấu hình nếu thành công."""
+        api_key = self.api_key_var.get().strip().strip('"\'')
+        model_name = self.ai_model_var.get().strip()
+        if "2.5" in model_name:
+            model_name = "gemini-1.5-flash"
+            self.ai_model_var.set(model_name)
+
         if not api_key:
             self.lbl_api_status.configure(text="❌ Chưa điền API Key!", text_color="#ff1744")
-            self._handle_log("❌ Vui lòng nhập Gemini API Key để kiểm tra.")
+            self._handle_log("❌ Vui lòng dán Gemini API Key vào ô nhập để kiểm tra.")
             return
 
         self.btn_test_ai.configure(state="disabled", text="⏳ Đang kiểm tra...")
-        self.lbl_api_status.configure(text="Đang kết nối Gemini API...", text_color=COLOR_TEXT_ORANGE)
+        self.lbl_api_status.configure(text=f"Đang kết nối ({model_name})...", text_color=COLOR_TEXT_ORANGE)
 
         def _test():
-            ok, msg = self.engine.chaos_brain.test_connection(api_key=api_key)
+            ok, msg = self.engine.chaos_brain.test_connection(api_key=api_key, model_name=model_name)
             def _update():
                 self.btn_test_ai.configure(state="normal", text="⚡ Kiểm tra kết nối AI")
                 if ok:
-                    self.lbl_api_status.configure(text="✅ Kết nối thành công!", text_color="#00e676")
+                    # Tự động lưu cấu hình khi test thành công để người dùng không cần bấm nút lưu thủ công
+                    self.engine.rule_manager.save_ai_config(api_key=api_key, model_name=model_name)
+                    self.lbl_api_status.configure(text=f"✅ Đã kết nối & Lưu! ({model_name})", text_color="#00e676")
                     self._handle_log(f"✅ {msg}")
+                    self._handle_log(f"💾 Đã tự động lưu cấu hình Gemini API Key & Model ({model_name}) vào hệ thống.")
                 else:
                     self.lbl_api_status.configure(text="❌ Lỗi kết nối", text_color="#ff1744")
                     self._handle_log(f"❌ {msg}")
@@ -1161,8 +1195,11 @@ class BotGUI:
 
     def _on_save_rules_clicked(self):
         """Lưu toàn bộ quy tắc ra card_rules.json, event_rules.json và mã hóa ai_config.json."""
-        api_key = self.api_key_var.get().strip()
+        api_key = self.api_key_var.get().strip().strip('"\'')
         model_name = self.ai_model_var.get().strip()
+        if "2.5" in model_name:
+            model_name = "gemini-1.5-flash"
+            self.ai_model_var.set(model_name)
 
         # Build card rules
         amp_variant = "Elasticity" if "elasticity" in self.amp_therapy_variant_var.get().lower() else "Base"

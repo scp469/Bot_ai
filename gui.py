@@ -97,9 +97,9 @@ class BotGUI:
         self.engine.on_ai_decision = self._handle_ai_decision
         current_api_key = self.engine.rule_manager.get_api_key()
         self.api_key_var = ctk.StringVar(value=current_api_key)
-        default_model = self.engine.rule_manager.ai_config.get("model_name", "gemini-1.5-flash")
-        if "2.5" in default_model:
-            default_model = "gemini-1.5-flash"
+        default_model = self.engine.rule_manager.ai_config.get("model_name", "gemini-3.5-flash")
+        if "1.5" in default_model or "2.5" in default_model or not default_model:
+            default_model = "gemini-3.5-flash"
         self.ai_model_var = ctk.StringVar(value=default_model)
         self.show_api_key_var = ctk.BooleanVar(value=False)
         self.auto_pick_epiphany_var = ctk.BooleanVar(value=True)
@@ -383,7 +383,7 @@ class BotGUI:
 
         self.opt_ai_model = ctk.CTkOptionMenu(
             row_model,
-            values=["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"],
+            values=["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.6-flash"],
             variable=self.ai_model_var,
             fg_color=COLOR_BG_INPUT,
             button_color=COLOR_ACCENT_DIM,
@@ -957,8 +957,8 @@ class BotGUI:
         # Auto-sync API Key and model if user pasted them into UI
         gui_key = self.api_key_var.get().strip().strip('"\'')
         gui_model = self.ai_model_var.get().strip()
-        if "2.5" in gui_model:
-            gui_model = "gemini-1.5-flash"
+        if "1.5" in gui_model or "2.5" in gui_model or not gui_model:
+            gui_model = "gemini-3.5-flash"
             self.ai_model_var.set(gui_model)
 
         if gui_key:
@@ -971,7 +971,7 @@ class BotGUI:
         # Telemetry & Status Logging for Chaos AI
         if selected_mode == Mode.CHAOS:
             active_key = self.engine.rule_manager.get_api_key()
-            active_model = self.engine.rule_manager.ai_config.get("model_name", "gemini-1.5-flash")
+            active_model = self.engine.rule_manager.ai_config.get("model_name", "gemini-3.5-flash")
             if active_key:
                 self._handle_log(f"🤖 [Chaos AI] Đã kích hoạt Bộ não Cloud AI (Model: {active_model}).")
             else:
@@ -1164,8 +1164,8 @@ class BotGUI:
         """Kiểm tra kết nối Gemini API trong background thread và tự động lưu cấu hình nếu thành công."""
         api_key = self.api_key_var.get().strip().strip('"\'')
         model_name = self.ai_model_var.get().strip()
-        if "2.5" in model_name:
-            model_name = "gemini-1.5-flash"
+        if "1.5" in model_name or "2.5" in model_name or not model_name:
+            model_name = "gemini-3.5-flash"
             self.ai_model_var.set(model_name)
 
         if not api_key:
@@ -1197,8 +1197,8 @@ class BotGUI:
         """Lưu toàn bộ quy tắc ra card_rules.json, event_rules.json và mã hóa ai_config.json."""
         api_key = self.api_key_var.get().strip().strip('"\'')
         model_name = self.ai_model_var.get().strip()
-        if "2.5" in model_name:
-            model_name = "gemini-1.5-flash"
+        if "1.5" in model_name or "2.5" in model_name or not model_name:
+            model_name = "gemini-3.5-flash"
             self.ai_model_var.set(model_name)
 
         # Build card rules

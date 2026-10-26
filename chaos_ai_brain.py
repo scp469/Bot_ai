@@ -22,18 +22,18 @@ logger = logging.getLogger("ChaosBot.AIBrain")
 
 
 def _normalize_model_name(model_name: Optional[str]) -> str:
-    """Normalize and validate Gemini model name, automatically fixing typos like gemini-2.5-flash."""
+    """Normalize and validate Gemini model name, defaulting to high-speed gemini-3.5-flash."""
     if not model_name:
-        return "gemini-1.5-flash"
+        return "gemini-3.5-flash"
     m = model_name.strip().lower()
-    if "2.5" in m:
-        return "gemini-1.5-flash"
-    if "2.0" in m or "2-flash" in m:
-        return "gemini-2.0-flash"
-    if "1.5-pro" in m:
-        return "gemini-1.5-pro"
-    if "1.5-flash" in m:
-        return "gemini-1.5-flash"
+    if "lite" in m:
+        return "gemini-3.5-flash-lite"
+    if "3.6" in m:
+        return "gemini-3.6-flash"
+    if "3.5" in m or "latest" in m:
+        return "gemini-3.5-flash"
+    if "1.5" in m or "2.5" in m or "2.0" in m:
+        return "gemini-3.5-flash"
     return model_name.strip()
 
 
@@ -76,7 +76,7 @@ class ChaosAIBrain:
         if not clean_key:
             return False, "API Key không hợp lệ (chuỗi trống)."
 
-        configured_model = model_name or self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash")
+        configured_model = model_name or self.rule_manager.ai_config.get("model_name", "gemini-3.5-flash")
         target_model = _normalize_model_name(configured_model)
 
         try:
@@ -194,7 +194,7 @@ Bạn CHỈ ĐƯỢC PHÉP trả về một chuỗi JSON hợp lệ, KHÔNG kèm
                             contents.append(f"Hình ảnh thực tế của {c.name}:")
                             contents.append(pil_img)
 
-                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash"))
+                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-3.5-flash"))
                 from google.genai import types
                 response = client.models.generate_content(
                     model=model_name,
@@ -265,7 +265,7 @@ Bạn CHỈ ĐƯỢC PHÉP trả về một chuỗi JSON hợp lệ, KHÔNG kèm
                             contents.append(f"Hình ảnh của {c.name}:")
                             contents.append(pil_img)
 
-                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash"))
+                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-3.5-flash"))
                 from google.genai import types
                 response = client.models.generate_content(
                     model=model_name,
@@ -331,7 +331,7 @@ Bạn CHỈ ĐƯỢC PHÉP trả về một chuỗi JSON hợp lệ, KHÔNG kèm
 
                 user_prompt += "\nHãy chọn hòn đảo tối ưu nhất (top, middle, hoặc bottom). Trả về JSON: {\"action\": \"choose_island\", \"target_island\": \"top\"|\"middle\"|\"bottom\", \"confidence\": 0.9, \"reason\": \"<1 câu tiếng Việt ngắn gọn giải thích lý do>\"}"
 
-                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-1.5-flash"))
+                model_name = _normalize_model_name(self.rule_manager.ai_config.get("model_name", "gemini-3.5-flash"))
                 from google.genai import types
                 response = client.models.generate_content(
                     model=model_name,

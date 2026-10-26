@@ -112,7 +112,7 @@ DEFAULT_EVENT_RULES: Dict[str, Any] = {
 DEFAULT_AI_CONFIG: Dict[str, Any] = {
     "provider": "gemini",
     "api_key_encrypted": "",
-    "model_name": "gemini-1.5-flash",
+    "model_name": "gemini-3.5-flash",
     "enable_multimodal_fallback": True,
     "temperature": 0.1,
     "max_tokens": 512
@@ -319,20 +319,22 @@ class ChaosRuleManager:
             try:
                 with open(AI_CONFIG_PATH, "r", encoding="utf-8") as f:
                     cfg = json.load(f)
-                    # Automatically migrate any legacy gemini-2.5-flash to gemini-1.5-flash
-                    if "2.5" in str(cfg.get("model_name", "")):
-                        cfg["model_name"] = "gemini-1.5-flash"
+                    # Automatically migrate any legacy models (1.5, 2.5) to gemini-3.5-flash
+                    m_name = str(cfg.get("model_name", ""))
+                    if "1.5" in m_name or "2.5" in m_name or not m_name:
+                        cfg["model_name"] = "gemini-3.5-flash"
                     return cfg
             except Exception as e:
                 logger.warning(f"Không thể đọc {AI_CONFIG_PATH}: {e}. Dùng mặc định.")
         return DEFAULT_AI_CONFIG.copy()
 
-    def save_ai_config(self, api_key: str, model_name: str = "gemini-1.5-flash",
+    def save_ai_config(self, api_key: str, model_name: str = "gemini-3.5-flash",
                        enable_multimodal: bool = True) -> bool:
         """Save AI settings with sanitized & encrypted API Key."""
         try:
             clean_key = (api_key or "").strip().strip('"\'')
-            clean_model = "gemini-1.5-flash" if "2.5" in (model_name or "") else ((model_name or "").strip() or "gemini-1.5-flash")
+            raw_model = (model_name or "").strip()
+            clean_model = "gemini-3.5-flash" if ("1.5" in raw_model or "2.5" in raw_model or not raw_model) else raw_model
             cfg = {
                 "provider": "gemini",
                 "api_key_encrypted": _encrypt_key(clean_key),
@@ -361,7 +363,7 @@ class ChaosRuleManager:
         return raw.strip().strip('"\'')
 
     def save_all_rules(self, card_rules: Dict[str, Any], event_rules: Dict[str, Any],
-                       api_key: str, model_name: str = "gemini-1.5-flash") -> bool:
+                       api_key: str, model_name: str = "gemini-3.5-flash") -> bool:
         """Save both rule JSONs and AI config simultaneously."""
         ok1 = self.save_card_rules(card_rules)
         ok2 = self.save_event_rules(event_rules)

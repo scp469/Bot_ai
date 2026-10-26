@@ -1,0 +1,27 @@
+# Bytecode & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Sensitive Configs & Local Settings
+ai_config.json
+.antigravity/
+
+# Logs & Debug Screenshots
+logs/*
+!logs/.gitkeep
+scratch/
+tools/archive_templates/
+dist/
+
+# Environments
+.env
+.venv/
+venv/
+ENV/
+
+# OS artifacts
+Thumbs.db
+Desktop.ini
+.DS_Store

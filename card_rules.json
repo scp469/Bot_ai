@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "description": "Bảng quy tắc ưu tiên lựa chọn thẻ bài Chaos",
+  "priority_list": [
+    {
+      "card_name": "Amp Therapy",
+      "preferred_variant": "Elasticity",
+      "priority": 1,
+      "notes": "Ưu tiên tuyệt đối biến thể Elasticity thay vì Base"
+    },
+    {
+      "card_name": "Focus",
+      "preferred_variant": "",
+      "priority": 2,
+      "notes": "Hồi 1 Action Point khi máu dưới 50%"
+    },
+    {
+      "card_name": "Passion",
+      "preferred_variant": "",
+      "priority": 3,
+      "notes": "Tăng Hit count cho các thẻ cơ bản"
+    },
+    {
+      "card_name": "Possession",
+      "preferred_variant": "",
+      "priority": 4,
+      "notes": "Giảm Cost ngẫu nhiên cho thẻ trên tay"
+    },
+    {
+      "card_name": "Mute Accent",
+      "preferred_variant": "Skill",
+      "priority": 5,
+      "notes": "Gây 250% Extra Attack và kích hoạt Morale"
+    }
+  ],
+  "keyword_weights": {
+    "Elasticity": 60,
+    "Extra Attack": 35,
+    "Action Point": 40,
+    "Morale": 25,
+    "Rare": 30,
+    "Heal": 45,
+    "Discard": 15,
+    "Base": 5
+  },
+  "default_pick_index": 1
+}

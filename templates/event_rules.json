@@ -1,0 +1,4303 @@
+{
+  "events_database": [
+    {
+      "event_name": "A Child Locked in a Room",
+      "event_type": "Common / Laboratory",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Receive the memory of longing",
+          "outcome_summary": "Decrease all Combatants' Stress by 9, Apply Memory Encroachment 2",
+          "priority_score": 8,
+          "recommendation": "Chọn khi cần xả stress gấp cho toàn đội (-9 Stress) và chấp nhận nhận 2 tầng Xâm lấn Ký ức (Memory Encroachment 2)."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Receive the memory of fury",
+          "outcome_summary": "Decrease all Combatants' Stress by 6, Apply Memory Encroachment 1",
+          "priority_score": 6,
+          "recommendation": "Lựa chọn cân bằng: giảm 6 Stress cho toàn đội và chỉ nhận 1 tầng Xâm lấn Ký ức (Memory Encroachment 1)."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Receive the memory of hope",
+          "outcome_summary": "Decrease all Combatants' Stress by 3",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn an toàn tuyệt đối: giảm 3 Stress cho toàn đội, hoàn toàn không dính bất kỳ hiệu ứng bất lợi nào."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Receive the memory of 'Void'",
+          "outcome_summary": "Event [???] triggered, Apply Memory Encroachment 1",
+          "priority_score": 2,
+          "recommendation": "Né lựa chọn này nếu không muốn rủi ro kích hoạt chuỗi sự kiện ẩn [???] và bị dính 1 tầng Xâm lấn Ký ức."
+        }
+      ]
+    },
+    {
+      "event_name": "Captured Life (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Rescue the spirit",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Spark an Epiphany for a random Combatant (1 time)",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Absorb the spirit's power",
+          "outcome_summary": "Spark an Epiphany for a random Combatant (1 time), Obtain Curse Card [Curse of the Fairy]",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ nhưng bị dính Lời Nguyền. Chỉ nên chọn nếu deck có sẵn bài xóa lời nguyền."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Provide backup together",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Rare Equipment, Gain 40 Credits, Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Captured Life (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Attack the spirit",
+          "outcome_summary": "Obtain Curse Card [Curse of the Fairy], Obtain Rare-Legendary equipment",
+          "priority_score": 3,
+          "recommendation": "Hạn chế chọn: Nhận Lời Nguyền gây ô nhiễm cọc bài và hiệu ứng bất lợi kéo dài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Calm the spirit",
+          "outcome_summary": "Dice Check [6+], Spark an Epiphany for a random Combatant (1 time), Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ (Epiphany) qua đổ xí ngầu, thất bại không bị phạt nặng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Rare-Legendary equipment, Gain 40 Credits, Obtain Rare-Legendary equipment, Obtain Rare-Legendary equipment",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Cycle of Life (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Attack the egg",
+          "outcome_summary": "Dice Check [20+], Spark an Epiphany for a selected Combatant, Increase Max HP by 20%, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ (Epiphany) qua đổ xí ngầu, thất bại không bị phạt nặng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Attack the egg",
+          "outcome_summary": "Dice Check [14+], Spark an Epiphany for a selected Combatant, MAX_HP_PCT x15, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ (Epiphany) qua đổ xí ngầu, thất bại không bị phạt nặng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack the egg",
+          "outcome_summary": "Dice Check [8+], Spark an Epiphany for a selected Combatant, Increase Max HP by 10%, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ (Epiphany) qua đổ xí ngầu, thất bại không bị phạt nặng."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Help the egg to hatch",
+          "outcome_summary": "MAX_HP_PCT x-15, Spark an Epiphany for a random Combatant (1 time)",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Leave",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​ (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Enter Inside",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Steal the supplies",
+          "outcome_summary": "Obtain Rare-Legendary equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Request a deal",
+          "outcome_summary": "Requires >= 40 Credits",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Choose the small spirit",
+          "outcome_summary": "Spend 40 Credits, Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Choose the ember extractor",
+          "outcome_summary": "Spend 40 Credits, MAX_HP_PCT x15",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Request information",
+          "outcome_summary": "Select cards from 3 choices",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​ (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Enter Inside",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Steal the supplies",
+          "outcome_summary": "Obtain Rare-Legendary equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​ (Part 2)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Commune with the evil spirit",
+          "outcome_summary": "Spark an Epiphany for a random Combatant (1 time)",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Accept part of the revenge.",
+          "outcome_summary": "Obtain Curse Card [Deep Roots], Spark an Epiphany for a selected Combatant",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ nhưng bị dính Lời Nguyền. Chỉ nên chọn nếu deck có sẵn bài xóa lời nguyền."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Rare Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​ (Part 3)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Rescue the small spirit",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Use the ember extractor",
+          "outcome_summary": "MAX_HP_PCT x15",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​ (Variant C)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Enter Inside",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Steal the supplies",
+          "outcome_summary": "Obtain Rare-Legendary equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​ (Part 4)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Plunder supplies",
+          "outcome_summary": "Obtain Rare-Legendary equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Hear the research results",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Offer a deal",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Select 1 from multiple cards",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Dark Star Poaching Base​ (Part 5)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Explore the surroundings",
+          "outcome_summary": "Obtain Rare-Legendary equipment, Gain 40 Credits",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Attune to the tree",
+          "outcome_summary": "Select cards from 3 choices",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Study the tree",
+          "outcome_summary": "Increase Max HP by 10%, Spark an Epiphany for a random Combatant (1 time)",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Funeral March (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Mourn death together",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Promise revenge",
+          "outcome_summary": "Dice Check [6+], CARD_TRANSFORM_HAVE_SELECT_ID x1, MAX_HP_PCT x5, Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        }
+      ]
+    },
+    {
+      "event_name": "Intermediary Tree (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the knot",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Infuse power",
+          "outcome_summary": "Lose 10% HP, Increase Stage Parameter",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Tries to open the door",
+          "outcome_summary": "Dice Check [14+], Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Tries to open the door",
+          "outcome_summary": "Dice Check [10+], Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Tries to open the door",
+          "outcome_summary": "Dice Check [6+], Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Tries to open the door",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 7,
+          "choice_text": "Take the branch",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Obtain 1 Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Intermediary Tree",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Investigate the forest",
+          "outcome_summary": "Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Move Forward",
+          "outcome_summary": "Select 1 from multiple cards, MAX_HP_PCT x5",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Intermediary Tree (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine inside",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Examine inside",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Remove the branch",
+          "outcome_summary": "Dice Check [7+], Obtain 1 Equipment, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attune to the tree",
+          "outcome_summary": "Remove random cards, Increase Max HP by 10%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Intermediary Tree (Part 2)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Approach it",
+          "outcome_summary": "Select 1 from multiple cards",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Share Strength",
+          "outcome_summary": "Decrease Max HP by 10%, Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Remove the ember",
+          "outcome_summary": "Dice Check [10+], Select and apply a Divine Epiphany to 1 card, Fail: Event ends without rewards",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        }
+      ]
+    },
+    {
+      "event_name": "Intermediary Tree (Part 3)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Accept the ember",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Stay by the ember",
+          "outcome_summary": "Select 1 from multiple cards",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Intermediary Tree (Variant C)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the knot",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Tries to open the door",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Capture the ember",
+          "outcome_summary": "Obtain 1 Event Card, Increase Max HP by 10%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Take the branch",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Obtain 1 Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Intermediary Tree (Part 4)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Investigate the forest",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Move Forward",
+          "outcome_summary": "CARD_SELECT_1_N x99",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Price of Greed (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Save the poacher",
+          "outcome_summary": "Dice Check [6+], Obtain 1 Equipment, Gain 40 Credits, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search the corpse",
+          "outcome_summary": "Gain 100 Credits",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain 1 Equipment, Gain 40 Credits, Obtain Rare Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Price of Greed (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Seize the rear",
+          "outcome_summary": "Dice Check [6+], Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Help the poacher",
+          "outcome_summary": "Obtain 1 Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Price of Greed",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask for Credits",
+          "outcome_summary": "Gain 40 Credits",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Ask for more Credits",
+          "outcome_summary": "Dice Check [6+], Gain 120 Credits, Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Ask for equipment",
+          "outcome_summary": "Obtain Rare-Legendary equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Reincarnation Ritual (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Perform the ritual together",
+          "outcome_summary": "Obtain Rare-Legendary equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search for the remains of the evil spirit",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Obtain Curse Card [Curse of the Fairy]",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ nhưng bị dính Lời Nguyền. Chỉ nên chọn nếu deck có sẵn bài xóa lời nguyền."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Reincarnation Ritual",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine your surroundings",
+          "outcome_summary": "Obtain Rare Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search for the remains of the evil spirit",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Obtain Curse Card [Deep Roots]",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ nhưng bị dính Lời Nguyền. Chỉ nên chọn nếu deck có sẵn bài xóa lời nguyền."
+        }
+      ]
+    },
+    {
+      "event_name": "Reincarnation Ritual (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Perform the ritual together",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search for the remains of the spirit",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Reincarnation Ritual (Part 2)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine your surroundings",
+          "outcome_summary": "Decrease Max HP by 10%, Obtain Legendary Equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search for the remains of the spirit",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Seed of the Sacred Tree (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Deceive the poachers",
+          "outcome_summary": "Dice Check [7+], Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Report the spirit",
+          "outcome_summary": "Gain 100 Credits",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Rare Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Seed of the Sacred Tree",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Plant the spirit in the ground",
+          "outcome_summary": "Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài để tìm kiếm thẻ bài hiếm hoặc nâng cấp bộ bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Touch the spirit’s cheek",
+          "outcome_summary": "Decrease all Combatants' Stress by 9",
+          "priority_score": 8,
+          "recommendation": "Khuyên dùng khi Stress cao: Giảm Stress toàn đội giúp tránh rơi vào trạng thái Sụp Đổ (Collapse)."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Rare Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Seed of the Sacred Tree (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ambush the poacher",
+          "outcome_summary": "Dice Check [7+], Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Wake the poacher",
+          "outcome_summary": "Gain 100 Credits",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Rare Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Seed of the Sacred Tree (Part 2)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Smell the scent",
+          "outcome_summary": "Decrease all Combatants' Stress by 9",
+          "priority_score": 8,
+          "recommendation": "Khuyên dùng khi Stress cao: Giảm Stress toàn đội giúp tránh rơi vào trạng thái Sụp Đổ (Collapse)."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Examine the condition of the spirit",
+          "outcome_summary": "Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài để tìm kiếm thẻ bài hiếm hoặc nâng cấp bộ bài."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Rare Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Smuggled Goods Wager (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask how it's done",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Take part in the bet",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Warn with a lie",
+          "outcome_summary": "Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        }
+      ]
+    },
+    {
+      "event_name": "Smuggled Goods Wager",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "A low number",
+          "outcome_summary": "Dice Check [5+], Gain 80 Credits, Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "A middle number",
+          "outcome_summary": "Dice Check [10+], Gain 120 Credits, Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "A high number",
+          "outcome_summary": "Dice Check [15+], Gain 160 Credits, Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        }
+      ]
+    },
+    {
+      "event_name": "Struggle (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Persuade the poacher",
+          "outcome_summary": "Dice Check [7+], Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Cơ hội: Đổ xí ngầu để nhận phần thưởng, chấp nhận khả năng thất bại."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Express sympathy",
+          "outcome_summary": "Obtain 1 Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Absorb the ember",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Struggle",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Unlock the device",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Absorb the power",
+          "outcome_summary": "Increase Max HP by 20%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Struggle (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Assist with first aid",
+          "outcome_summary": "Obtain 1 Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Steal something",
+          "outcome_summary": "Obtain 1 Event Card",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain 1 Event Card",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "The Flower of Life (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Attempt to revive the flower",
+          "outcome_summary": "Dice Check [6+], Remove 1 selected card from deck, MAX_HP_PCT x5, Fail: Event ends without rewards",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Receive the embers",
+          "outcome_summary": "Select cards from 3 choices",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Pluck the flower",
+          "outcome_summary": "Obtain Curse Card [Curse of the Fairy], Obtain 1 Equipment",
+          "priority_score": 3,
+          "recommendation": "Hạn chế chọn: Nhận Lời Nguyền gây ô nhiễm cọc bài và hiệu ứng bất lợi kéo dài."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "The Flower of Life (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Help the spirit",
+          "outcome_summary": "Dice Check [6+], Remove 2 selected cards from deck, MAX_HP_PCT x5, Fail: Event ends without rewards",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Receive the embers",
+          "outcome_summary": "Select cards from 3 choices",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Pluck the flower",
+          "outcome_summary": "Obtain Curse Card [Curse of the Fairy], Obtain 1 Equipment",
+          "priority_score": 3,
+          "recommendation": "Hạn chế chọn: Nhận Lời Nguyền gây ô nhiễm cọc bài và hiệu ứng bất lợi kéo dài."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "The forest asks (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Answer “Life”",
+          "outcome_summary": "Dice Check [7+], Obtain 1 Equipment, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Answer “Death”",
+          "outcome_summary": "Dice Check [7+], Obtain 1 Equipment, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Request a return",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "The forest asks",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the bright side",
+          "outcome_summary": "Obtain 1 Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Examine the dark side",
+          "outcome_summary": "Obtain 1 Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Tries to open the door",
+          "outcome_summary": "Restore 20% HP, Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "The forest asks (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Answer “Eternity”",
+          "outcome_summary": "Dice Check [7+], Obtain 1 Equipment, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Request a return",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "The forest asks (Part 2)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the shackle",
+          "outcome_summary": "Obtain 1 Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Tries to open the door",
+          "outcome_summary": "Decrease all Combatants' Stress by 3, Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "The Spirit of Crisis (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Pull the spirits",
+          "outcome_summary": "Lose 10% HP, Increase Stage Parameter",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Pull the spirits closer",
+          "outcome_summary": "Lose 10% HP, Increase Stage Parameter",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Pull the spirits a little closer",
+          "outcome_summary": "Lose 10% HP, Increase Stage Parameter",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Pull the spirit with full strength.",
+          "outcome_summary": "Dice Check [14+], Spark an Epiphany for a selected Combatant, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ (Epiphany) qua đổ xí ngầu, thất bại không bị phạt nặng."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Pull the spirit with full strength.",
+          "outcome_summary": "Dice Check [10+], Spark an Epiphany for a selected Combatant, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ (Epiphany) qua đổ xí ngầu, thất bại không bị phạt nặng."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Pull the spirit with full strength.",
+          "outcome_summary": "Dice Check [6+], Spark an Epiphany for a selected Combatant, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ (Epiphany) qua đổ xí ngầu, thất bại không bị phạt nặng."
+        },
+        {
+          "choice_id": 7,
+          "choice_text": "Pull the spirit with full strength.",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 8,
+          "choice_text": "Insert the substitute",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "Traces of the Beast (Variant A)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the massive footprints",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search the interior of the fighter",
+          "outcome_summary": "Obtain Rare-Legendary equipment",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        }
+      ]
+    },
+    {
+      "event_name": "Traces of the Beast (Variant B)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask about the footprints",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Seize the supplies",
+          "outcome_summary": "Dice Check [6+], Obtain Rare-Legendary equipment, Gain 40 Credits, Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Kinh tế: Kiếm thêm Credits để mua sắm trong cửa hàng Dellang."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Gain 40 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt nhiều trang bị và tài nguyên, chọn khi đội hình đang mạnh."
+        }
+      ]
+    },
+    {
+      "event_name": "Traces of the Beast (Variant C)",
+      "event_type": "Common / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the massive footprints",
+          "outcome_summary": "Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search the interior of the fighter",
+          "outcome_summary": "Obtain Legendary Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Root of Remembrance (Variant A)",
+      "event_type": "Rare / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Merge with the stillness of the forest",
+          "outcome_summary": "Restore 100% HP, Decrease all Combatants' Stress by 6",
+          "priority_score": 8,
+          "recommendation": "Tuyệt vời để hồi phục: Hồi đầy 100% HP và giảm 6 Stress cho toàn đội khi vừa trải qua trận chiến cam go."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Accept the gaze",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Seek the source of power",
+          "outcome_summary": "Obtain Curse Card [Deep Roots], Duplicate (Copy) 1 selected card in deck",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhân bản (Copy) 1 lá bài chủ lực mạnh nhất trong bộ bài để tăng tối đa sức mạnh chiến thuật."
+        }
+      ]
+    },
+    {
+      "event_name": "Warning (Variant A)",
+      "event_type": "Rare / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Take the flower",
+          "outcome_summary": "CARD_TRANSFORM_HAVE_SELECT_ID x1",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Examine the form",
+          "outcome_summary": "Spark an Epiphany for a random Combatant (1 time)",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Warning (Variant B)",
+      "event_type": "Rare / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Pull out the flower",
+          "outcome_summary": "Dice Check [6+], Obtain 1 Equipment, Gain 40 Credits, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Take the flower",
+          "outcome_summary": "CARD_TRANSFORM_HAVE_SELECT_ID x1",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Examine the form",
+          "outcome_summary": "Spark an Epiphany for a random Combatant (1 time)",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain 1 Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị giá trị cao (Rare/Legendary) để gia tăng sức mạnh đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Warning (Variant C)",
+      "event_type": "Rare / Sekred / Swamp of Judgment",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask who they are",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Explain that it was not intended",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Say that you want the forest",
+          "outcome_summary": "Obtain Curse Card [Curse of the Fairy], CARD_TRANSFORM_HAVE_PRE_SELECT x1",
+          "priority_score": 3,
+          "recommendation": "Hạn chế chọn: Nhận Lời Nguyền gây ô nhiễm cọc bài và hiệu ứng bất lợi kéo dài."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Say that you want the forest",
+          "outcome_summary": "Obtain Curse Card [Deep Roots], CARD_TRANSFORM_HAVE_PRE_SELECT x1",
+          "priority_score": 3,
+          "recommendation": "Hạn chế chọn: Nhận Lời Nguyền gây ô nhiễm cọc bài và hiệu ứng bất lợi kéo dài."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn lá bài cơ bản/bài rác khỏi deck giúp tối ưu tỷ lệ rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "Differing Creeds (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Search the box",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Explore the surroundings",
+          "outcome_summary": "Lose 20% HP, Obtain Pendant of Balance",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Enter inside",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Enter inside",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        }
+      ]
+    },
+    {
+      "event_name": "Differing Creeds (Sub-Stage A-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Relay false information",
+          "outcome_summary": "Dice Check [6+], Obtain Pendant of Balance, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Rescue the Believer",
+          "outcome_summary": "Engage in Combat, Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Tell them to say what they know",
+          "outcome_summary": "Recover 10% HP, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Hồi phục lớn: Hồi phục lượng lớn máu giúp đội hình an toàn trước các đợt giao tranh lớn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Differing Creeds (Sub-Stage A-2)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Discern the Angel's intent",
+          "outcome_summary": "Dice Check [6+], Obtain Pendant of Balance, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Ignore it and grab the items",
+          "outcome_summary": "Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Pray along with the Believer",
+          "outcome_summary": "Decrease all Combatants' Stress by 3, Gain 40 Credits",
+          "priority_score": 8,
+          "recommendation": "Khuyên dùng khi Stress cao: Giảm Stress toàn đội giúp phòng ngừa rơi vào trạng thái Sụp Đổ (Collapse)."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Differing Creeds (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Enter together with the Believers",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Ignore them and open the box",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Stop the Believers",
+          "outcome_summary": "Spark an Epiphany for a random Combatant, Lose 20% HP",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Differing Creeds (Sub-Stage B-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the parts",
+          "outcome_summary": "Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Figure out the structure",
+          "outcome_summary": "Dice Check [6+], Obtain Condensed Fuel, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Side with the Believer",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "The One Who Reaches (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Explain the direction",
+          "outcome_summary": "Dice Check [6+], Obtain Rare/Legendary Equipment, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Tell them to go back",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Enter the ship",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        }
+      ]
+    },
+    {
+      "event_name": "The One Who Reaches (Sub-Stage A-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Search the area",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Sit in the chair",
+          "outcome_summary": "Increase Max HP by 5%, Gain 40 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Power up the machine",
+          "outcome_summary": "Spark an Epiphany for a random Combatant, Increase all Combatants' Stress by 5",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "The One Who Reaches (Rare Variant B)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Look inside the bag",
+          "outcome_summary": "Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Enter the ship",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Examine the Believer's hands",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The One Who Reaches (Rare Sub-Stage B-1)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Search the ship",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Honor their peace",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Lose 10% HP",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Open the machine",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ giá trị: Lọc và xóa vĩnh viễn đến 2 lá bài rác khỏi deck giúp tối ưu hóa tối đa khả năng rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "On Good and Evil (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask what they're talking about",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Threaten them to back off",
+          "outcome_summary": "Dice Check [6+], Obtain Rare Equipment, Gain 40 Credits, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Pay the price",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "On Good and Evil (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Side with the soldier",
+          "outcome_summary": "Engage in Combat, Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Agree to the judgment",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Help the fallen angel",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Sacred Contamination (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask what this is",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Pay your respects",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Force yourself to touch the Needle",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Lose 20% HP",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Sacred Contamination (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Throw something",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Help the soldiers",
+          "outcome_summary": "Lose 20% HP, Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Help the Believers",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Unwavering Faith (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Listen to the sermon to the end",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Agree with Iona",
+          "outcome_summary": "Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Refute the sermon",
+          "outcome_summary": "Lose 20% HP, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Drag Iona down",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Unwavering Faith (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Pray together",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Show the pendant",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Ask about the plan",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Point out something about salvation",
+          "outcome_summary": "Recover 10% HP, Gain 80 Credits",
+          "priority_score": 7,
+          "recommendation": "Hồi phục lớn: Hồi phục lượng lớn máu giúp đội hình an toàn trước các đợt giao tranh lớn."
+        }
+      ]
+    },
+    {
+      "event_name": "Unwavering Faith (Rare Variant C)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "This too is balance",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Increase all Combatants' Stress by 5",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Tell them to follow the discipline",
+          "outcome_summary": "Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Show the safe direction",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        }
+      ]
+    },
+    {
+      "event_name": "The Predetermined Verdict (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Accept",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Refuse",
+          "outcome_summary": "Obtain Curse Card [Strict Discipline], Increase Max HP by 15%, Decrease all Combatants' Stress by 3",
+          "priority_score": 8,
+          "recommendation": "Khuyên dùng khi Stress cao: Giảm Stress toàn đội giúp phòng ngừa rơi vào trạng thái Sụp Đổ (Collapse)."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Stay silent",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "The Predetermined Verdict (Sub-Stage A-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Pass judgment",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Pass no judgment",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Cannot pass judgment",
+          "outcome_summary": "Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Error is also a calculation",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Give no answer",
+          "outcome_summary": "Increase Max HP by 10%, Gain 40 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "The Predetermined Verdict (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Spare the soldier",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Eliminate the soldier",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Lose 20% HP",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Discern the Angel's intent",
+          "outcome_summary": "Dice Check [6+], Obtain Triskelion of Judgment, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Where the Light Once Was (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Agree with Iona",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Share supplies",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Tell them to go back",
+          "outcome_summary": "Recover 10% HP, Gain 80 Credits",
+          "priority_score": 7,
+          "recommendation": "Hồi phục lớn: Hồi phục lượng lớn máu giúp đội hình an toàn trước các đợt giao tranh lớn."
+        }
+      ]
+    },
+    {
+      "event_name": "Where the Light Once Was (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Speak to them",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Touch the Obelisk",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Gather anything useful",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Where the Light Once Was (Rare Variant C)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Pray together",
+          "outcome_summary": "Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Say it's broken",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack the Obelisk",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        }
+      ]
+    },
+    {
+      "event_name": "What Was Called a Blessing (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Watch the end",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Offer comfort together",
+          "outcome_summary": "Decrease all Combatants' Stress by 3, Gain 80 Credits",
+          "priority_score": 8,
+          "recommendation": "Khuyên dùng khi Stress cao: Giảm Stress toàn đội giúp phòng ngừa rơi vào trạng thái Sụp Đổ (Collapse)."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "End the suffering",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "What Was Called a Blessing (Sub-Stage A-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask if it's a Blessing",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Say it's a Blessing",
+          "outcome_summary": "Gain 100 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Say it's not a Blessing",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "What Was Called a Blessing (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Forgive him",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Judge him",
+          "outcome_summary": "Increase all Combatants' Stress by 10, Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Search for anything useful",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Into the Deeper Depths (Rare Variant A)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Gaze beyond",
+          "outcome_summary": "Recover 50% HP",
+          "priority_score": 7,
+          "recommendation": "Hồi phục lớn: Hồi phục lượng lớn máu giúp đội hình an toàn trước các đợt giao tranh lớn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Touch the light",
+          "outcome_summary": "Obtain Curse Card [Overflow], Apply a Divine Epiphany to a random card",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ/Trang Bị nhưng bị dính Lời Nguyền. Chỉ chọn nếu đội hình có khả năng tẩy xóa lời nguyền."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Strike down the ley line",
+          "outcome_summary": "Lose 20% HP, Obtain Fragment of Condensed Radiance",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Wavering Faith (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Observe",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Increase all Combatants' Stress by 5",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Persuade the soldiers",
+          "outcome_summary": "Dice Check [10+], Gain 160 Credits, Fail: CREDIT_VALUE x40",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Persuade the Prophet",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        }
+      ]
+    },
+    {
+      "event_name": "Wavering Faith (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Pick up the Sacred Relic and hand it over",
+          "outcome_summary": "Dice Check [6+], Spark an Epiphany for a selected Combatant, Fail: Spark regular Epiphany, Increase all Combatants' Stress by 5",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ qua đổ xí ngầu, phần thưởng giá trị hỗ trợ nâng cấp bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Tidy up the surroundings and leave",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Wavering Faith (Rare Variant C)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Observe the Prophet",
+          "outcome_summary": "Increase Max HP by 20%, Gain 40 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Save the Prophet",
+          "outcome_summary": "Obtain Legendary Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Respond to the Prophet",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Gain 40 Credits",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Reason Dyed Red (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Collect a sample",
+          "outcome_summary": "Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Check the properties of the rune",
+          "outcome_summary": "Dice Check [10+], Spark an Epiphany for a selected Combatant, Fail: Increase all Combatants' Stress by -3, Lose 20% HP",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ qua đổ xí ngầu, phần thưởng giá trị hỗ trợ nâng cấp bài."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Chase after the Red Rain",
+          "outcome_summary": "Remove 1 selected card from deck, Decrease all Combatants' Stress by 3",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        }
+      ]
+    },
+    {
+      "event_name": "Reason Dyed Red (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Save the nearest soldier",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Save both soldiers",
+          "outcome_summary": "Dice Check [10+], Remove 1 selected card from deck, Gain 80 Credits, Fail: CREDIT_VALUE x80",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Observe",
+          "outcome_summary": "Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Black Baptism (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Destroy the symbol",
+          "outcome_summary": "Dice Check [8+], Obtain Legendary Equipment, Fail: Obtain Legendary Equipment, Obtain Curse Card [Overflow]",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ/Trang Bị nhưng bị dính Lời Nguyền. Chỉ chọn nếu đội hình có khả năng tẩy xóa lời nguyền."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Pull out the connected Needle",
+          "outcome_summary": "Dice Check [10+], Apply a Divine Epiphany to a random card, Fail: Spark regular Epiphany, Increase all Combatants' Stress by 5",
+          "priority_score": 8,
+          "recommendation": "Rất tốt: Cơ hội nhận Thần Ngộ qua thử thách xí ngầu, thất bại vẫn nhận Giác Ngộ thường."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Analyze the wavelength",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        }
+      ]
+    },
+    {
+      "event_name": "Black Baptism (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Destroy the Angel",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Insert the Needle",
+          "outcome_summary": "Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Secure a firm promise",
+          "outcome_summary": "Engage in Combat, Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Black Baptism (Rare Variant C)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Stop the Prophet",
+          "outcome_summary": "Obtain Needle of the Severed Overseer",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Observe the situation",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        }
+      ]
+    },
+    {
+      "event_name": "Fruit Bound in Blood (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Seize the Sphere",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Destroy the Sphere",
+          "outcome_summary": "Engage in Combat, Gain 160 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Let the Sphere go",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        }
+      ]
+    },
+    {
+      "event_name": "Fruit Bound in Blood (Sub-Stage A-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Take what is needed and leave",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Observe a little longer",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        }
+      ]
+    },
+    {
+      "event_name": "Fruit Bound in Blood (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Analyze the Sphere",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Collect the body",
+          "outcome_summary": "Gain 140 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        }
+      ]
+    },
+    {
+      "event_name": "The Last Discipline (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Provoke the Black Monolith",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Calm the Angels",
+          "outcome_summary": "Dice Check [10+], Obtain Legendary Equipment, Fail: Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 160 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "The Last Discipline (Sub-Stage A-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Investigate the monolith",
+          "outcome_summary": "Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Destroy the monolith",
+          "outcome_summary": "Obtain Mythic Equipment, Increase all Combatants' Stress by 10",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Last Discipline (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Try to converse",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Ambush the White Angel",
+          "outcome_summary": "Gain 160 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        }
+      ]
+    },
+    {
+      "event_name": "The Last Discipline (Sub-Stage B-1)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "God's plan is unknowable",
+          "outcome_summary": "Apply a Divine Epiphany to a random card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Everything is part of the plan",
+          "outcome_summary": "Obtain Mythic Equipment, Increase all Combatants' Stress by 10",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Even God may fail to calculate it",
+          "outcome_summary": "Gain 160 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        }
+      ]
+    },
+    {
+      "event_name": "The Last Discipline (Rare Variant C)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Restrain the Prophet",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Destroy the monolith",
+          "outcome_summary": "Obtain Mythic Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Plan Before Creation (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Decipher the manufacturing record",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Peer into the gap in the core",
+          "outcome_summary": "Dice Check [10+], Select and apply a Divine Epiphany to 1 card, Fail: Event ends without rewards",
+          "priority_score": 8,
+          "recommendation": "Rất tốt: Cơ hội nhận Thần Ngộ qua thử thách xí ngầu, thất bại vẫn nhận Giác Ngộ thường."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Extract the core",
+          "outcome_summary": "Obtain Split Design Core",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Plan Before Creation (Variant B)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Analyze the Rune Script",
+          "outcome_summary": "Engage in Combat, Gain 160 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Manipulate the data",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Take the terminal",
+          "outcome_summary": "Obtain Split Design Core",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Plan Before Creation (Rare Variant C)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Comfort Iona",
+          "outcome_summary": "Obtain Card [Defaced Relic], Decrease all Combatants' Stress by 6",
+          "priority_score": 8,
+          "recommendation": "Khuyên dùng khi Stress cao: Giảm Stress toàn đội giúp phòng ngừa rơi vào trạng thái Sụp Đổ (Collapse)."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Examine the Angel",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Deny together",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Gain 200 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "The Irresistible Touch (Variant A)",
+      "event_type": "Common / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Observe the end of the Sphere",
+          "outcome_summary": "Choose 1 of 3 cards to Duplicate (Copy) in deck",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhân bản (Copy) lá bài chủ lực mạnh nhất trong deck giúp tối đa hóa khả năng vận hành combo."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Refuse the touch",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Reach out in return",
+          "outcome_summary": "Obtain Imitated Hand",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Deepest Place (Rare Variant A)",
+      "event_type": "Rare / Celestial Bulwark",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Gaze into the abyss",
+          "outcome_summary": "Duplicate (Copy) 1 selected card in deck",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhân bản (Copy) lá bài chủ lực mạnh nhất trong deck giúp tối đa hóa khả năng vận hành combo."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Understand their intent",
+          "outcome_summary": "Obtain The Final Command",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Surrender to the flow",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ giá trị: Lọc và xóa vĩnh viễn đến 2 lá bài rác khỏi deck giúp tối ưu hóa tối đa khả năng rút bài chủ lực."
+        }
+      ]
+    },
+    {
+      "event_name": "Altar of Discord (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Offer blood",
+          "outcome_summary": "Choose 1 card from special selection",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Perform the ritual",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Obtain Ritual Dagger",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Save the offering",
+          "outcome_summary": "Engage in Combat, Dice Check [9+], Gain 180 Credits, Fail: Event ends without rewards",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Legendary Equipment, Gain 40 Credits, Proceed to next phase",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Altar of Discord (Sub-Stage A-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Offer a sacrifice",
+          "outcome_summary": "Choose 1 card from special selection, Increase Max HP by 5%",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search the altar",
+          "outcome_summary": "Obtain Ritual Dagger",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Save the offering",
+          "outcome_summary": "Obtain Legendary Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Altar of Discord (Rare Variant B)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Offer blood",
+          "outcome_summary": "Choose 1 card from special selection",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Shove the cultist",
+          "outcome_summary": "Engage in Combat, Obtain Mythic Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Offer body",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Apply a Divine Epiphany to a random card, Increase Max HP by 5%",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        }
+      ]
+    },
+    {
+      "event_name": "Bible Making (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Offer support",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Suggest a bible passage",
+          "outcome_summary": "Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Take part in the compilation",
+          "outcome_summary": "Gain 100 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Butcher's Shop (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Request a tasting",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Increase Max HP by 5%, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Request a tasting",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Buy Meat",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Increase Max HP by 15%",
+          "priority_score": 6,
+          "recommendation": "Đổi Credits: Dùng tiền mua tài nguyên hoặc mở đường an toàn nếu kinh tế dư dả."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Evaluate the flavor",
+          "outcome_summary": "Dice Check [6+], Increase Max HP by 5%, Obtain Card [Hunk of Meat], Fail: CARD_TRANSFORM_HAVE_SELECT_ID x1",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Ask about the origin of the meat",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        }
+      ]
+    },
+    {
+      "event_name": "Butcher's Shop (Variant B)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Rescue the captive",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Request meat",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Increase Max HP by 15%",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Ask for different meat",
+          "outcome_summary": "Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare Equipment, Gain 40 Credits, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Chaos Adjudicator (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Challenge the judgment",
+          "outcome_summary": "Condition: [cn_have_equ_chaos_09,cn_have_equ_chaos_010,cn_have_equ_chaos_ca_09,cn_have_equ_chaos_ca_010], Obtain The Chosen Vessel",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Admit weakness",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Forfeiting Qualification",
+          "outcome_summary": "Lose 20% HP, Increase Max HP by 15%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Legendary Equipment, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Crime and Punishment (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Rescue the sinner",
+          "outcome_summary": "Engage in Combat, Obtain Executioner's Edge, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Suggest an execution",
+          "outcome_summary": "Obtain Executioner's Edge, Increase all Combatants' Stress by 10",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Swear loyalty",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Executioner's Edge, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Cultists' Shelter (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the box",
+          "outcome_summary": "Dice Check [7+], Obtain Rare/Legendary Equipment, Fail: Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Enter the tent",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Enter the tent",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        }
+      ]
+    },
+    {
+      "event_name": "Cultists' Shelter (Sub-Stage A-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Take a look around the operating room",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Take the surgical instruments",
+          "outcome_summary": "Obtain Dull Bone Blade",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Search the body",
+          "outcome_summary": "Dice Check [6+], Gain 140 Credits, Fail: CREDIT_VALUE x140",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        }
+      ]
+    },
+    {
+      "event_name": "Cultists' Shelter (Sub-Stage A-2)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Undergo surgery",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Mental Enhancement Surgery",
+          "outcome_summary": "Obtain Curse Card [Mutate], Spark an Epiphany for a selected Combatant",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ/Trang Bị nhưng bị dính Lời Nguyền. Chỉ chọn nếu đội hình có khả năng tẩy xóa lời nguyền."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Vitality Boost Surgery",
+          "outcome_summary": "Dice Check [6+], Increase Max HP by 15%, Fail: Event ends without rewards",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Take the lead in surgery",
+          "outcome_summary": "Obtain Proof of Initiation",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Ask for medicine",
+          "outcome_summary": "Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Proof of Initiation, Gain 40 Credits",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Cultists' Shelter (Rare Variant B)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Enter",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Offer support",
+          "outcome_summary": "Lose 10% HP, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Cultists' Shelter (Rare Sub-Stage B-1)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Pray together",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Disrupt the ritual",
+          "outcome_summary": "Engage in Combat, Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Offer blood",
+          "outcome_summary": "Lose 30% HP, Obtain Order's Emblem",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Gain 40 Credits",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Madman's Quiz Show (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Participate in the quiz show",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Rescue the prisoners",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Sponsor the quiz show",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Transform 1 selected card",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Madman's Quiz Show (Sub-Stage A-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Memorable Things",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Coming Back to Life",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "The Only One Left Alive",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Offering Disposal Grounds (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Search the disposal grounds",
+          "outcome_summary": "Dice Check [6+], Obtain Rare/Legendary Equipment, Fail: Event ends without rewards",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Help dispose of the ghoul",
+          "outcome_summary": "Gain 80 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Search through the pile of corpses",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Rite of Unification (Rare Variant A)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "They say they will be a witness.",
+          "outcome_summary": "Increase all Combatants' Stress by 10, Duplicate (Copy) 1 selected card in deck",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhân bản (Copy) lá bài then chốt giúp tối ưu hóa tối đa combo của cọc bài."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "They say it will be the last.",
+          "outcome_summary": "Obtain Mutated Order",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "They deny the Messiah.",
+          "outcome_summary": "Choose 1 card from special selection",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        }
+      ]
+    },
+    {
+      "event_name": "The Condemners (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask for purification",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Ask for support",
+          "outcome_summary": "Obtain Resolute Gauntlets",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Receive a prayer",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Resolute Gauntlets, Proceed to next phase",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Condemners (Sub-Stage A-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Take a quick nap",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Drink holy water",
+          "outcome_summary": "Increase Max HP by 10%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Read the scripture",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        }
+      ]
+    },
+    {
+      "event_name": "The Condemners (Variant B)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Take a quick nap",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Drink holy water",
+          "outcome_summary": "Increase Max HP by 10%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Read the scripture",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        }
+      ]
+    },
+    {
+      "event_name": "The Condemners (Variant C)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Repent for being a follower",
+          "outcome_summary": "Sacrifice/Remove Equipment [Proof of Initiation], Obtain Rare Equipment, Gain 60 Credits",
+          "priority_score": 8,
+          "recommendation": "Đổi trang bị: Hi sinh trang bị hiện tại để đổi lấy trang bị cấp cao (Rare/Legendary) và lượng lớn Credits."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Repent for being a follower",
+          "outcome_summary": "Sacrifice/Remove Equipment [Order's Emblem], Obtain Legendary Equipment, Gain 100 Credits",
+          "priority_score": 8,
+          "recommendation": "Đổi trang bị: Hi sinh trang bị hiện tại để đổi lấy trang bị cấp cao (Rare/Legendary) và lượng lớn Credits."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Catch them off guard and attack",
+          "outcome_summary": "Obtain Resolute Gauntlets, Proceed to next phase",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Deny it",
+          "outcome_summary": "Dice Check [6+], Spark an Epiphany for a random Combatant, Gain 40 Credits, Fail: Obtain Resolute Gauntlets",
+          "priority_score": 7,
+          "recommendation": "Khá tốt: Cơ hội nhận Giác Ngộ qua đổ xí ngầu, hỗ trợ nâng cấp bài nhân vật."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Obtain Resolute Gauntlets, Proceed to next phase",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Condemners (Sub-Stage C-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Take a quick nap",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Drink holy water",
+          "outcome_summary": "Increase Max HP by 10%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Read the scripture",
+          "outcome_summary": "Choose 1 of 3 Cards",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        }
+      ]
+    },
+    {
+      "event_name": "The Ghoul Kennel (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Talk to the prisoner",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Search the prisoner's belongings",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Administer medicine to the ghoul",
+          "outcome_summary": "Special Event Progress, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Drink the medicine straight",
+          "outcome_summary": "Special Event Progress, Decrease all Combatants' Stress by 3, Proceed to next phase",
+          "priority_score": 8,
+          "recommendation": "Khuyên dùng khi Stress cao: Giảm Stress toàn đội giúp phòng ngừa rơi vào trạng thái Sụp Đổ (Collapse)."
+        }
+      ]
+    },
+    {
+      "event_name": "The Ghoul Kennel (Sub-Stage A-2)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Talk to the prisoner",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Rescue the prisoner",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Ghoul Kennel (Variant B)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Examine the ghoul's enclosure",
+          "outcome_summary": "Lose 20% HP, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Examine the ghoul's enclosure",
+          "outcome_summary": "Lose 20% HP, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Examine the ghoul's enclosure",
+          "outcome_summary": "Lose 20% HP, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Pass by",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        }
+      ]
+    },
+    {
+      "event_name": "The Ghoul Kennel (Sub-Stage B-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Open the box on the left",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Open the box in the middle",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Open the box on the right",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Open the box on the left",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Open the box in the middle",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Open the box on the right",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 7,
+          "choice_text": "Open the box on the left",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 8,
+          "choice_text": "Open the box in the middle",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 9,
+          "choice_text": "Open the box on the right",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Ghoul Kennel (Sub-Stage A-1-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Talk to the prisoner",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Rescue the prisoner",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Mad Artist (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask about the artwork",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Appreciate the artwork",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Offer support",
+          "outcome_summary": "Requires >= 80 Credits, Spend 80 Credits, Obtain Madman's Masterpiece",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Mad Artist (Variant B)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Ask about a desired piece",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Become the madman's masterpiece",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Obtain Curse Card [Mutate]",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ/Trang Bị nhưng bị dính Lời Nguyền. Chỉ chọn nếu đội hình có khả năng tẩy xóa lời nguyền."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Advise on the direction of the artwork",
+          "outcome_summary": "Remove 1 selected card from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Mad Artist (Variant C)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Release the offering",
+          "outcome_summary": "Dice Check [7+], Obtain Legendary Equipment, Fail: Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Tie down the offering more securely",
+          "outcome_summary": "Increase all Combatants' Stress by 10, Obtain Madman's Masterpiece",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Infuse the artwork with artistry",
+          "outcome_summary": "Increase all Combatants' Stress by 5, Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "The Tribute Altar (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Steal the Bloodstone",
+          "outcome_summary": "Obtain Bloodstone of the Void",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Place your hand on the Bloodstone",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant, Obtain Curse Card [Mutate]",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ/Trang Bị nhưng bị dính Lời Nguyền. Chỉ chọn nếu đội hình có khả năng tẩy xóa lời nguyền."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Destroy the altar",
+          "outcome_summary": "Engage in Combat, Gain 100 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Spark an Epiphany for a random Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "The Tribute Altar (Rare Variant B)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Destroy the altar",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Follow the Bloodstone's request",
+          "outcome_summary": "Choose 1 of 3 Cards, Obtain Curse Card [Mutate]",
+          "priority_score": 3,
+          "recommendation": "Hạn chế chọn: Dính Lời Nguyền gây ô nhiễm bộ bài và chịu hiệu ứng bất lợi lâu dài."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Steal the Crimson Bloodstone",
+          "outcome_summary": "Dice Check [9+], Obtain Curse Card [Mutate], Obtain Crimson Bloodstone, Fail: Event ends without rewards",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ/Trang Bị nhưng bị dính Lời Nguyền. Chỉ chọn nếu đội hình có khả năng tẩy xóa lời nguyền."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Thieves (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Buy the dagger",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Obtain Steeler's Dagger",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Steal the chest",
+          "outcome_summary": "Dice Check [9+], Gain 120 Credits, Fail: CREDIT_VALUE x120",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Praise the technique",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Thieves (Variant B)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Take part in the bet",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Đổi Credits: Dùng tiền mua tài nguyên hoặc mở đường an toàn nếu kinh tế dư dả."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Steal the chest",
+          "outcome_summary": "Lose 20% HP, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Praise the technique",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Thieves (Sub-Stage B-1)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Wager of Ruin",
+          "outcome_summary": "Dice Check [9+], Remove 1 selected card from deck, Fail: Lose -10% HP",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Wager of Greed",
+          "outcome_summary": "Dice Check [7+], Gain 120 Credits, Fail: Lose -10% HP",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Wager of Life",
+          "outcome_summary": "Dice Check [6+], Increase Max HP by 20%, Fail: Lose -10% HP",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Thieves (Rare Variant C)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Challenge the quiz",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Đổi Credits: Dùng tiền mua tài nguyên hoặc mở đường an toàn nếu kinh tế dư dả."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Challenge the quiz",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Đổi Credits: Dùng tiền mua tài nguyên hoặc mở đường an toàn nếu kinh tế dư dả."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Challenge the quiz",
+          "outcome_summary": "Requires >= 40 Credits, Spend 40 Credits, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Đổi Credits: Dùng tiền mua tài nguyên hoặc mở đường an toàn nếu kinh tế dư dả."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Steal the chest",
+          "outcome_summary": "Lose 20% HP, Gain 160 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Praise the craft skills of the three siblings",
+          "outcome_summary": "Obtain Rare/Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Thieves (Rare Sub-Stage C-1)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Point out Steeler",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Point out Snipper",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Point out the Bolt Runner",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Thieves (Rare Sub-Stage C-2)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Point out Steeler",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Point out Snipper",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Point out the Bolt Runner",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Thieves (Rare Sub-Stage C-3)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Point out Steeler",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Point out Snipper",
+          "outcome_summary": "Obtain Legendary Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Point out the Bolt Runner",
+          "outcome_summary": "Obtain Rare Equipment",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Gain 120 Credits",
+          "priority_score": 6,
+          "recommendation": "Chiến đấu: Đánh bại kẻ địch để đoạt trang bị và tài nguyên lớn, khuyến nghị chọn khi đội hình sung sức."
+        }
+      ]
+    },
+    {
+      "event_name": "Twisted Grail (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Steal their things",
+          "outcome_summary": "Gain 160 Credits",
+          "priority_score": 6,
+          "recommendation": "Nhận Credits: Tích lũy tiền bạc để mua sắm thẻ bài và trang bị tại cửa hàng tiếp theo."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Mix blood into the holy water",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Drink holy water",
+          "outcome_summary": "Remove 999 random card from deck, Increase Max HP by 5%",
+          "priority_score": 6,
+          "recommendation": "Cân nhắc: Xóa ngẫu nhiên 1 lá bài trong deck, chỉ nên chọn khi deck chứa nhiều bài cơ bản/bài rác."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Spark an Epiphany for a random Combatant, Increase Max HP by 5%",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        }
+      ]
+    },
+    {
+      "event_name": "Twisted Grail (Rare Variant B)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Soak yourself in holly water",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Mix blood into the holy water",
+          "outcome_summary": "Transform 1 selected card, Increase Max HP by 5%",
+          "priority_score": 7,
+          "recommendation": "Tốt: Biến đổi thẻ bài không mong muốn để tìm kiếm các thẻ bài mới giá trị hơn."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Drink holy water",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        }
+      ]
+    },
+    {
+      "event_name": "Watcher of the Forbidden Tome (Variant A)",
+      "event_type": "Common / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Follow orders",
+          "outcome_summary": "Lose 10% HP, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Place your hand",
+          "outcome_summary": "Lose 10% HP, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Say a prayer",
+          "outcome_summary": "Obtain Chaos Scripture",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Retreat",
+          "outcome_summary": "Event proceeds / ends",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Receive guidance",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Increase Max HP by 5%, Obtain Chaos Scripture",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Watcher of the Forbidden Tome (Rare Variant B)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Approach the scripture",
+          "outcome_summary": "Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Receive guidance",
+          "outcome_summary": "Spark an Epiphany for a selected Combatant",
+          "priority_score": 8,
+          "recommendation": "Ưu tiên cao: Nhận Giác Ngộ (Epiphany) an toàn 100%, không dính Lời Nguyền hay rủi ro đổ xí ngầu."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Steal the scripture",
+          "outcome_summary": "Dice Check [7+], Obtain Chaos Scripture, Fail: MAX_HP_PCT x5, Obtain Chaos Scripture",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Attack (Engage in Combat)",
+          "outcome_summary": "Engage in Combat, Increase Max HP by 5%, Obtain Chaos Scripture",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        }
+      ]
+    },
+    {
+      "event_name": "Watcher of the Forbidden Tome (Rare Sub-Stage B-1)",
+      "event_type": "Rare / Chaos Order / The Blue Pot",
+      "choices": [
+        {
+          "choice_id": 1,
+          "choice_text": "Formula of Ruin",
+          "outcome_summary": "Select and apply a Divine Epiphany to 1 card",
+          "priority_score": 9,
+          "recommendation": "Cực kỳ mạnh: Nhận Thần Ngộ (Divine Epiphany) nâng cấp kỹ năng vượt trội cho nhân vật."
+        },
+        {
+          "choice_id": 2,
+          "choice_text": "Tome of Exhaust",
+          "outcome_summary": "Remove 2 selected cards from deck",
+          "priority_score": 9,
+          "recommendation": "Rất giá trị: Lọc và xóa vĩnh viễn bài rác/bài cơ bản khỏi deck giúp tối ưu tỷ lệ rút trúng bài quan trọng."
+        },
+        {
+          "choice_id": 3,
+          "choice_text": "Awakening of Eternity",
+          "outcome_summary": "Increase Max HP by 20%",
+          "priority_score": 5,
+          "recommendation": "Lựa chọn tiêu chuẩn an toàn."
+        },
+        {
+          "choice_id": 4,
+          "choice_text": "Forbidden Armor",
+          "outcome_summary": "Obtain Legendary Equipment, Increase Max HP by 5%",
+          "priority_score": 7,
+          "recommendation": "Đề xuất: Nhận trang bị nâng cấp chỉ số và sức mạnh chiến đấu cho toàn đội hình."
+        },
+        {
+          "choice_id": 5,
+          "choice_text": "Infinite knowledge",
+          "outcome_summary": "Choose 1 card from special selection",
+          "priority_score": 7,
+          "recommendation": "Tốt: Lựa chọn thêm thẻ bài mới bổ sung cho chiến thuật bộ bài."
+        },
+        {
+          "choice_id": 6,
+          "choice_text": "Yearn for new knowledge",
+          "outcome_summary": "Condition: [cn_pid_chr_fbd_bible_le2], Lose 10% HP, Special Event Progress, Proceed to next phase",
+          "priority_score": 6,
+          "recommendation": "Tiếp tục khám phá: Mở ra các nhánh lựa chọn sâu hơn với nhiều phần thưởng trang bị phong phú."
+        },
+        {
+          "choice_id": 7,
+          "choice_text": "Covet the scripture",
+          "outcome_summary": "Obtain Forbidden Scripture, Obtain Curse Card [Mutate]",
+          "priority_score": 5,
+          "recommendation": "Cân nhắc: Đổi lấy Giác Ngộ/Trang Bị nhưng bị dính Lời Nguyền. Chỉ chọn nếu đội hình có khả năng tẩy xóa lời nguyền."
+        }
+      ]
+    }
+  ],
+  "total_events": 141,
+  "updated_at": "2026-10-26"
+}

@@ -1,0 +1,10 @@
+logs/
+scratch/
+templates/
+tests/fixtures/
+__pycache__/
+tools/archive_templates/
+dist/
+*.png
+*.jpg
+

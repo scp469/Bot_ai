@@ -286,6 +286,8 @@ class TestChaosFlow(unittest.TestCase):
         fixture_path = Path("tests/fixtures/labeled/CHAOS_CHOOSE_EPIPHANY/chaos_card_reward.png")
         if not fixture_path.exists():
             self.skipTest("Fixture not found")
+        if not getattr(self.flow.vision.ocr, "is_available", False):
+            self.skipTest("OCR engine not available in environment")
 
         screen = cv2.imread(str(fixture_path))
         self.flow.auto_pick_epiphany = True
@@ -305,6 +307,8 @@ class TestChaosFlow(unittest.TestCase):
         fixture_path = Path("tests/fixtures/labeled/CHAOS_CHOOSE_EPIPHANY/chaos_remove_card.png")
         if not fixture_path.exists():
             self.skipTest("Fixture not found")
+        if not getattr(self.flow.vision.ocr, "is_available", False):
+            self.skipTest("OCR engine not available in environment")
 
         screen = cv2.imread(str(fixture_path))
         self.flow.auto_pick_epiphany = True

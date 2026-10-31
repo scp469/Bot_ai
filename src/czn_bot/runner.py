@@ -1245,6 +1245,21 @@ class BotRunner:
                     action.extra.get("hp_percent", 1.0)
                 )
 
+            # Post-action execution callback & flow notification
+            if self.active_flow and hasattr(self.active_flow, "on_action_executed"):
+                try:
+                    self.active_flow.on_action_executed(action, success=True)
+                except Exception as e_fl:
+                    self.logger.warning(f"Lỗi khi gọi on_action_executed trên flow: {e_fl}")
+            else:
+                on_success = action.extra.get("on_success") if action.extra else None
+                if callable(on_success):
+                    try:
+                        on_success()
+                        action.extra["on_success"] = None  # prevent duplicate execution
+                    except Exception as e_cb:
+                        self.logger.warning(f"Lỗi khi thực thi post-action callback: {e_cb}")
+
             return True
 
         return True

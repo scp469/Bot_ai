@@ -7,6 +7,7 @@ Autonomous decision-making for Chaos Mode:
 - Safe Zone Campfire: ALWAYS chooses Rest (Heal team), never skips
 - Auto-skips dialogues and events during Chaos progression
 """
+import re
 from typing import Optional, Dict, Any, List, Tuple
 import logging
 import numpy as np
@@ -56,11 +57,19 @@ class ChaosFlow(Flow):
         self._minimap_retry_count = 0
         self._map_tap_attempts = 0
         self.active_character = active_character
-        self.team_characters = team_characters or ["Rossweisse", "Tiphera", "Maribell"]
+        if team_characters:
+            self.team_characters = list(team_characters)
+        elif hasattr(self.rule_manager, "get_team_characters"):
+            self.team_characters = self.rule_manager.get_team_characters()
+        else:
+            self.team_characters = ["Rossweisse", "Tiphera", "Nia"]
 
         # Initialize starter decks in DeckState if available
         if hasattr(self.ai_brain, "deck_evaluator") and getattr(self.ai_brain.deck_evaluator, "deck_state", None):
-            self.ai_brain.deck_evaluator.deck_state.initialize_default_team(self.team_characters)
+            self.ai_brain.deck_evaluator.deck_state.initialize_default_team(
+                self.team_characters,
+                card_rules=getattr(self.rule_manager, "card_rules", None)
+            )
 
     def _resolve_island_static_coord(
         self,
@@ -310,9 +319,25 @@ class ChaosFlow(Flow):
             if epiphany_type == "card_reward":
                 card_info = self.vision.extract_single_card_reward(screen) if screen is not None else {"title": "Card Reward"}
                 card_title = card_info.get("title", "Card Reward")
+                raw_text = card_info.get("raw_text", "")
                 is_memory = card_info.get("is_memory", False)
                 combatant_idx = 1
                 reason = "Mặc định nhân vật giữa"
+
+                # Match canonical rule ID and clean name FIRST
+                matched = None
+                if hasattr(self, "rule_manager") and self.rule_manager:
+                    matched = self.rule_manager.match_card(card_title) or (self.rule_manager.match_card(raw_text) if raw_text else None)
+                if matched:
+                    cid = matched.get("id", card_title)
+                    cname = matched.get("name", card_title)
+                    cvariant = matched.get("variant", "Base")
+                    cchar = matched.get("character", "")
+                else:
+                    cid = re.sub(r"[^\w]+", "_", card_title.lower()).strip("_") or "card_reward"
+                    cname = card_title
+                    cvariant = "Base"
+                    cchar = ""
 
                 # Dynamic combatant selection based on on-screen badge card counts or deck_state
                 if hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
@@ -321,12 +346,18 @@ class ChaosFlow(Flow):
                         card_title=card_title,
                         is_memory=is_memory,
                         team_characters=self.team_characters,
-                        on_screen_counts=badge_counts
+                        on_screen_counts=badge_counts,
+                        card_id=cid,
+                        card_character=cchar
                     )
-                    target_char = self.team_characters[combatant_idx] if combatant_idx < len(self.team_characters) else self.active_character
-                    self.ai_brain.deck_evaluator.deck_state.record_card_picked(
-                        target_char, card_id=card_title, card_name=card_title
-                    )
+
+                target_char = self.team_characters[combatant_idx] if combatant_idx < len(self.team_characters) else self.active_character
+
+                def _on_card_reward_success():
+                    if hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
+                        self.ai_brain.deck_evaluator.deck_state.record_card_picked(
+                            target_char, card_id=cid, card_name=cname, variant=cvariant, source="card_reward"
+                        )
 
                 combatant_coords = [
                     TAP_COORDS.get("chaos_card_reward_combatant_1", (800, 300)),
@@ -341,7 +372,14 @@ class ChaosFlow(Flow):
                     extra_actions=[
                         ("tap", confirm_coord),
                     ],
-                    extra={"card_title": card_title, "combatant_idx": combatant_idx, "reason": reason}
+                    extra={
+                        "card_title": card_title,
+                        "card_id": cid,
+                        "card_name": cname,
+                        "combatant_idx": combatant_idx,
+                        "reason": reason,
+                        "on_success": _on_card_reward_success,
+                    }
                 )
 
             # Sub-screen 1: choose_fate (Lựa chọn định mệnh / Sự kiện)
@@ -375,6 +413,7 @@ class ChaosFlow(Flow):
                 target_coord = (567, 275)
                 card_name = "Basic Card"
                 reason = "Xóa thẻ cơ bản mặc định (Slot 0)"
+                target_slot = None
 
                 if visible and hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
                     names = [c["title"] for c in visible]
@@ -390,9 +429,22 @@ class ChaosFlow(Flow):
                         target_coord = visible[target_slot]["tap_coord"]
                         card_name = visible[target_slot]["title"]
                         reason = eval_reason
-                        # Record card removal in deck_state
+
+                # Match canonical rule ID
+                matched = None
+                if hasattr(self, "rule_manager") and self.rule_manager:
+                    matched = self.rule_manager.match_card(card_name)
+                if matched:
+                    cid = matched.get("id", card_name)
+                    cname = matched.get("name", card_name)
+                else:
+                    cid = re.sub(r"[^\w]+", "_", card_name.lower()).strip("_")
+                    cname = card_name
+
+                def _on_remove_card_success():
+                    if hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
                         self.ai_brain.deck_evaluator.deck_state.record_card_removed(
-                            self.active_character, card_id=card_name, card_name=card_name
+                            self.active_character, card_id=cid, card_name=cname
                         )
 
                 remove_btn = TAP_COORDS.get("chaos_remove_card_confirm", (1498, 838))
@@ -400,7 +452,13 @@ class ChaosFlow(Flow):
                     target_coord[0], target_coord[1],
                     name=f"Remove Card: {card_name}",
                     extra_actions=[("tap", remove_btn)],
-                    extra={"decision": "remove", "card_name": card_name, "reason": reason}
+                    extra={
+                        "decision": "remove",
+                        "card_name": card_name,
+                        "card_id": cid,
+                        "reason": reason,
+                        "on_success": _on_remove_card_success,
+                    }
                 )
 
             # Sub-screen 4: etched_memory (Khắc ký ức)
@@ -433,26 +491,39 @@ class ChaosFlow(Flow):
             tap_coord = cards[target_idx].tap_coord if target_idx < len(cards) else (800, 450)
             card_title = cards[target_idx].title if target_idx < len(cards) and cards[target_idx].title else f"Card {target_idx + 1}"
 
-            # Record card choice in deck_state
-            if 0 <= target_idx < len(cards) and hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
-                chosen_card = cards[target_idx]
-                char = chosen_card.character or self.active_character
-                card_id = chosen_card.matched_card.get("id", "") if chosen_card.matched_card else (chosen_card.title or chosen_card.name)
-                if chosen_card.variant and chosen_card.variant.lower() != "base":
-                    self.ai_brain.deck_evaluator.deck_state.record_card_upgraded(
-                        char, card_id=card_id, card_name=chosen_card.title or chosen_card.name, new_variant=chosen_card.variant
-                    )
-                else:
-                    self.ai_brain.deck_evaluator.deck_state.record_card_picked(
-                        char, card_id=card_id, card_name=chosen_card.title or chosen_card.name, variant=chosen_card.variant
-                    )
+            def _on_epiphany_success():
+                if 0 <= target_idx < len(cards) and hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
+                    chosen_card = cards[target_idx]
+                    char = chosen_card.character or self.active_character
+                    card_id = chosen_card.matched_card.get("id", "") if chosen_card.matched_card else ""
+                    if not card_id and hasattr(self, "rule_manager") and self.rule_manager:
+                        m = self.rule_manager.match_card(chosen_card.title or chosen_card.raw_text)
+                        if m:
+                            card_id = m.get("id", "")
+                    if not card_id:
+                        card_id = chosen_card.title or chosen_card.name
+                    cname = chosen_card.title or chosen_card.name
+                    cvariant = chosen_card.variant or "Base"
+                    if cvariant and cvariant.lower() != "base":
+                        self.ai_brain.deck_evaluator.deck_state.record_card_upgraded(
+                            char, card_id=card_id, card_name=cname, new_variant_id=card_id, variant_name=cvariant
+                        )
+                    else:
+                        self.ai_brain.deck_evaluator.deck_state.record_card_picked(
+                            char, card_id=card_id, card_name=cname, variant=cvariant, source="epiphany"
+                        )
 
             return Action.tap(
                 tap_coord[0], tap_coord[1],
                 name=f"Auto Pick Card: {card_title}",
                 extra_actions=[
                     ("tap", (1425, 835)),
-                ]
+                ],
+                extra={
+                    "card_title": card_title,
+                    "target_index": target_idx,
+                    "on_success": _on_epiphany_success,
+                }
             )
 
         # 6. CHAOS_OBTAIN_REWARD: Tap Obtain button
@@ -502,3 +573,15 @@ class ChaosFlow(Flow):
             return Action.none(name="Transitioning Animation")
 
         return Action.none(name="Chaos Flow: Idle")
+
+    def on_action_executed(self, action: Action, success: bool = True) -> None:
+        """Called after an action executes. Invokes on_success callback if execution succeeded."""
+        if not success:
+            return
+        on_success = action.extra.get("on_success") if action.extra else None
+        if callable(on_success):
+            try:
+                on_success()
+                action.extra["on_success"] = None
+            except Exception as e:
+                logger.warning(f"Lỗi khi thực thi post-action callback trong ChaosFlow: {e}")

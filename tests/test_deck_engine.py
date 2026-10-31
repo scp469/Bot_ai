@@ -243,8 +243,11 @@ class TestRemoveCardGridAndVision(unittest.TestCase):
         if not os.path.isfile(fixture_path):
             self.skipTest("chaos_remove_card.png fixture not found")
 
-        img = cv2.imread(fixture_path)
         vision = ChaosVision()
+        if not getattr(vision.ocr, "is_available", False):
+            self.skipTest("OCR engine not available in environment")
+
+        img = cv2.imread(fixture_path)
         cards = vision.extract_remove_cards(img)
 
         # Should extract 7 visible cards without throwing
@@ -268,7 +271,195 @@ class TestRemoveCardGridAndVision(unittest.TestCase):
         self.assertEqual(len(counts), 3)
         self.assertEqual(counts, [7, 8, 8])
 
+    def test_recognize_badge_digit_all_single_digits(self):
+        import cv2
+        import numpy as np
+        from czn_bot.chaos.decisions import ChaosVision, get_badge_digit_templates
+
+        templates = get_badge_digit_templates()
+        self.assertTrue(len(templates) >= 10)
+        for digit in range(10):
+            canvas = np.zeros((61, 47), dtype=np.uint8)
+            tpl = templates[digit]
+            canvas[18:18 + 24, 15:15 + 16] = tpl
+            pred = ChaosVision._recognize_badge_digit(canvas)
+            self.assertEqual(pred, digit, f"Expected digit {digit}, got {pred}")
+
+    def test_recognize_badge_digit_two_digits(self):
+        import cv2
+        import numpy as np
+        from czn_bot.chaos.decisions import ChaosVision, get_badge_digit_templates
+
+        templates = get_badge_digit_templates()
+        for d1, d2 in [(1, 0), (1, 2), (1, 5), (2, 4)]:
+            canvas = np.zeros((61, 47), dtype=np.uint8)
+            t1 = cv2.resize(templates[d1], (11, 22))
+            t2 = cv2.resize(templates[d2], (11, 22))
+            canvas[18:18 + 22, 10:10 + 11] = t1
+            canvas[18:18 + 22, 24:24 + 11] = t2
+            pred = ChaosVision._recognize_badge_digit(canvas)
+            self.assertEqual(pred, d1 * 10 + d2)
+
+
+class TestDeckAuditFixes(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        rules_path = os.path.join(PROJECT_ROOT, "data", "rules", "card_rules.json")
+        with open(rules_path, "r", encoding="utf-8") as f:
+            cls.card_rules = json.load(f)
+
+    def test_initialize_default_team_canonical_cards(self):
+        ds = DeckState()
+        team = ["Rossweisse", "Tiphera", "Nia"]
+        ds.initialize_default_team(team, card_rules=self.card_rules)
+
+        ross_deck = ds.get_deck("Rossweisse")
+        self.assertEqual(len(ross_deck), 7)
+        # Should have canonical sword slash starter cards
+        atk_cards = [c for c in ross_deck if c.card_id == "rossweisse_sword_slash_base"]
+        self.assertGreaterEqual(len(atk_cards), 4)
+
+        tiphera_deck = ds.get_deck("Tiphera")
+        self.assertEqual(len(tiphera_deck), 7)
+        t_atk = [c for c in tiphera_deck if c.card_id == "tiphera_matter_disintegration_base"]
+        self.assertGreaterEqual(len(t_atk), 4)
+
+    def test_remove_card_by_rule_id_and_ocr_name(self):
+        ds = DeckState()
+        ds.initialize_default_team(["Rossweisse"], card_rules=self.card_rules)
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 7)
+
+        # Remove by exact ID
+        ok1 = ds.record_card_removed("Rossweisse", card_id="rossweisse_sword_slash_base")
+        self.assertTrue(ok1)
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 6)
+
+        # Remove by OCR text name
+        ok2 = ds.record_card_removed("Rossweisse", card_id="", card_name="Sword Slash")
+        self.assertTrue(ok2)
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 5)
+
+    def test_sync_deck_size_dynamically(self):
+        ds = DeckState()
+        ds.initialize_default_team(["Rossweisse"], card_rules=self.card_rules)
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 7)
+
+        # Expands when count increases
+        ds.sync_deck_size("Rossweisse", 10)
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 10)
+
+        # Shrinks when count decreases
+        ds.sync_deck_size("Rossweisse", 6)
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 6)
+
+    def test_deferred_action_execution_hook(self):
+        from unittest.mock import MagicMock
+        from czn_bot.runner import BotRunner
+        from czn_bot.flows.base import Action, ActionType
+
+        called = []
+        def my_on_success():
+            called.append(True)
+
+        runner = BotRunner()
+        runner.adb = MagicMock()
+        runner.adb.tap = MagicMock()
+
+        act = Action.tap(100, 200, name="Test Tap", extra={"on_success": my_on_success})
+        success = runner._execute_action(act, screen=None)
+        self.assertTrue(success)
+        self.assertEqual(len(called), 1)
+
+        # Second invocation should not double-execute
+        runner._execute_action(act, screen=None)
+        self.assertEqual(len(called), 1)
+
+    def test_recognize_badge_digit_touching_two_digits(self):
+        import cv2
+        import numpy as np
+        from czn_bot.chaos.decisions import ChaosVision, get_badge_digit_templates
+
+        templates = get_badge_digit_templates()
+        for val in [10, 11, 12, 14, 18, 20]:
+            d1, d2 = val // 10, val % 10
+            t1 = cv2.resize(templates[d1], (9, 20))
+            t2 = cv2.resize(templates[d2], (9, 20))
+            canvas = np.zeros((61, 47), dtype=np.uint8)
+            # Touching digits: placed with 0px gap between them
+            canvas[20:40, 13:22] = t1
+            canvas[20:40, 22:31] = t2
+            pred = ChaosVision._recognize_badge_digit(canvas)
+            self.assertEqual(pred, val, f"Expected {val} for touching digits, got {pred}")
+
+    def test_match_card_by_rule_id_and_fuzzy_title(self):
+        from czn_bot.chaos.rules import ChaosRuleManager
+        rm = ChaosRuleManager()
+
+        # Match by canonical ID
+        c1 = rm.match_card("rossweisse_sword_slash_base")
+        self.assertIsNotNone(c1)
+        self.assertEqual(c1["id"], "rossweisse_sword_slash_base")
+
+        # Match by truncated/typo OCR text
+        c2 = rm.match_card("Sword Slas")
+        self.assertIsNotNone(c2)
+        self.assertEqual(c2["name"], "Sword Slash")
+
+    def test_count_copies_variant_recognition(self):
+        ds = DeckState()
+        ds.record_card_picked("Rossweisse", card_id="rossweisse_flicker_blade_base", card_name="Flicker Blade")
+
+        # Copies with include_variants=True should count the existing base card copy towards the family limit
+        family_copies = ds.count_copies("Rossweisse", "rossweisse_flicker_blade_blink", include_variants=True)
+        self.assertEqual(family_copies, 1)
+
+        # Exact variant query without include_variants should distinguish variants
+        exact_copies = ds.count_copies("Rossweisse", "rossweisse_flicker_blade_blink", include_variants=False)
+        self.assertEqual(exact_copies, 0)
+
+        # Copies by clean card name should match
+        self.assertEqual(ds.count_copies("Rossweisse", "Flicker Blade"), 1)
+
+    def test_evaluate_card_reward_combatant_respects_max_copies(self):
+        from czn_bot.chaos.deck_evaluator import DeckEvaluator
+        evaluator = DeckEvaluator()
+        team = ["Rossweisse", "Tiphera", "Nia"]
+        evaluator.deck_state.initialize_default_team(team, card_rules=self.card_rules)
+
+        # Add 2 copies of Flicker Blade to Rossweisse (preset max_copies is 2)
+        evaluator.deck_state.record_card_picked("Rossweisse", card_id="rossweisse_flicker_blade_blink", card_name="Flicker Blade")
+        evaluator.deck_state.record_card_picked("Rossweisse", card_id="rossweisse_flicker_blade_blink", card_name="Flicker Blade")
+
+        # Now when Flicker Blade is offered again, it should NOT assign to Rossweisse because max_copies (2) is reached
+        idx, reason = evaluator.evaluate_card_reward_combatant(
+            card_title="Flicker Blade",
+            is_memory=False,
+            team_characters=team,
+            on_screen_counts=[9, 7, 7],
+            card_id="rossweisse_flicker_blade_blink"
+        )
+        self.assertNotEqual(idx, 0, f"Should not assign to Rossweisse when max_copies reached. Reason: {reason}")
+
+    def test_card_reward_ignores_invalid_zero_badge(self):
+        from czn_bot.chaos.deck_evaluator import DeckEvaluator
+        evaluator = DeckEvaluator()
+        team = ["Rossweisse", "Tiphera", "Nia"]
+        evaluator.deck_state.initialize_default_team(team, card_rules=self.card_rules)
+
+        initial_size = evaluator.deck_state.get_deck_size("Rossweisse")
+        self.assertEqual(initial_size, 7)
+
+        # Passing 0 as badge count should not wipe deck to 0
+        idx, reason = evaluator.evaluate_card_reward_combatant(
+            card_title="Generic Card",
+            is_memory=False,
+            team_characters=team,
+            on_screen_counts=[0, 8, 8]
+        )
+        self.assertGreater(evaluator.deck_state.get_deck_size("Rossweisse"), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 

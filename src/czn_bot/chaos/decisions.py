@@ -132,6 +132,28 @@ class EquipmentInfo:
     matched_equipment: Optional[Dict[str, Any]] = None
 
 
+_DIGIT_TEMPLATES_CACHE: Optional[Dict[int, np.ndarray]] = None
+
+
+def get_badge_digit_templates() -> Dict[int, np.ndarray]:
+    global _DIGIT_TEMPLATES_CACHE
+    if _DIGIT_TEMPLATES_CACHE is not None:
+        return _DIGIT_TEMPLATES_CACHE
+
+    templates: Dict[int, np.ndarray] = {}
+    digits_dir = os.path.join(DATA_TEMPLATES_DIR, "digits")
+    if os.path.isdir(digits_dir):
+        for d in range(10):
+            p = os.path.join(digits_dir, f"{d}.png")
+            if os.path.isfile(p):
+                tpl = cv2.imread(p, cv2.IMREAD_GRAYSCALE)
+                if tpl is not None and tpl.size > 0:
+                    templates[d] = cv2.resize(tpl, (16, 24))
+
+    _DIGIT_TEMPLATES_CACHE = templates
+    return _DIGIT_TEMPLATES_CACHE
+
+
 class ChaosVision:
     """Computer Vision, ROI extraction, and Template/OCR matching for Chaos Mode."""
 
@@ -336,7 +358,11 @@ class ChaosVision:
         lines = [ln.strip() for ln in raw_text.split("\n") if ln.strip()]
         if lines:
             cleaned_line = re.sub(r"^[^a-zA-Z0-9]+", "", lines[0]).strip()
-            if cleaned_line:
+            # Split before brackets, parentheses, or rule sentences to isolate card title
+            title_part = re.split(r"\[|\(|\bwhen\b|\bgây\b|\btăng\b", cleaned_line, flags=re.IGNORECASE)[0].strip()
+            if title_part:
+                title = title_part
+            elif cleaned_line:
                 title = cleaned_line
 
         is_memory = "memory" in raw_text.lower()
@@ -347,46 +373,149 @@ class ChaosVision:
             "crop": crop
         }
 
-    @staticmethod
-    def _recognize_badge_digit(crop: Optional[np.ndarray]) -> Optional[int]:
+    @classmethod
+    def _recognize_badge_digit(cls, crop: Optional[np.ndarray]) -> Optional[int]:
         """
-        Recognize single digit in combatant card count badge crop (47x61)
-        using OpenCV topological contour and density analysis.
+        Recognize 1-digit or 2-digit combatant card count in badge crop (47x61).
+        Uses template matching against real digit templates (0-9), sliding split for
+        touching multi-digits, with topological fallback.
         """
         if crop is None or getattr(crop, "size", 0) == 0:
             return None
         h, w = crop.shape[:2]
         if h < 45 or w < 35:
             return None
-        region = crop[15:45, 10:35]
+        # Inner digit region (x=8..38, y=15..45) avoids noisy badge borders
+        region = crop[15:45, 8:38]
         gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if len(region.shape) == 3 else region
-        _, th = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-        cnts, hier = cv2.findContours(th, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
-        if not cnts:
-            return None
+        templates = get_badge_digit_templates()
 
-        main_cnt = max(cnts, key=cv2.contourArea)
-        bx, by, bw, bh = cv2.boundingRect(main_cnt)
-        if bw < 6 or bh < 12:
-            return None
+        best_overall_digits: List[int] = []
+        best_overall_conf = -999.0
 
-        holes = 0
-        if hier is not None:
-            for h_info in hier[0]:
-                if h_info[3] >= 0:
-                    holes += 1
+        for thresh in (140, 110):
+            _, th = cv2.threshold(gray, thresh, 255, cv2.THRESH_BINARY)
+            cnts, _ = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cand = []
+            for c in cnts:
+                bx, by, bw, bh = cv2.boundingRect(c)
+                if bw >= 3 and 10 <= bh < 28:
+                    cand.append((bx, by, bw, bh))
+            if not cand:
+                continue
 
-        density = cv2.contourArea(main_cnt) / float(bw * bh)
-        if holes >= 2:
-            return 8
-        if holes == 1:
-            return 0
-        digit_crop = th[by : by + bh, bx : bx + bw]
-        top_half_density = np.mean(digit_crop[: bh // 2, :]) / 255.0
-        bot_left_empty = np.mean(digit_crop[bh // 2 :, : bw // 2]) / 255.0
-        if bot_left_empty < 0.15 and top_half_density > 0.4:
-            return 7
-        return 7 if density < 0.55 else 8
+            cand.sort(key=lambda r: r[0])
+            digits: List[int] = []
+
+            for bx, by, bw, bh in cand:
+                d_crop = th[by : by + bh, bx : bx + bw]
+
+                # 1. Match single digit against templates first
+                best_d = None
+                best_sc = -999.0
+                if templates:
+                    norm = cv2.resize(d_crop, (16, 24))
+                    for idx, tpl in templates.items():
+                        res = cv2.matchTemplate(norm, tpl, cv2.TM_CCOEFF_NORMED)
+                        sc = float(res[0][0])
+                        if sc > best_sc:
+                            best_sc = sc
+                            best_d = idx
+
+                # High-confidence single digit match
+                if best_d is not None and best_sc >= 0.60:
+                    digits.append(best_d)
+                    continue
+
+                # 2. If width >= 14 and single digit match is poor, try sliding two-digit split
+                if bw >= 14 and templates:
+                    col_sums = np.sum(d_crop > 128, axis=0)
+                    best_pair = None
+                    best_pair_sc = -999.0
+                    for sx in range(max(4, bw // 3), min(bw - 4, (2 * bw) // 3 + 1)):
+                        c1, c2 = d_crop[:, :sx], d_crop[:, sx:]
+                        pts1, pts2 = cv2.findNonZero(c1), cv2.findNonZero(c2)
+                        if pts1 is None or pts2 is None:
+                            continue
+                        x1, y1, w1, h1 = cv2.boundingRect(pts1)
+                        x2, y2, w2, h2 = cv2.boundingRect(pts2)
+                        n1 = cv2.resize(c1[y1 : y1 + h1, x1 : x1 + w1], (16, 24))
+                        n2 = cv2.resize(c2[y2 : y2 + h2, x2 : x2 + w2], (16, 24))
+                        sc1 = max((float(cv2.matchTemplate(n1, tpl, cv2.TM_CCOEFF_NORMED)[0][0]), idx) for idx, tpl in templates.items())
+                        sc2 = max((float(cv2.matchTemplate(n2, tpl, cv2.TM_CCOEFF_NORMED)[0][0]), idx) for idx, tpl in templates.items())
+                        ps = sc1[0] + sc2[0] - (col_sums[sx] / float(bh)) * 0.2
+                        if ps > best_pair_sc:
+                            best_pair_sc = ps
+                            best_pair = (sc1[1], sc2[1], sc1[0], sc2[0])
+
+                    if best_pair and best_pair_sc >= 0.70:
+                        digits.extend([best_pair[0], best_pair[1]])
+                        continue
+
+                # 3. Moderate template match
+                if best_d is not None and best_sc >= 0.40:
+                    digits.append(best_d)
+                    continue
+
+                # 4. Topological & density fallback
+                cnts_sub, hier_sub = cv2.findContours(d_crop.copy(), cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+                holes = 0
+                hole_cy = 0.5
+                if hier_sub is not None:
+                    for idx, h_info in enumerate(hier_sub[0]):
+                        if h_info[3] >= 0:
+                            holes += 1
+                            M = cv2.moments(cnts_sub[idx])
+                            if M["m00"] > 0:
+                                hole_cy = (M["m01"] / M["m00"]) / float(bh)
+
+                if holes >= 2:
+                    digits.append(8)
+                elif holes == 1:
+                    if hole_cy < 0.42:
+                        digits.append(9)
+                    elif hole_cy > 0.58:
+                        digits.append(6)
+                    else:
+                        crop_f = (d_crop > 128).astype(np.float32)
+                        bot_left = np.mean(crop_f[int(bh * 0.6) :, : int(bw * 0.4)])
+                        bot_right = np.mean(crop_f[int(bh * 0.6) :, int(bw * 0.6) :])
+                        digits.append(4 if bot_left < 0.15 and bot_right > 0.35 else 0)
+                else:
+                    aspect = bw / float(bh)
+                    if aspect < 0.45:
+                        digits.append(1)
+                    else:
+                        crop_f = (d_crop > 128).astype(np.float32)
+                        y1, y2 = int(bh / 3), int(2 * bh / 3)
+                        xm = int(bw / 2)
+                        top_l = np.mean(crop_f[:y1, :xm])
+                        top_r = np.mean(crop_f[:y1, xm:])
+                        mid_l = np.mean(crop_f[y1:y2, :xm])
+                        mid_r = np.mean(crop_f[y1:y2, xm:])
+                        bot_l = np.mean(crop_f[y2:, :xm])
+                        bot_r = np.mean(crop_f[y2:, xm:])
+
+                        if mid_l < 0.20 and bot_r < 0.25 and (top_l + top_r > 0.6):
+                            digits.append(7)
+                        elif bot_l < 0.20 and mid_l > 0.20 and bot_r > 0.35:
+                            digits.append(4)
+                        elif mid_r > 0.30 and mid_l < 0.25 and bot_l < 0.25:
+                            digits.append(3)
+                        elif bot_l > 0.30 and bot_r > 0.30:
+                            digits.append(2)
+                        elif mid_l > 0.25 and bot_r > 0.30 and bot_l < 0.25:
+                            digits.append(5)
+                        else:
+                            digits.append(7 if mid_l < 0.25 else 8)
+
+            if digits:
+                val = 0
+                for d in digits:
+                    val = val * 10 + d
+                return val
+
+        return None
 
     def extract_card_reward_combatant_counts(self, screen: np.ndarray) -> List[int]:
         """
@@ -405,7 +534,19 @@ class ChaosVision:
         for roi in badge_rois:
             crop = self.crop_roi(screen, roi)
             d = self._recognize_badge_digit(crop)
-            counts.append(d if d is not None else 8)
+            if (d is None or d <= 0 or d > 40) and hasattr(self, "ocr") and self.ocr and self.ocr.is_available:
+                try:
+                    txt = self.ocr.read_text(crop).strip()
+                    found_digits = [int(ch) for ch in txt if ch.isdigit()]
+                    if found_digits:
+                        cand_d = 0
+                        for dig in found_digits:
+                            cand_d = cand_d * 10 + dig
+                        if 1 <= cand_d <= 40:
+                            d = cand_d
+                except Exception:
+                    pass
+            counts.append(d if (d is not None and 1 <= d <= 40) else 8)
         return counts
 
     def extract_remove_cards(self, screen: np.ndarray) -> List[Dict[str, Any]]:

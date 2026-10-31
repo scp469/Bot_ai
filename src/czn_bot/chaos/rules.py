@@ -98,6 +98,26 @@ class ChaosRuleManager:
     def get_api_key(self) -> str:
         return get_gemini_api_key()
 
+    def get_team_characters(self) -> List[str]:
+        """
+        Get team characters from configuration (card_rules, ai_config, or defaults from available characters).
+        """
+        for src in (self.card_rules, self.ai_config):
+            if isinstance(src, dict):
+                for k in ("team", "team_characters"):
+                    if k in src and isinstance(src[k], list) and src[k]:
+                        return list(src[k])
+        # Default from valid characters in card_rules
+        available = self.card_rules.get("characters", [])
+        preferred = ["Rossweisse", "Tiphera", "Nia"]
+        res = [c for c in preferred if c in available]
+        for c in available:
+            if c not in res and c not in ("Curse",):
+                res.append(c)
+            if len(res) >= 3:
+                break
+        return res if res else ["Rossweisse", "Tiphera", "Nia"]
+
     def save_ai_api_key(self, plain_key: str) -> bool:
         """Save API key in ai_config.json without homemade encryption."""
         cfg = self.load_ai_config()
@@ -289,38 +309,73 @@ class ChaosRuleManager:
 
     def match_card(self, text: str) -> Optional[Dict[str, Any]]:
         """
-        Match OCR text or title against all 403 cards in the database.
+        Match OCR text, card title, or card rule ID against all 403 cards in the database.
         Returns the best matching card dictionary or None.
         """
         import re
+        import difflib
+
         if not text:
             return None
-        text_lower = text.lower().strip()
-        text_norm = " ".join(re.sub(r"[^\w\s%]", " ", text_lower).split())
+        text_raw = text.strip()
+        text_lower = text_raw.lower()
+
+        # 1. Exact ID match in self.cards_by_id
+        if text_raw in self.cards_by_id:
+            return self.cards_by_id[text_raw]
+        if text_lower in self.cards_by_id:
+            return self.cards_by_id[text_lower]
+        for cid, card in self.cards_by_id.items():
+            if cid.lower() == text_lower:
+                return card
+
+        # 2. Text normalization (replace underscores with spaces, strip punctuation)
+        text_norm = " ".join(re.sub(r"[^\w\s%]", " ", text_lower.replace("_", " ")).split())
         text_words = set(text_norm.split())
 
+        def _score_variant(v: Dict[str, Any]) -> float:
+            score = 0.0
+            v_name = v.get("variant", "").lower()
+            v_name_norm = " ".join(re.sub(r"[^\w\s%]", " ", v_name).split())
+            if v_name_norm and (v_name_norm in text_norm or v_name in text_lower):
+                score += 50.0
+
+            desc = v.get("description", "").lower()
+            desc_words = re.sub(r"[^\w\s%]", " ", desc).split()
+            for token in desc_words:
+                if len(token) >= 2 and token in text_words:
+                    score += 10.0
+            return score
+
+        # Exact name match
+        for key in (text_lower, text_norm):
+            if key in self.cards_by_name:
+                variants = self.cards_by_name[key]
+                return variants[0] if len(variants) == 1 else max(variants, key=_score_variant)
+
+        # 3. Bidirectional substring match
         for name_lower, variants in self.cards_by_name.items():
-            if name_lower in text_lower or name_lower in text_norm:
-                if len(variants) == 1:
-                    return variants[0]
+            name_norm = " ".join(re.sub(r"[^\w\s%]", " ", name_lower).split())
+            if (
+                name_lower in text_lower
+                or name_norm in text_norm
+                or (len(text_norm) >= 5 and text_norm in name_lower)
+                or (len(text_lower) >= 5 and text_lower in name_lower)
+            ):
+                return variants[0] if len(variants) == 1 else max(variants, key=_score_variant)
 
-                def _score_variant(v: Dict[str, Any]) -> float:
-                    score = 0.0
-                    v_name = v.get("variant", "").lower()
-                    v_name_norm = " ".join(re.sub(r"[^\w\s%]", " ", v_name).split())
-                    if v_name_norm and (v_name_norm in text_norm or v_name in text_lower):
-                        score += 50.0
+        # 4. Partial token / stem overlap for OCR typos (e.g. "Sword Slas" -> "Sword Slash")
+        best_cand = None
+        best_sim = 0.0
+        for name_lower, variants in self.cards_by_name.items():
+            for v in variants:
+                v_name = v.get("name", "").lower()
+                sim = difflib.SequenceMatcher(None, text_lower, v_name).ratio()
+                if sim > best_sim and sim >= 0.75:
+                    best_sim = sim
+                    best_cand = v
 
-                    desc = v.get("description", "").lower()
-                    desc_words = re.sub(r"[^\w\s%]", " ", desc).split()
-                    for token in desc_words:
-                        if len(token) >= 2 and token in text_words:
-                            score += 10.0
-                    return score
-
-                return max(variants, key=_score_variant)
-
-        return None
+        return best_cand
 
     def match_event_choice(self, text: str) -> Optional[Tuple[Dict[str, Any], Dict[str, Any]]]:
         """Match OCR text from an event choice button against events_database."""

@@ -5,6 +5,7 @@ Handles:
 - Offline Event Decisions: Priorities, quiz rules, credit reserve & HP threshold guards
 - Offline Island Path Decisions: Best DAG path selection
 """
+import os
 import re
 import json
 import logging
@@ -13,6 +14,7 @@ from PIL import Image
 import numpy as np
 import cv2
 
+from czn_bot.constants import DATA_DIR, PROJECT_ROOT
 from czn_bot.states import State
 from czn_bot.chaos.rules import ChaosRuleManager
 from czn_bot.chaos.decisions import CardInfo, EventChoiceInfo, ResourceInfo, ChaosVision
@@ -45,7 +47,13 @@ class ChaosAIBrain:
         self._genai_client = None
         self._current_api_key = None
         self.deck_evaluator = DeckEvaluator()
-        for char in ["rossweisse", "tiphera"]:
+        preset_chars = ["rossweisse", "tiphera"]
+        presets_dir = os.path.join(DATA_DIR, "presets") if DATA_DIR else ""
+        if presets_dir and os.path.isdir(presets_dir):
+            for f in os.listdir(presets_dir):
+                if f.endswith(".json"):
+                    preset_chars.append(f[:-5].lower())
+        for char in sorted(set(preset_chars)):
             try:
                 p = load_preset(char, card_rules=self.rule_manager.card_rules)
                 self.deck_evaluator.presets[p.character] = p

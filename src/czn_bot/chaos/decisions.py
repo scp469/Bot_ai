@@ -65,14 +65,14 @@ EVENT_BOTTOM_1_CHOICE = [
 EVENT_BANNER_ROI = (150, 130, 1300, 150)
 
 REMOVE_CARD_GRID = [
-    {"slot": 0, "roi": (430, 115, 200, 370), "tap": (530, 300)},
-    {"slot": 1, "roi": (640, 115, 200, 370), "tap": (740, 300)},
-    {"slot": 2, "roi": (850, 115, 200, 370), "tap": (950, 300)},
-    {"slot": 3, "roi": (1060, 115, 200, 370), "tap": (1160, 300)},
-    {"slot": 4, "roi": (430, 500, 200, 370), "tap": (530, 685)},
-    {"slot": 5, "roi": (640, 500, 200, 370), "tap": (740, 685)},
-    {"slot": 6, "roi": (850, 500, 200, 370), "tap": (950, 685)},
-    {"slot": 7, "roi": (1060, 500, 200, 370), "tap": (1160, 685)},
+    {"slot": 0, "roi": (450, 95, 234, 360), "tap": (567, 275)},
+    {"slot": 1, "roi": (715, 95, 234, 360), "tap": (832, 275)},
+    {"slot": 2, "roi": (980, 95, 234, 360), "tap": (1097, 275)},
+    {"slot": 3, "roi": (1245, 95, 234, 360), "tap": (1362, 275)},
+    {"slot": 4, "roi": (450, 475, 234, 360), "tap": (567, 655)},
+    {"slot": 5, "roi": (715, 475, 234, 360), "tap": (832, 655)},
+    {"slot": 6, "roi": (980, 475, 234, 360), "tap": (1097, 655)},
+    {"slot": 7, "roi": (1245, 475, 234, 360), "tap": (1362, 655)},
 ]
 
 
@@ -347,6 +347,67 @@ class ChaosVision:
             "crop": crop
         }
 
+    @staticmethod
+    def _recognize_badge_digit(crop: Optional[np.ndarray]) -> Optional[int]:
+        """
+        Recognize single digit in combatant card count badge crop (47x61)
+        using OpenCV topological contour and density analysis.
+        """
+        if crop is None or getattr(crop, "size", 0) == 0:
+            return None
+        h, w = crop.shape[:2]
+        if h < 45 or w < 35:
+            return None
+        region = crop[15:45, 10:35]
+        gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if len(region.shape) == 3 else region
+        _, th = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+        cnts, hier = cv2.findContours(th, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+        if not cnts:
+            return None
+
+        main_cnt = max(cnts, key=cv2.contourArea)
+        bx, by, bw, bh = cv2.boundingRect(main_cnt)
+        if bw < 6 or bh < 12:
+            return None
+
+        holes = 0
+        if hier is not None:
+            for h_info in hier[0]:
+                if h_info[3] >= 0:
+                    holes += 1
+
+        density = cv2.contourArea(main_cnt) / float(bw * bh)
+        if holes >= 2:
+            return 8
+        if holes == 1:
+            return 0
+        digit_crop = th[by : by + bh, bx : bx + bw]
+        top_half_density = np.mean(digit_crop[: bh // 2, :]) / 255.0
+        bot_left_empty = np.mean(digit_crop[bh // 2 :, : bw // 2]) / 255.0
+        if bot_left_empty < 0.15 and top_half_density > 0.4:
+            return 7
+        return 7 if density < 0.55 else 8
+
+    def extract_card_reward_combatant_counts(self, screen: np.ndarray) -> List[int]:
+        """
+        Extract on-screen card count badges for the 3 combatants on the Card Reward screen.
+        Badges are located at x=1079, y in [280, 480, 680], w=47, h=61.
+        Returns a list of 3 integer card counts, defaulting to [8, 8, 8] if unreadable.
+        """
+        if screen is None or getattr(screen, "size", 0) == 0:
+            return [8, 8, 8]
+        counts: List[int] = []
+        badge_rois = [
+            (1079, 280, 47, 61),
+            (1079, 480, 47, 61),
+            (1079, 680, 47, 61),
+        ]
+        for roi in badge_rois:
+            crop = self.crop_roi(screen, roi)
+            d = self._recognize_badge_digit(crop)
+            counts.append(d if d is not None else 8)
+        return counts
+
     def extract_remove_cards(self, screen: np.ndarray) -> List[Dict[str, Any]]:
         """Extract up to 8 visible cards on the Remove Card screen."""
         if screen is None or getattr(screen, "size", 0) == 0:
@@ -354,7 +415,7 @@ class ChaosVision:
         results = []
         for item in REMOVE_CARD_GRID:
             crop = self.crop_roi(screen, item["roi"])
-            header = crop[:70, :] if crop is not None and crop.shape[0] >= 70 else crop
+            header = crop[:75, :] if crop is not None and crop.shape[0] >= 75 else crop
             title = self.ocr.read_text(header).strip() if header is not None else ""
             if len(title) > 2:
                 results.append({

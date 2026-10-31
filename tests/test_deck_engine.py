@@ -177,6 +177,97 @@ class TestDeckEvaluator(unittest.TestCase):
         self.assertEqual(decision, "skip")
         self.assertIsNone(slot)
 
+    def test_evaluate_card_reward_combatant_dynamic_selection(self):
+        team = ["Rossweisse", "Tiphera", "Maribell"]
+        # Case 1: Badge counts [7, 8, 8] -> slot 0 has 7 cards < max 8
+        slot, reason = self.evaluator.evaluate_card_reward_combatant(
+            card_title="Memory: Kaleidoscope",
+            is_memory=True,
+            team_characters=team,
+            on_screen_counts=[7, 8, 8]
+        )
+        self.assertEqual(slot, 0)
+        self.assertIn("Rossweisse", reason)
+
+        # Case 2: Badge counts [8, 7, 8] -> slot 1 has 7 cards
+        slot, reason = self.evaluator.evaluate_card_reward_combatant(
+            card_title="Memory: Kaleidoscope",
+            is_memory=True,
+            team_characters=team,
+            on_screen_counts=[8, 7, 8]
+        )
+        self.assertEqual(slot, 1)
+
+        # Case 3: All at max size 8 -> choose lowest deck
+        slot, reason = self.evaluator.evaluate_card_reward_combatant(
+            card_title="Generic Card",
+            is_memory=False,
+            team_characters=team,
+            on_screen_counts=[9, 7, 9]
+        )
+        self.assertEqual(slot, 1)
+
+
+class TestRemoveCardGridAndVision(unittest.TestCase):
+    def test_remove_card_grid_inside_bounds_and_pitch(self):
+        from czn_bot.chaos.decisions import REMOVE_CARD_GRID
+        self.assertEqual(len(REMOVE_CARD_GRID), 8)
+
+        # 1. Verify tap coords are strictly inside respective ROIs
+        for item in REMOVE_CARD_GRID:
+            rx, ry, rw, rh = item["roi"]
+            tx, ty = item["tap"]
+            self.assertGreaterEqual(tx, rx, f"Tap x={tx} is left of ROI rx={rx} in slot {item['slot']}")
+            self.assertLess(tx, rx + rw, f"Tap x={tx} is right of ROI rx+rw={rx+rw} in slot {item['slot']}")
+            self.assertGreaterEqual(ty, ry, f"Tap y={ty} is above ROI ry={ry} in slot {item['slot']}")
+            self.assertLess(ty, ry + rh, f"Tap y={ty} is below ROI ry+rh={ry+rh} in slot {item['slot']}")
+            # All ROIs fit inside 1600x900
+            self.assertGreaterEqual(rx, 0)
+            self.assertLessEqual(rx + rw, 1600)
+            self.assertGreaterEqual(ry, 0)
+            self.assertLessEqual(ry + rh, 900)
+
+        # 2. Verify horizontal pitch is ~265px across columns
+        for row_start in [0, 4]:
+            p1 = REMOVE_CARD_GRID[row_start + 1]["roi"][0] - REMOVE_CARD_GRID[row_start]["roi"][0]
+            p2 = REMOVE_CARD_GRID[row_start + 2]["roi"][0] - REMOVE_CARD_GRID[row_start + 1]["roi"][0]
+            p3 = REMOVE_CARD_GRID[row_start + 3]["roi"][0] - REMOVE_CARD_GRID[row_start + 2]["roi"][0]
+            self.assertGreaterEqual(p1, 260)
+            self.assertGreaterEqual(p2, 260)
+            self.assertGreaterEqual(p3, 260)
+
+    def test_extract_remove_cards_on_fixture(self):
+        import cv2
+        from czn_bot.chaos.decisions import ChaosVision
+        fixture_path = os.path.join(PROJECT_ROOT, "tests", "fixtures", "chaos_remove_card.png")
+        if not os.path.isfile(fixture_path):
+            self.skipTest("chaos_remove_card.png fixture not found")
+
+        img = cv2.imread(fixture_path)
+        vision = ChaosVision()
+        cards = vision.extract_remove_cards(img)
+
+        # Should extract 7 visible cards without throwing
+        self.assertGreaterEqual(len(cards), 4)
+        slots = [c["slot"] for c in cards]
+        # Slot 3 (Flicker Blade) must be captured now (previously missed)
+        self.assertIn(3, slots)
+        slot3_card = next(c for c in cards if c["slot"] == 3)
+        self.assertIn("flicker", slot3_card["title"].lower())
+
+    def test_extract_card_reward_combatant_counts_on_fixture(self):
+        import cv2
+        from czn_bot.chaos.decisions import ChaosVision
+        fixture_path = os.path.join(PROJECT_ROOT, "tests", "fixtures", "chaos_card_reward.png")
+        if not os.path.isfile(fixture_path):
+            self.skipTest("chaos_card_reward.png fixture not found")
+
+        img = cv2.imread(fixture_path)
+        vision = ChaosVision()
+        counts = vision.extract_card_reward_combatant_counts(img)
+        self.assertEqual(len(counts), 3)
+        self.assertEqual(counts, [7, 8, 8])
+
 
 if __name__ == "__main__":
     unittest.main()

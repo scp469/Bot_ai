@@ -55,6 +55,60 @@ class DeckState:
             ]
             self._record_event("INITIALIZE_DECK", char, details={"initial_size": len(cards)})
 
+    def initialize_default_team(self, characters: List[str], default_starter_size: int = 7) -> None:
+        """
+        Initialize sensible starter decks for characters if not already initialized.
+        In Chaos Zero Nightmare, starting combatants begin with ~7-8 starter cards.
+        """
+        for char in characters:
+            if char not in self._decks or len(self._decks[char]) == 0:
+                starter_cards = []
+                char_lower = char.lower()
+                for i in range(4):
+                    starter_cards.append(DeckCard(
+                        card_id=f"{char_lower}_basic_attack_{i+1}",
+                        card_name="Basic Attack",
+                        character=char,
+                        variant="Base"
+                    ))
+                for i in range(2):
+                    starter_cards.append(DeckCard(
+                        card_id=f"{char_lower}_basic_skill_{i+1}",
+                        card_name="Basic Skill",
+                        character=char,
+                        variant="Base"
+                    ))
+                if default_starter_size > 6:
+                    starter_cards.append(DeckCard(
+                        card_id=f"{char_lower}_starter_special",
+                        card_name="Special Starter",
+                        character=char,
+                        variant="Base"
+                    ))
+                self._decks[char] = starter_cards
+                self._record_event("INITIALIZE_DECK", char, details={"initial_size": len(starter_cards)})
+
+    def sync_deck_size(self, character: str, target_size: int) -> None:
+        """
+        Synchronize in-memory deck count with observed on-screen badge count.
+        """
+        if character not in self._decks:
+            self._decks[character] = []
+        current = len(self._decks[character])
+        if current == target_size:
+            return
+        if current < target_size:
+            for i in range(target_size - current):
+                self._decks[character].append(DeckCard(
+                    card_id=f"{character.lower()}_synced_card_{i+1}",
+                    card_name="Synced Card",
+                    character=character,
+                    variant="Base"
+                ))
+        else:
+            self._decks[character] = self._decks[character][:target_size]
+        self._record_event("SYNC_DECK_SIZE", character, details={"previous_size": current, "new_size": target_size})
+
     def get_deck(self, character: str) -> List[DeckCard]:
         return list(self._decks.get(character, []))
 
@@ -120,28 +174,35 @@ class DeckState:
     def record_card_upgraded(
         self,
         character: str,
-        base_card_id: str,
-        new_variant_id: str,
-        variant_name: str
+        base_card_id: str = "",
+        new_variant_id: str = "",
+        variant_name: str = "",
+        card_id: str = "",
+        card_name: str = "",
+        new_variant: str = ""
     ) -> bool:
         """Record an Epiphany / Fate upgrade replacing a base card."""
+        base_id = base_card_id or card_id
+        variant_id = new_variant_id or card_id
+        v_name = variant_name or new_variant or "Upgraded"
+
         deck = self._decks.get(character, [])
         for card in deck:
-            if card.card_id == base_card_id:
-                card.card_id = new_variant_id
-                card.variant = variant_name
+            if card.card_id == base_id or (card_name and card.card_name.lower() in card_name.lower()):
+                card.card_id = variant_id
+                card.variant = v_name
                 self._record_event("CARD_UPGRADED", character, {
-                    "base_card_id": base_card_id,
-                    "new_variant_id": new_variant_id,
-                    "variant_name": variant_name,
+                    "base_card_id": base_id,
+                    "new_variant_id": variant_id,
+                    "variant_name": v_name,
                 })
-                logger.info(f"[DeckState] Thẻ '{card.card_name}' nâng cấp thành [{variant_name}] ({new_variant_id})")
+                logger.info(f"[DeckState] Thẻ '{card.card_name}' nâng cấp thành [{v_name}] ({variant_id})")
                 return True
 
         self._record_event("CARD_UPGRADED", character, {
-            "base_card_id": base_card_id,
-            "new_variant_id": new_variant_id,
-            "variant_name": variant_name,
+            "base_card_id": base_id,
+            "new_variant_id": variant_id,
+            "variant_name": v_name,
             "note": "base_card_not_found_in_memory_deck",
         })
         return False

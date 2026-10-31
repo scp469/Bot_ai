@@ -39,6 +39,8 @@ class ChaosFlow(Flow):
         vision: Optional[ChaosVision] = None,
         max_matches: Optional[int] = None,
         max_map_retries: int = 5,
+        active_character: str = "Rossweisse",
+        team_characters: Optional[List[str]] = None,
         **kwargs
     ):
         super().__init__(**kwargs)
@@ -53,6 +55,12 @@ class ChaosFlow(Flow):
         self.max_map_retries = max_map_retries
         self._minimap_retry_count = 0
         self._map_tap_attempts = 0
+        self.active_character = active_character
+        self.team_characters = team_characters or ["Rossweisse", "Tiphera", "Maribell"]
+
+        # Initialize starter decks in DeckState if available
+        if hasattr(self.ai_brain, "deck_evaluator") and getattr(self.ai_brain.deck_evaluator, "deck_state", None):
+            self.ai_brain.deck_evaluator.deck_state.initialize_default_team(self.team_characters)
 
     def _resolve_island_static_coord(
         self,
@@ -302,22 +310,38 @@ class ChaosFlow(Flow):
             if epiphany_type == "card_reward":
                 card_info = self.vision.extract_single_card_reward(screen) if screen is not None else {"title": "Card Reward"}
                 card_title = card_info.get("title", "Card Reward")
-                # Default target: middle combatant (index 1), can be directed by deck engine
+                is_memory = card_info.get("is_memory", False)
                 combatant_idx = 1
+                reason = "Mặc định nhân vật giữa"
+
+                # Dynamic combatant selection based on on-screen badge card counts or deck_state
+                if hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
+                    badge_counts = self.vision.extract_card_reward_combatant_counts(screen) if screen is not None else None
+                    combatant_idx, reason = self.ai_brain.deck_evaluator.evaluate_card_reward_combatant(
+                        card_title=card_title,
+                        is_memory=is_memory,
+                        team_characters=self.team_characters,
+                        on_screen_counts=badge_counts
+                    )
+                    target_char = self.team_characters[combatant_idx] if combatant_idx < len(self.team_characters) else self.active_character
+                    self.ai_brain.deck_evaluator.deck_state.record_card_picked(
+                        target_char, card_id=card_title, card_name=card_title
+                    )
+
                 combatant_coords = [
                     TAP_COORDS.get("chaos_card_reward_combatant_1", (800, 300)),
                     TAP_COORDS.get("chaos_card_reward_combatant_2", (800, 500)),
                     TAP_COORDS.get("chaos_card_reward_combatant_3", (800, 700)),
                 ]
-                tap_coord = combatant_coords[combatant_idx]
+                tap_coord = combatant_coords[combatant_idx] if 0 <= combatant_idx < len(combatant_coords) else (800, 500)
                 confirm_coord = TAP_COORDS.get("chaos_card_reward_confirm", (1450, 838))
                 return Action.tap(
                     tap_coord[0], tap_coord[1],
-                    name=f"Card Reward: Assign '{card_title}' to Combatant {combatant_idx + 1}",
+                    name=f"Card Reward: Assign '{card_title}' to Combatant {combatant_idx + 1} ({reason})",
                     extra_actions=[
                         ("tap", confirm_coord),
                     ],
-                    extra={"card_title": card_title, "combatant_idx": combatant_idx}
+                    extra={"card_title": card_title, "combatant_idx": combatant_idx, "reason": reason}
                 )
 
             # Sub-screen 1: choose_fate (Lựa chọn định mệnh / Sự kiện)
@@ -348,13 +372,13 @@ class ChaosFlow(Flow):
             # Sub-screen 3: remove_card (Thanh lọc thẻ hoặc Skip nếu không có thẻ rác)
             if epiphany_type == "remove_card":
                 visible = self.vision.extract_remove_cards(screen) if screen is not None else []
-                target_coord = (530, 300)
+                target_coord = (567, 275)
                 card_name = "Basic Card"
                 reason = "Xóa thẻ cơ bản mặc định (Slot 0)"
 
                 if visible and hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
                     names = [c["title"] for c in visible]
-                    decision, target_slot, eval_reason = self.ai_brain.deck_evaluator.evaluate_card_removal(names, "Rossweisse")
+                    decision, target_slot, eval_reason = self.ai_brain.deck_evaluator.evaluate_card_removal(names, self.active_character)
                     if decision == "skip":
                         skip_coord = TAP_COORDS.get("chaos_remove_card_skip", (1230, 837))
                         return Action.tap(
@@ -366,6 +390,10 @@ class ChaosFlow(Flow):
                         target_coord = visible[target_slot]["tap_coord"]
                         card_name = visible[target_slot]["title"]
                         reason = eval_reason
+                        # Record card removal in deck_state
+                        self.ai_brain.deck_evaluator.deck_state.record_card_removed(
+                            self.active_character, card_id=card_name, card_name=card_name
+                        )
 
                 remove_btn = TAP_COORDS.get("chaos_remove_card_confirm", (1498, 838))
                 return Action.tap(
@@ -400,10 +428,24 @@ class ChaosFlow(Flow):
 
             # Sub-screen 6: standard 3-card reward / Epiphany
             cards = self.vision.extract_cards(screen, num_cards=3) if screen is not None else []
-            decision = self.ai_brain.decide_card(cards, res)
+            decision = self.ai_brain.decide_card(cards, res, active_character=self.active_character)
             target_idx = decision.get("target_index", 1)
             tap_coord = cards[target_idx].tap_coord if target_idx < len(cards) else (800, 450)
             card_title = cards[target_idx].title if target_idx < len(cards) and cards[target_idx].title else f"Card {target_idx + 1}"
+
+            # Record card choice in deck_state
+            if 0 <= target_idx < len(cards) and hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
+                chosen_card = cards[target_idx]
+                char = chosen_card.character or self.active_character
+                card_id = chosen_card.matched_card.get("id", "") if chosen_card.matched_card else (chosen_card.title or chosen_card.name)
+                if chosen_card.variant and chosen_card.variant.lower() != "base":
+                    self.ai_brain.deck_evaluator.deck_state.record_card_upgraded(
+                        char, card_id=card_id, card_name=chosen_card.title or chosen_card.name, new_variant=chosen_card.variant
+                    )
+                else:
+                    self.ai_brain.deck_evaluator.deck_state.record_card_picked(
+                        char, card_id=card_id, card_name=chosen_card.title or chosen_card.name, variant=chosen_card.variant
+                    )
 
             return Action.tap(
                 tap_coord[0], tap_coord[1],

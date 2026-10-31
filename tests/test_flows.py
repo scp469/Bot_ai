@@ -260,8 +260,8 @@ class TestChaosFlow(unittest.TestCase):
         self.flow._epiphany_wait_count = 2
         act_rem = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "remove_card"}, self.dummy_screen)
         self.assertEqual(act_rem.type, ActionType.TAP)
-        self.assertEqual(act_rem.x, 530)
-        self.assertEqual(act_rem.y, 300)
+        self.assertEqual(act_rem.x, 567)
+        self.assertEqual(act_rem.y, 275)
         self.assertEqual(act_rem.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_remove_card_confirm"]))
 
         # 4. etched_memory
@@ -276,8 +276,8 @@ class TestChaosFlow(unittest.TestCase):
         self.flow._epiphany_wait_count = 2
         act_card_reward = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "card_reward"}, self.dummy_screen)
         self.assertEqual(act_card_reward.type, ActionType.TAP)
-        self.assertEqual(act_card_reward.x, TAP_COORDS["chaos_card_reward_combatant_2"][0])
-        self.assertEqual(act_card_reward.y, TAP_COORDS["chaos_card_reward_combatant_2"][1])
+        self.assertEqual(act_card_reward.x, TAP_COORDS["chaos_card_reward_combatant_1"][0])
+        self.assertEqual(act_card_reward.y, TAP_COORDS["chaos_card_reward_combatant_1"][1])
         self.assertIn("Card Reward: Assign", act_card_reward.name)
         self.assertEqual(act_card_reward.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_card_reward_confirm"]))
 
@@ -293,12 +293,12 @@ class TestChaosFlow(unittest.TestCase):
 
         action = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "card_reward"}, screen)
         self.assertEqual(action.type, ActionType.TAP)
-        # Must tap combatant 2 (middle) and confirm
-        self.assertEqual(action.x, TAP_COORDS["chaos_card_reward_combatant_2"][0])
-        self.assertEqual(action.y, TAP_COORDS["chaos_card_reward_combatant_2"][1])
+        # Evaluator dynamically detects badge counts [7, 8, 8] and assigns to Rossweisse (combatant 1, slot 0)
+        self.assertEqual(action.x, TAP_COORDS["chaos_card_reward_combatant_1"][0])
+        self.assertEqual(action.y, TAP_COORDS["chaos_card_reward_combatant_1"][1])
         self.assertEqual(action.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_card_reward_confirm"]))
         self.assertIn("Kaleidoscope", action.name)
-        self.assertEqual(action.extra["combatant_idx"], 1)
+        self.assertEqual(action.extra["combatant_idx"], 0)
 
     def test_chaos_remove_card_real_fixture(self):
         """Regression test for remove_card sub-screen on actual game fixture identifying Sword Slash."""
@@ -312,9 +312,9 @@ class TestChaosFlow(unittest.TestCase):
 
         action = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "remove_card"}, screen)
         self.assertEqual(action.type, ActionType.TAP)
-        # Should identify Sword Slash at slot 0 (530, 300) and tap remove button
-        self.assertEqual(action.x, 530)
-        self.assertEqual(action.y, 300)
+        # Should identify Sword Slash at slot 0 (567, 275) and tap remove button
+        self.assertEqual(action.x, 567)
+        self.assertEqual(action.y, 275)
         self.assertEqual(action.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_remove_card_confirm"]))
         self.assertEqual(action.extra["decision"], "remove")
 

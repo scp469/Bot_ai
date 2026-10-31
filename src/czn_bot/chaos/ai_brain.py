@@ -45,15 +45,14 @@ class ChaosAIBrain:
         self._genai_client = None
         self._current_api_key = None
         self.deck_evaluator = DeckEvaluator()
-        try:
-            for char in ["rossweisse", "tiphera"]:
-                try:
-                    p = load_preset(char, card_rules=self.rule_manager.card_rules)
-                    self.deck_evaluator.presets[p.character] = p
-                except Exception:
-                    pass
-        except Exception:
-            pass
+        for char in ["rossweisse", "tiphera"]:
+            try:
+                p = load_preset(char, card_rules=self.rule_manager.card_rules)
+                self.deck_evaluator.presets[p.character] = p
+                self.deck_evaluator.presets[p.character.lower()] = p
+                logger.info(f"[AIBrain] Loaded deck preset for '{p.character}' ({p.archetype}).")
+            except Exception as e:
+                logger.warning(f"[AIBrain] Failed to load deck preset for '{char}': {e}")
 
     def _get_client(self, override_key: Optional[str] = None):
         """
@@ -105,12 +104,17 @@ Bạn CHỈ ĐƯỢC PHÉP trả về một chuỗi JSON hợp lệ, KHÔNG kèm
 """
         return prompt
 
-    def decide_card(self, cards: List[CardInfo], resources: ResourceInfo) -> Dict[str, Any]:
+    def decide_card(
+        self,
+        cards: List[CardInfo],
+        resources: ResourceInfo,
+        active_character: Optional[str] = None
+    ) -> Dict[str, Any]:
         """Quyết định chọn thẻ bài 100% offline dựa trên bảng quy tắc ưu tiên và OCR/templates."""
         if not cards:
             return {"action": "choose_card", "target_index": 1, "confidence": 0.5, "reason": "Không có dữ liệu thẻ, chọn mặc định thẻ giữa"}
 
-        return self._heuristic_card_decision(cards, resources)
+        return self._heuristic_card_decision(cards, resources, active_character=active_character)
 
     def decide_event(self, choices: List[EventChoiceInfo], resources: ResourceInfo) -> Dict[str, Any]:
         """Quyết định lựa chọn sự kiện 100% offline dựa trên bảng quy tắc sự kiện và templates."""
@@ -310,9 +314,21 @@ Trả về duy nhất JSON:
 
         return State.UNKNOWN, {}
 
-    def _heuristic_card_decision(self, cards: List[CardInfo], resources: ResourceInfo) -> Dict[str, Any]:
+    def _heuristic_card_decision(
+        self,
+        cards: List[CardInfo],
+        resources: ResourceInfo,
+        active_character: Optional[str] = None
+    ) -> Dict[str, Any]:
+        char = active_character
+        if not char:
+            for c in cards:
+                if c.character:
+                    char = c.character
+                    break
+
         if getattr(self, "deck_evaluator", None):
-            best_idx, breakdowns = self.deck_evaluator.evaluate_epiphany_choices(cards)
+            best_idx, breakdowns = self.deck_evaluator.evaluate_epiphany_choices(cards, active_character=char)
             if breakdowns and 0 <= best_idx < len(breakdowns):
                 chosen = breakdowns[best_idx]
                 conf = cards[best_idx].confidence if hasattr(cards[best_idx], "confidence") and cards[best_idx].confidence > 0 else 0.85

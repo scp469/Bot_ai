@@ -5,6 +5,7 @@ Handles:
 2. Card Reward: Assigns 1 reward card to 1 of 3 combatants.
 3. Remove Card: Identifies basic/starter cards to purge, or safely triggers SKIP.
 """
+import re
 import logging
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple, Any
@@ -52,9 +53,12 @@ class DeckEvaluator:
         if not cards:
             return 0, []
 
-        preset = self.presets.get(active_character) if active_character else None
+        preset = (self.presets.get(active_character) or self.presets.get(active_character.lower())) if active_character else None
         target_deck_size = preset.max_deck_size if preset else 10
         current_deck_size = self.deck_state.get_deck_size(active_character) if active_character else 8
+        if current_deck_size == 0 and active_character:
+            # Fallback if deck not explicitly initialized: assume starter deck has 7 cards
+            current_deck_size = 7
 
         breakdowns: List[ScoreBreakdown] = []
         best_score = -9999.0
@@ -145,28 +149,55 @@ class DeckEvaluator:
         self,
         card_title: str,
         is_memory: bool,
-        team_characters: List[str]
+        team_characters: List[str],
+        on_screen_counts: Optional[List[int]] = None
     ) -> Tuple[int, str]:
         """
         Decide which combatant (0, 1, or 2) should receive the Card Reward.
-        Default: Combatant 1 (middle / Rossweisse if present).
+        Evaluates on-screen card counts (or in-memory DeckState), giving priority to
+        the main carry (if not bloated) or the character with the thinnest deck.
         """
         if not team_characters:
             return 1, "Mặc định nhân vật giữa (slot 1)"
 
-        # If we know the team, prioritize the character with the smallest deck or carry
-        best_idx = 1
-        min_size = 999
-        for idx, char in enumerate(team_characters[:3]):
-            size = self.deck_state.get_deck_size(char)
-            # Preference to main carry if deck is not bloated
-            if char in self.presets and size < self.presets[char].max_deck_size:
-                return idx, f"Gán cho chủ lực {char} (size {size} < {self.presets[char].max_deck_size})"
-            if size < min_size:
-                min_size = size
-                best_idx = idx
+        num_slots = min(3, len(team_characters))
+        counts: List[int] = []
+        for i in range(num_slots):
+            char = team_characters[i]
+            if on_screen_counts and i < len(on_screen_counts) and on_screen_counts[i] is not None:
+                c = int(on_screen_counts[i])
+                if self.deck_state.get_deck_size(char) == 0:
+                    self.deck_state.sync_deck_size(char, c)
+            else:
+                c = self.deck_state.get_deck_size(char)
+                if c == 0:
+                    c = 8
+            counts.append(c)
 
-        return best_idx, f"Gán cho nhân vật slot {best_idx + 1} (deck mỏng nhất: {min_size} thẻ)"
+        # 1. If Memory Card: prioritize main carry if not bloated, else lowest deck
+        if is_memory:
+            for idx in range(num_slots):
+                char = team_characters[idx]
+                preset = self.presets.get(char) or self.presets.get(char.lower())
+                if preset and counts[idx] < preset.max_deck_size:
+                    return idx, f"Gán Thẻ Ký Ức (Memory) cho chủ lực {char} (size {counts[idx]} < {preset.max_deck_size})"
+
+            min_idx = min(range(len(counts)), key=counts.__getitem__)
+            return min_idx, f"Gán Thẻ Ký Ức cho {team_characters[min_idx]} (deck mỏng nhất: {counts[min_idx]} thẻ)"
+
+        # 2. Regular card: Check if any preset specifically wants this card
+        title_lower = card_title.lower()
+        for idx in range(num_slots):
+            char = team_characters[idx]
+            preset = self.presets.get(char) or self.presets.get(char.lower())
+            if preset:
+                for core in preset.core_cards:
+                    if core.card_id.lower() in title_lower or title_lower in core.card_id.lower():
+                        return idx, f"Gán thẻ phù hợp cốt lõi cho {char} [{core.card_id}]"
+
+        # 3. Default: assign to character with the smallest deck (avoid bloat)
+        min_idx = min(range(len(counts)), key=counts.__getitem__)
+        return min_idx, f"Gán cho nhân vật slot {min_idx + 1} ({team_characters[min_idx]}) có deck mỏng nhất: {counts[min_idx]} thẻ"
 
     def evaluate_card_removal(
         self,
@@ -181,22 +212,31 @@ class DeckEvaluator:
         - If no unwanted card is visible:
           returns ("skip", None, "Không có thẻ rác trong lưới hiển thị -> Bấm Skip để bảo toàn tài nguyên")
         """
-        preset = self.presets.get(character)
+        preset = self.presets.get(character) or (self.presets.get(character.lower()) if character else None)
         removal_list = preset.removal_priority if preset else []
 
-        # Default basic starter cards that are safe to remove
-        starter_basic_keywords = ["sword slash", "standing blade", "basic attack", "basic skill", "matter disintegration"]
-
-        for idx, name in enumerate(visible_card_names):
-            name_lower = name.lower()
-            # 1. Match against preset removal_priority
-            for target in removal_list:
-                if target.lower() in name_lower:
+        # 1. Match against preset removal_priority in priority order
+        for target in removal_list:
+            cleaned = re.sub(r"^[a-z]+_", "", target.lower()).replace("_base", "").replace("_", " ")
+            cleaned_stem = cleaned[:-2] if len(cleaned) > 6 else cleaned
+            for idx, name in enumerate(visible_card_names):
+                name_lower = name.lower()
+                if (
+                    cleaned in name_lower
+                    or cleaned_stem in name_lower
+                    or target.lower() in name_lower
+                ):
                     return "remove", idx, f"Xóa thẻ theo preset [{name}] tại slot {idx}"
 
-            # 2. Match against basic starter cards
-            for basic_kw in starter_basic_keywords:
-                if basic_kw in name_lower:
+        # 2. Match against basic starter cards
+        starter_basic_keywords = [
+            "sword slash", "sword slas", "standing blade", "standing blad",
+            "basic attack", "basic_atta", "basic skill",
+            "matter disintegration", "barrier deployment"
+        ]
+        for basic_kw in starter_basic_keywords:
+            for idx, name in enumerate(visible_card_names):
+                if basic_kw in name.lower():
                     return "remove", idx, f"Xóa thẻ cơ bản khởi đầu [{name}] tại slot {idx}"
 
         return "skip", None, "Không tìm thấy thẻ rác trong danh sách nhìn thấy -> Bấm Skip an toàn"

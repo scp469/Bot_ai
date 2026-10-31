@@ -7,9 +7,9 @@ import unittest
 from unittest.mock import MagicMock
 import numpy as np
 
-from stats_tracker import StatsTracker
-from bot_engine import BotEngine
-from config import Mode, LeftButton
+from czn_bot.stats import StatsTracker
+from czn_bot.runner import BotRunner as BotEngine
+from czn_bot.states import Mode, LeftButton
 
 
 class TestStatsTracker(unittest.TestCase):

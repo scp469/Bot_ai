@@ -4,7 +4,7 @@ Unit tests for Team HP Reader module.
 import unittest
 import os
 import cv2
-from chaos_hp_reader import get_team_hp, HP_BAR_X_START, HP_BAR_Y_START, HP_BAR_Y_END, HP_BAR_TOTAL_WIDTH
+from czn_bot.vision.hp_reader import get_team_hp, HP_BAR_X_START, HP_BAR_Y_START, HP_BAR_Y_END, HP_BAR_TOTAL_WIDTH
 
 
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), "fixtures")

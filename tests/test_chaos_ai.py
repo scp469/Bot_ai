@@ -7,21 +7,26 @@ Tests:
 - Phase 4: ChaosStateMachine (Context classification across fixtures, 15s freeze recovery watchdog)
 """
 import os
+import time
 import unittest
 from unittest.mock import MagicMock, patch
 import cv2
 import numpy as np
 
-from chaos_ai_config import ChaosRuleManager, _encrypt_key, _decrypt_key
-from chaos_adb import ChaosADBController
-from chaos_vision import ChaosVision, CardInfo, EventChoiceInfo, ResourceInfo
-from chaos_ai_brain import ChaosAIBrain
-from chaos_state_machine import ChaosStateMachine, ChaosState
+from czn_bot.chaos.rules import ChaosRuleManager
+from czn_bot.device.adb import ChaosADBController
+from czn_bot.chaos.decisions import ChaosVision, CardInfo, EventChoiceInfo, ResourceInfo
+from czn_bot.chaos.ai_brain import ChaosAIBrain
+from czn_bot.chaos.state_machine import ChaosStateMachine, ChaosState
+from czn_bot.runner import BotRunner as BotEngine
+from czn_bot.states import State
 
 
 class TestChaosAI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        import logging
+        logging.getLogger("ChaosBot.Activity").handlers = [logging.NullHandler()]
         cls.fixtures_dir = os.path.join(os.path.dirname(__file__), "fixtures")
         cls.img_fate = cv2.imread(os.path.join(cls.fixtures_dir, "chaos_choose_fate.png"))
         cls.img_epiphany = cv2.imread(os.path.join(cls.fixtures_dir, "chaos_choose_epiphany.png"))
@@ -32,15 +37,16 @@ class TestChaosAI(unittest.TestCase):
         cls.img_continue = cv2.imread(os.path.join(cls.fixtures_dir, "chaos_continue.png"))
         cls.img_map = cv2.imread(os.path.join(cls.fixtures_dir, "chaos_map_3_islands.png"))
 
-    # ── Phase 1 Tests: Config, Encryption, ADB ─────────────────────
+    # ── Phase 1 Tests: Config, Storage, ADB ────────────────────────
 
-    def test_api_key_encryption(self):
-        """Verify API key is obfuscated on disk and decrypted accurately in memory."""
+    @patch("czn_bot.chaos.rules.save_ai_config", return_value=True)
+    def test_api_key_plain_storage(self, mock_save):
+        """Verify API key is saved cleanly without homemade encryption."""
+        rm = ChaosRuleManager()
         test_key = "AIzaSyD_TestKey1234567890abcdef"
-        encrypted = _encrypt_key(test_key)
-        self.assertNotEqual(encrypted, test_key)
-        decrypted = _decrypt_key(encrypted)
-        self.assertEqual(decrypted, test_key)
+        rm.save_ai_api_key(test_key)
+        self.assertEqual(rm.ai_config["api_key"], test_key)
+        mock_save.assert_called_once()
 
     def test_rule_manager_defaults(self):
         """Verify ChaosRuleManager loads default card and event rules."""
@@ -109,6 +115,9 @@ class TestChaosAI(unittest.TestCase):
         vision = ChaosVision()
         cards = vision.extract_cards(self.img_epiphany, num_cards=3)
         self.assertEqual(len(cards), 3)
+        self.assertEqual(cards[0].tap_coord, (390, 450))
+        self.assertEqual(cards[1].tap_coord, (800, 450))
+        self.assertEqual(cards[2].tap_coord, (1205, 450))
         self.assertTrue(any("Mute Accent" in c.raw_text for c in cards))
         self.assertTrue(any("Extra Attack" in c.raw_text for c in cards))
 
@@ -176,9 +185,9 @@ class TestChaosAI(unittest.TestCase):
         """Verify heuristic engine prioritizes Elasticity variant over Base variant."""
         brain = ChaosAIBrain()
         cards = [
-            CardInfo(slot=0, name="Thẻ 1", tap_coord=(355, 460), raw_text="Amp Therapy [Base] Standard healing", variant="Base"),
-            CardInfo(slot=1, name="Thẻ 2", tap_coord=(800, 460), raw_text="Amp Therapy [Elasticity] Advanced bounce effect", variant="Elasticity"),
-            CardInfo(slot=2, name="Thẻ 3", tap_coord=(1245, 460), raw_text="Common Strike Basic Attack", variant="Base"),
+            CardInfo(slot=0, name="Thẻ 1", tap_coord=(390, 450), raw_text="Amp Therapy [Base] Standard healing", variant="Base"),
+            CardInfo(slot=1, name="Thẻ 2", tap_coord=(800, 450), raw_text="Amp Therapy [Elasticity] Advanced bounce effect", variant="Elasticity"),
+            CardInfo(slot=2, name="Thẻ 3", tap_coord=(1205, 450), raw_text="Common Strike Basic Attack", variant="Base"),
         ]
         res = ResourceInfo(hp_percent=0.70, is_low_hp=False, credits=300)
         decision = brain._heuristic_card_decision(cards, res)
@@ -214,11 +223,41 @@ class TestChaosAI(unittest.TestCase):
         sm.adb = mock_adb
 
         sm.current_state = ChaosState.STATE_MAP_CHOOSING
-        sm.state_start_time = 0.0  # Simulated freeze > 15s
+        sm.state_start_time = time.time() - 20.0  # Simulated freeze > 15s
 
         recovered = sm.check_watchdog_recovery(self.img_map)
         self.assertTrue(recovered)
         # Verify back key or tap was invoked
+
+    def test_state_machine_handle_card_reward_and_fallback(self):
+        """Verify handle_card_reward taps chosen card coordinate and falls back to (800, 450)."""
+        sm = ChaosStateMachine()
+        mock_adb = MagicMock()
+        sm.adb = mock_adb
+
+        # 1. Normal reward with fixture: should tap chosen card (one of 390, 800, 1205)
+        res = sm.handle_card_reward(self.img_epiphany, {})
+        self.assertTrue(res)
+        self.assertTrue(mock_adb.tap_location.called)
+        first_call = mock_adb.tap_location.call_args_list[0][0]
+        self.assertIn(first_call, [(390, 450), (800, 450), (1205, 450)])
+
+        # 2. Fallback when vision extracts 0 cards: should tap (800, 450)
+        mock_adb.reset_mock()
+        sm.vision.extract_cards = MagicMock(return_value=[])
+        res_fb = sm.handle_card_reward(np.zeros((100, 100, 3), dtype=np.uint8), {})
+        self.assertTrue(res_fb)
+        self.assertTrue(mock_adb.tap_location.called)
+        fb_call = mock_adb.tap_location.call_args_list[0][0]
+        self.assertEqual(fb_call, (800, 450))
+
+    def test_card_3_layout_constants(self):
+        """Verify CARD_3_LAYOUT coordinates: Slot 0 (390, 450), Slot 1 (800, 450), Slot 2 (1205, 450)."""
+        from czn_bot.chaos.decisions import CARD_3_LAYOUT
+        self.assertEqual(CARD_3_LAYOUT[0]["tap"], (390, 450))
+        self.assertEqual(CARD_3_LAYOUT[1]["tap"], (800, 450))
+        self.assertEqual(CARD_3_LAYOUT[2]["tap"], (1205, 450))
+
     # ── Phase 5 Tests: Templates Database & Rich Matching ──────────
 
     def test_templates_databases_loaded(self):
@@ -285,8 +324,8 @@ class TestChaosAI(unittest.TestCase):
 
     def test_ai_brain_decide_island(self):
         """Verify decide_island selects the optimal route and outputs clean JSON decision."""
-        from chaos_pathfinder import select_best_island
-        from chaos_map_reader import parse_chaos_minimap
+        from czn_bot.chaos.pathfinder import select_best_island
+        from czn_bot.vision.map_reader import parse_chaos_minimap
         brain = ChaosAIBrain()
         roots, adj, nodes, boss_ids = parse_chaos_minimap(self.img_map)
         _, evals = select_best_island(roots, adj, nodes, boss_ids, 0.85, strategy="balanced")
@@ -309,6 +348,129 @@ class TestChaosAI(unittest.TestCase):
         self.assertTrue(ok)
         self.assertTrue(mock_adb.tap_location.called)
 
+    def test_analyze_unknown_screen_ai_wait(self):
+        """Verify analyze_unknown_screen parses AI wait action on battle animation."""
+        brain = ChaosAIBrain()
+        mock_client = MagicMock()
+        mock_resp = MagicMock()
+        mock_resp.text = '{"screen_type": "battle_animation", "action": "wait", "wait_seconds": 1.5, "confidence": 0.98, "description": "Hoạt cảnh nộ", "reason": "Chờ đợi hết chiêu"}'
+        mock_client.models.generate_content.return_value = mock_resp
+        brain._genai_client = mock_client
+        brain._current_api_key = "test_key"
+        brain.rule_manager.get_api_key = MagicMock(return_value="test_key")
+
+        dummy_screen = np.zeros((900, 1600, 3), dtype=np.uint8)
+        res = brain.analyze_unknown_screen(dummy_screen, last_state_name="IN_MATCH")
+        self.assertIsNotNone(res)
+        self.assertEqual(res["action"], "wait")
+        self.assertEqual(res["screen_type"], "battle_animation")
+        self.assertAlmostEqual(res["confidence"], 0.98)
+
+    def test_analyze_unknown_screen_ai_tap(self):
+        """Verify analyze_unknown_screen parses AI tap action on popup dismiss."""
+        brain = ChaosAIBrain()
+        mock_client = MagicMock()
+        mock_resp = MagicMock()
+        mock_resp.text = '{"screen_type": "popup", "action": "tap", "tap_coord": [1525, 45], "confidence": 0.95, "description": "Popup nhận quà", "reason": "Bấm nút X đóng popup"}'
+        mock_client.models.generate_content.return_value = mock_resp
+        brain._genai_client = mock_client
+        brain._current_api_key = "test_key"
+        brain.rule_manager.get_api_key = MagicMock(return_value="test_key")
+
+        dummy_screen = np.zeros((900, 1600, 3), dtype=np.uint8)
+        res = brain.analyze_unknown_screen(dummy_screen, last_state_name="CHAOS_MAP")
+        self.assertIsNotNone(res)
+        self.assertEqual(res["action"], "tap")
+        self.assertEqual(res["tap_coord"], [1525, 45])
+
+    def test_bot_engine_handle_unknown_with_ai_wait_does_not_halt(self):
+        """Verify BotEngine._handle_unknown does NOT stop when AI Vision identifies wait action."""
+        mock_adb = MagicMock()
+        engine = BotEngine(adb_client=mock_adb)
+        engine.is_running = True
+
+        mock_brain = MagicMock()
+        mock_brain.analyze_unknown_screen.return_value = {
+            "screen_type": "battle_animation",
+            "action": "wait",
+            "wait_seconds": 0.1,
+            "confidence": 0.99,
+            "description": "Chiêu thức nộ đang phát",
+            "reason": "Chờ hết chiêu"
+        }
+        engine.chaos_brain = mock_brain
+        engine.rule_manager.get_api_key = MagicMock(return_value="test_key")
+
+        dummy_screen = np.zeros((900, 1600, 3), dtype=np.uint8)
+        result = engine._handle_unknown(dummy_screen, {})
+        self.assertTrue(result)
+        self.assertEqual(engine._unknown_streak, 0)
+        self.assertTrue(engine.is_running)
+
+    def test_bot_engine_handle_unknown_with_ai_tap_clicks_target(self):
+        """Verify BotEngine._handle_unknown taps target coordinate and resets streak when AI Vision returns tap."""
+        mock_adb = MagicMock()
+        engine = BotEngine(adb_client=mock_adb)
+        engine.is_running = True
+
+        mock_brain = MagicMock()
+        mock_brain.analyze_unknown_screen.return_value = {
+            "screen_type": "popup",
+            "action": "tap",
+            "tap_coord": [1520, 50],
+            "confidence": 0.95,
+            "description": "Nút đóng popup X",
+            "reason": "Bấm đóng popup để tiếp tục"
+        }
+        engine.chaos_brain = mock_brain
+        engine.rule_manager.get_api_key = MagicMock(return_value="test_key")
+
+        dummy_screen = np.zeros((900, 1600, 3), dtype=np.uint8)
+        result = engine._handle_unknown(dummy_screen, {})
+        self.assertTrue(result)
+        self.assertEqual(engine._unknown_streak, 0)
+        self.assertTrue(mock_adb.tap.called)
+        tx, ty = mock_adb.tap.call_args[0]
+        self.assertTrue(1510 <= tx <= 1530)
+        self.assertTrue(40 <= ty <= 60)
+
+    def test_detect_state_with_ai(self):
+        """Verify detect_state_with_ai accurately maps AI JSON to State enum and details."""
+        brain = ChaosAIBrain()
+        mock_client = MagicMock()
+        mock_resp = MagicMock()
+        mock_resp.text = '{"state": "CHAOS_MAP", "confidence": 0.99, "description": "Bản đồ ngã rẽ 3 đảo", "details": {"has_minimap": true}}'
+        mock_client.models.generate_content.return_value = mock_resp
+        brain._genai_client = mock_client
+        brain._current_api_key = "test_key"
+        brain.rule_manager.get_api_key = MagicMock(return_value="test_key")
+
+        dummy_screen = np.zeros((900, 1600, 3), dtype=np.uint8)
+        st, det = brain.detect_state_with_ai(dummy_screen)
+        self.assertEqual(st, State.CHAOS_MAP)
+        self.assertAlmostEqual(det["confidence"], 0.99)
+        self.assertTrue(det.get("ai_detected"))
+
+    def test_bot_engine_detect_state_uses_ai(self):
+        """Verify BotEngine._detect_state delegates to chaos_brain.detect_state_with_ai."""
+        engine = BotEngine()
+        mock_brain = MagicMock()
+        mock_brain.detect_state_with_ai.return_value = (
+            State.CHAOS_CHOOSE_EPIPHANY,
+            {"confidence": 0.98, "ai_detected": True, "description": "Chọn thẻ"}
+        )
+        engine.chaos_brain = mock_brain
+        engine.rule_manager.get_api_key = MagicMock(return_value="test_key")
+        engine.enable_ai_vision_detection = True
+
+        dummy_screen = np.zeros((900, 1600, 3), dtype=np.uint8)
+        st, det = engine._detect_state(dummy_screen)
+        self.assertEqual(st, State.CHAOS_CHOOSE_EPIPHANY)
+        self.assertTrue(det.get("ai_detected"))
+        self.assertTrue(mock_brain.detect_state_with_ai.called)
+
 
 if __name__ == "__main__":
     unittest.main()
+
+

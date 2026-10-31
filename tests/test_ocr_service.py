@@ -6,13 +6,14 @@ import os
 import sys
 import unittest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 
 import cv2
 import numpy as np
 
-import ocr_service
-from ocr_service import OcrService, get_ocr_service
+from czn_bot.vision import ocr as ocr_service
+from czn_bot.vision.ocr import OcrService, get_ocr_service
+from czn_bot.constants import TEMPLATES_DIR
 
 
 class TestOcrService(unittest.TestCase):
@@ -20,7 +21,7 @@ class TestOcrService(unittest.TestCase):
     def setUpClass(cls):
         cls.service = get_ocr_service()
         cls.fixture_dir = os.path.join(os.path.dirname(__file__), "fixtures")
-        cls.templates_dir = os.path.join(os.path.dirname(__file__), "..", "templates")
+        cls.templates_dir = TEMPLATES_DIR
 
     def test_ocr_availability(self):
         """Ensure OCR service is properly initialized and available."""

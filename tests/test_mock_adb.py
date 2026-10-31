@@ -4,7 +4,7 @@ Unit tests for MockADBClient offline simulation.
 import os
 import unittest
 
-from mock_adb import MockADBClient
+from czn_bot.device.mock import MockADBClient
 
 
 class TestMockADB(unittest.TestCase):

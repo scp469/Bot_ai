@@ -1,0 +1,1489 @@
+[
+  {
+    "id": "eq_sec_010",
+    "name": "Branch of Eternity",
+    "slug": "branch-of-eternity",
+    "rarity": "Unique",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1304.webp",
+    "localImagePath": "images/branch-of-eternity.webp",
+    "descriptions": {
+      "s1": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to all enemies",
+      "s2": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to all enemies",
+      "s3": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to all enemies",
+      "s4": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to all enemies",
+      "s5": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to all enemies"
+    },
+    "rawDescriptions": {
+      "s1": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to all enemies",
+      "s2": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to all enemies",
+      "s3": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to all enemies",
+      "s4": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to all enemies",
+      "s5": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to all enemies"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_009",
+    "name": "Dormant Seeds",
+    "slug": "dormant-seeds",
+    "rarity": "Unique",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1112.webp",
+    "localImagePath": "images/dormant-seeds.webp",
+    "descriptions": {
+      "s1": "When Shield is gained through a card, 100% Fixed Shield (1 time per turn)",
+      "s2": "When Shield is gained through a card, 100% Fixed Shield (1 time per turn)",
+      "s3": "When Shield is gained through a card, 100% Fixed Shield (1 time per turn)",
+      "s4": "When Shield is gained through a card, 100% Fixed Shield (1 time per turn)",
+      "s5": "When Shield is gained through a card, 100% Fixed Shield (1 time per turn)"
+    },
+    "rawDescriptions": {
+      "s1": "When $Shield$ is gained through a card, <cc>100</>% $Fixed Shield$ (<cc>1</> time per turn)",
+      "s2": "When $Shield$ is gained through a card, <cc>100</>% $Fixed Shield$ (<cc>1</> time per turn)",
+      "s3": "When $Shield$ is gained through a card, <cc>100</>% $Fixed Shield$ (<cc>1</> time per turn)",
+      "s4": "When $Shield$ is gained through a card, <cc>100</>% $Fixed Shield$ (<cc>1</> time per turn)",
+      "s5": "When $Shield$ is gained through a card, <cc>100</>% $Fixed Shield$ (<cc>1</> time per turn)"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_007",
+    "name": "Mask of Flames",
+    "slug": "mask-of-flames",
+    "rarity": "Unique",
+    "type": "Armor (Giáp)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1115.webp",
+    "localImagePath": "images/mask-of-flames.webp",
+    "descriptions": {
+      "s1": "Increase Damage Amount by 35% against targets in a Vulnerable state",
+      "s2": "Increase Damage Amount by 35% against targets in a Vulnerable state",
+      "s3": "Increase Damage Amount by 35% against targets in a Vulnerable state",
+      "s4": "Increase Damage Amount by 35% against targets in a Vulnerable state",
+      "s5": "Increase Damage Amount by 35% against targets in a Vulnerable state"
+    },
+    "rawDescriptions": {
+      "s1": "Increase Damage Amount by <cc>35</>% against targets in a $Vulnerable$ state",
+      "s2": "Increase Damage Amount by <cc>35</>% against targets in a $Vulnerable$ state",
+      "s3": "Increase Damage Amount by <cc>35</>% against targets in a $Vulnerable$ state",
+      "s4": "Increase Damage Amount by <cc>35</>% against targets in a $Vulnerable$ state",
+      "s5": "Increase Damage Amount by <cc>35</>% against targets in a $Vulnerable$ state"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_005",
+    "name": "Star-Lit Cloak",
+    "slug": "star-lit-cloak",
+    "rarity": "Unique",
+    "type": "Armor (Giáp)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1189.webp",
+    "localImagePath": "images/star-lit-cloak.webp",
+    "descriptions": {
+      "s1": "Decrease Damage Taken by 10% (1 time per turn)",
+      "s2": "Decrease Damage Taken by 10% (1 time per turn)",
+      "s3": "Decrease Damage Taken by 10% (1 time per turn)",
+      "s4": "Decrease Damage Taken by 10% (1 time per turn)",
+      "s5": "Decrease Damage Taken by 10% (1 time per turn)"
+    },
+    "rawDescriptions": {
+      "s1": "Decrease Damage Taken by <cc>10</>% (<cc>1</> time per turn)",
+      "s2": "Decrease Damage Taken by <cc>10</>% (<cc>1</> time per turn)",
+      "s3": "Decrease Damage Taken by <cc>10</>% (<cc>1</> time per turn)",
+      "s4": "Decrease Damage Taken by <cc>10</>% (<cc>1</> time per turn)",
+      "s5": "Decrease Damage Taken by <cc>10</>% (<cc>1</> time per turn)"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_013",
+    "name": "Verdant Shackles",
+    "slug": "verdant-shackles",
+    "rarity": "Unique",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1307.webp",
+    "localImagePath": "images/verdant-shackles.webp",
+    "descriptions": {
+      "s1": "+12% Attack, +12% Defense",
+      "s2": "+12% Attack, +12% Defense",
+      "s3": "+12% Attack, +12% Defense",
+      "s4": "+12% Attack, +12% Defense",
+      "s5": "+12% Attack, +12% Defense"
+    },
+    "rawDescriptions": {
+      "s1": "+<cc>12</>% Attack, +<cc>12</>% Defense",
+      "s2": "+<cc>12</>% Attack, +<cc>12</>% Defense",
+      "s3": "+<cc>12</>% Attack, +<cc>12</>% Defense",
+      "s4": "+<cc>12</>% Attack, +<cc>12</>% Defense",
+      "s5": "+<cc>12</>% Attack, +<cc>12</>% Defense"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_008",
+    "name": "Bone Ring of Wildfire",
+    "slug": "bone-ring-of-wildfire",
+    "rarity": "Legend",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1113.webp",
+    "localImagePath": "images/bone-ring-of-wildfire.webp",
+    "descriptions": {
+      "s1": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s2": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s3": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s4": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s5": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn"
+    },
+    "rawDescriptions": {
+      "s1": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s2": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s3": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s4": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s5": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_009",
+    "name": "Branch of the Evil Tree",
+    "slug": "branch-of-the-evil-tree",
+    "rarity": "Legend",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1303.webp",
+    "localImagePath": "images/branch-of-the-evil-tree.webp",
+    "descriptions": {
+      "s1": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to a random enemy",
+      "s2": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to a random enemy",
+      "s3": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to a random enemy",
+      "s4": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to a random enemy",
+      "s5": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to a random enemy"
+    },
+    "rawDescriptions": {
+      "s1": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to a random enemy",
+      "s2": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to a random enemy",
+      "s3": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to a random enemy",
+      "s4": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to a random enemy",
+      "s5": "On $Heal$ or $Recover$ through an ability, inflict $Fixed Damage$ equal to <cc>50</>% of $Recover$ Amount to a random enemy"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_003",
+    "name": "Branch of the Sacred Tree",
+    "slug": "branch-of-the-sacred-tree",
+    "rarity": "Legend",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1061.webp",
+    "localImagePath": "images/branch-of-the-sacred-tree.webp",
+    "descriptions": {
+      "s1": "On Heal or Recover through an ally ability, inflict Fixed Damage equal to 35% of Recover Amount to all enemies",
+      "s2": "On Heal or Recover through an ally ability, inflict Fixed Damage equal to 35% of Recover Amount to all enemies",
+      "s3": "On Heal or Recover through an ally ability, inflict Fixed Damage equal to 35% of Recover Amount to all enemies",
+      "s4": "On Heal or Recover through an ally ability, inflict Fixed Damage equal to 35% of Recover Amount to all enemies",
+      "s5": "On Heal or Recover through an ally ability, inflict Fixed Damage equal to 35% of Recover Amount to all enemies"
+    },
+    "rawDescriptions": {
+      "s1": "On $Heal$ or $Recover$ through an ally ability, inflict $Fixed Damage$ equal to <cc>35</>% of $Recover$ Amount to all enemies",
+      "s2": "On $Heal$ or $Recover$ through an ally ability, inflict $Fixed Damage$ equal to <cc>35</>% of $Recover$ Amount to all enemies",
+      "s3": "On $Heal$ or $Recover$ through an ally ability, inflict $Fixed Damage$ equal to <cc>35</>% of $Recover$ Amount to all enemies",
+      "s4": "On $Heal$ or $Recover$ through an ally ability, inflict $Fixed Damage$ equal to <cc>35</>% of $Recover$ Amount to all enemies",
+      "s5": "On $Heal$ or $Recover$ through an ally ability, inflict $Fixed Damage$ equal to <cc>35</>% of $Recover$ Amount to all enemies"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_010",
+    "name": "Call of the Ancient Spirit",
+    "slug": "call-of-the-ancient-spirit",
+    "rarity": "Legend",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1116.webp",
+    "localImagePath": "images/call-of-the-ancient-spirit.webp",
+    "descriptions": {
+      "s1": "On Critical Hit, 10% Fixed Heal",
+      "s2": "On Critical Hit, 10% Fixed Heal",
+      "s3": "On Critical Hit, 10% Fixed Heal",
+      "s4": "On Critical Hit, 10% Fixed Heal",
+      "s5": "On Critical Hit, 10% Fixed Heal"
+    },
+    "rawDescriptions": {
+      "s1": "On Critical Hit, <cc>10</>% $Fixed Heal$",
+      "s2": "On Critical Hit, <cc>10</>% $Fixed Heal$",
+      "s3": "On Critical Hit, <cc>10</>% $Fixed Heal$",
+      "s4": "On Critical Hit, <cc>10</>% $Fixed Heal$",
+      "s5": "On Critical Hit, <cc>10</>% $Fixed Heal$"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_dll_001",
+    "name": "Cavalry of Lightning",
+    "slug": "cavalry-of-lightning",
+    "rarity": "Legend",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1095.webp",
+    "localImagePath": "images/cavalry-of-lightning.webp",
+    "descriptions": {
+      "s1": "When Damage is dealt to a target possessing Shield, +100% Damage Amount to the next activated Attack Card",
+      "s2": "When Damage is dealt to a target possessing Shield, +100% Damage Amount to the next activated Attack Card",
+      "s3": "When Damage is dealt to a target possessing Shield, +100% Damage Amount to the next activated Attack Card",
+      "s4": "When Damage is dealt to a target possessing Shield, +100% Damage Amount to the next activated Attack Card",
+      "s5": "When Damage is dealt to a target possessing Shield, +100% Damage Amount to the next activated Attack Card"
+    },
+    "rawDescriptions": {
+      "s1": "When Damage is dealt to a target possessing $Shield$, +<cc>100</>% Damage Amount to the next $activate$d Attack Card",
+      "s2": "When Damage is dealt to a target possessing $Shield$, +<cc>100</>% Damage Amount to the next $activate$d Attack Card",
+      "s3": "When Damage is dealt to a target possessing $Shield$, +<cc>100</>% Damage Amount to the next $activate$d Attack Card",
+      "s4": "When Damage is dealt to a target possessing $Shield$, +<cc>100</>% Damage Amount to the next $activate$d Attack Card",
+      "s5": "When Damage is dealt to a target possessing $Shield$, +<cc>100</>% Damage Amount to the next $activate$d Attack Card"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "diallos",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_001",
+    "name": "Dagger That Tricked the Shadow",
+    "slug": "dagger-that-tricked-the-shadow",
+    "rarity": "Legend",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1231.webp",
+    "localImagePath": "images/dagger-that-tricked-the-shadow.webp",
+    "descriptions": {
+      "s1": "+12% Critical Damage",
+      "s2": "+12% Critical Damage",
+      "s3": "+12% Critical Damage",
+      "s4": "+12% Critical Damage",
+      "s5": "+12% Critical Damage"
+    },
+    "rawDescriptions": {
+      "s1": "+<cc>12</>% Critical Damage",
+      "s2": "+<cc>12</>% Critical Damage",
+      "s3": "+<cc>12</>% Critical Damage",
+      "s4": "+<cc>12</>% Critical Damage",
+      "s5": "+<cc>12</>% Critical Damage"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_006",
+    "name": "Fairy King’s Crown",
+    "slug": "fairy-kings-crown",
+    "rarity": "Legend",
+    "type": "Armor (Giáp)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1062.webp",
+    "localImagePath": "images/fairy-kings-crown.webp",
+    "descriptions": {
+      "s1": "+6% Critical Chance",
+      "s2": "+6% Critical Chance",
+      "s3": "+6% Critical Chance",
+      "s4": "+6% Critical Chance",
+      "s5": "+6% Critical Chance"
+    },
+    "rawDescriptions": {
+      "s1": "+<cc>6</>% Critical Chance",
+      "s2": "+<cc>6</>% Critical Chance",
+      "s3": "+<cc>6</>% Critical Chance",
+      "s4": "+<cc>6</>% Critical Chance",
+      "s5": "+<cc>6</>% Critical Chance"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_004",
+    "name": "Immortal Scale",
+    "slug": "immortal-scale",
+    "rarity": "Legend",
+    "type": "Armor (Giáp)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1114.webp",
+    "localImagePath": "images/immortal-scale.webp",
+    "descriptions": {
+      "s1": "When gaining Counterattack through an ability, add 1 Counterattack",
+      "s2": "When gaining Counterattack through an ability, add 1 Counterattack",
+      "s3": "When gaining Counterattack through an ability, add 1 Counterattack",
+      "s4": "When gaining Counterattack through an ability, add 1 Counterattack",
+      "s5": "When gaining Counterattack through an ability, add 1 Counterattack"
+    },
+    "rawDescriptions": {
+      "s1": "When gaining $Counterattack$ through an ability, add <cc>1</> $Counterattack$",
+      "s2": "When gaining $Counterattack$ through an ability, add <cc>1</> $Counterattack$",
+      "s3": "When gaining $Counterattack$ through an ability, add <cc>1</> $Counterattack$",
+      "s4": "When gaining $Counterattack$ through an ability, add <cc>1</> $Counterattack$",
+      "s5": "When gaining $Counterattack$ through an ability, add <cc>1</> $Counterattack$"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_dll_007",
+    "name": "Lead-Colored Holy Water",
+    "slug": "lead-colored-holy-water",
+    "rarity": "Legend",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_0002.webp",
+    "localImagePath": "images/lead-colored-holy-water.webp",
+    "descriptions": {
+      "s1": "On Ravage, 2 Impair to the target",
+      "s2": "On Ravage, 2 Impair to the target",
+      "s3": "On Ravage, 2 Impair to the target",
+      "s4": "On Ravage, 2 Impair to the target",
+      "s5": "On Ravage, 2 Impair to the target"
+    },
+    "rawDescriptions": {
+      "s1": "On $Ravage$, <cc>2</> $Impair$ to the target",
+      "s2": "On $Ravage$, <cc>2</> $Impair$ to the target",
+      "s3": "On $Ravage$, <cc>2</> $Impair$ to the target",
+      "s4": "On $Ravage$, <cc>2</> $Impair$ to the target",
+      "s5": "On $Ravage$, <cc>2</> $Impair$ to the target"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "diallos",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_dll_006",
+    "name": "Ring of the Seraphim",
+    "slug": "ring-of-the-seraphim",
+    "rarity": "Legend",
+    "type": "Armor (Giáp)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1181.webp",
+    "localImagePath": "images/ring-of-the-seraphim.webp",
+    "descriptions": {
+      "s1": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s2": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s3": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s4": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "s5": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn"
+    },
+    "rawDescriptions": {
+      "s1": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s2": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s3": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s4": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn",
+      "s5": "When an Upgrade Card is $activate$d, +<cc>30</>% Damage Amount for <cc>1</> turn"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "diallos",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_003",
+    "name": "Sun-Setting Bow",
+    "slug": "sun-setting-bow",
+    "rarity": "Legend",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1191.webp",
+    "localImagePath": "images/sun-setting-bow.webp",
+    "descriptions": {
+      "s1": "Increase Damage Amount of Attack Cards with a Cost of 2 or higher by 30% (1 time per turn)",
+      "s2": "Increase Damage Amount of Attack Cards with a Cost of 2 or higher by 30% (1 time per turn)",
+      "s3": "Increase Damage Amount of Attack Cards with a Cost of 2 or higher by 30% (1 time per turn)",
+      "s4": "Increase Damage Amount of Attack Cards with a Cost of 2 or higher by 30% (1 time per turn)",
+      "s5": "Increase Damage Amount of Attack Cards with a Cost of 2 or higher by 30% (1 time per turn)"
+    },
+    "rawDescriptions": {
+      "s1": "Increase Damage Amount of Attack Cards with a Cost of <cc>2</> or higher by <cc>30</>% (<cc>1</> time per turn)",
+      "s2": "Increase Damage Amount of Attack Cards with a Cost of <cc>2</> or higher by <cc>30</>% (<cc>1</> time per turn)",
+      "s3": "Increase Damage Amount of Attack Cards with a Cost of <cc>2</> or higher by <cc>30</>% (<cc>1</> time per turn)",
+      "s4": "Increase Damage Amount of Attack Cards with a Cost of <cc>2</> or higher by <cc>30</>% (<cc>1</> time per turn)",
+      "s5": "Increase Damage Amount of Attack Cards with a Cost of <cc>2</> or higher by <cc>30</>% (<cc>1</> time per turn)"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_sec_002",
+    "name": "Sword Reflected in the Lake",
+    "slug": "sword-reflected-in-the-lake",
+    "rarity": "Legend",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1187.webp",
+    "localImagePath": "images/sword-reflected-in-the-lake.webp",
+    "descriptions": {
+      "s1": "When there are 6 or more cards in hand, increase Damage Amount by 25%",
+      "s2": "When there are 6 or more cards in hand, increase Damage Amount by 25%",
+      "s3": "When there are 6 or more cards in hand, increase Damage Amount by 25%",
+      "s4": "When there are 6 or more cards in hand, increase Damage Amount by 25%",
+      "s5": "When there are 6 or more cards in hand, increase Damage Amount by 25%"
+    },
+    "rawDescriptions": {
+      "s1": "When there are <cc>6</> or more cards in hand, increase Damage Amount by <cc>25</>%",
+      "s2": "When there are <cc>6</> or more cards in hand, increase Damage Amount by <cc>25</>%",
+      "s3": "When there are <cc>6</> or more cards in hand, increase Damage Amount by <cc>25</>%",
+      "s4": "When there are <cc>6</> or more cards in hand, increase Damage Amount by <cc>25</>%",
+      "s5": "When there are <cc>6</> or more cards in hand, increase Damage Amount by <cc>25</>%"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "secred",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_008",
+    "name": "The Flower of Life",
+    "slug": "the-flower-of-life",
+    "rarity": "Legend",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1302.webp",
+    "localImagePath": "images/the-flower-of-life.webp",
+    "descriptions": {
+      "s1": "If at max HP, +50% Damage Amount",
+      "s2": "If at max HP, +50% Damage Amount",
+      "s3": "If at max HP, +50% Damage Amount",
+      "s4": "If at max HP, +50% Damage Amount",
+      "s5": "If at max HP, +50% Damage Amount"
+    },
+    "rawDescriptions": {
+      "s1": "If at max HP, +<cc>50</>% Damage Amount",
+      "s2": "If at max HP, +<cc>50</>% Damage Amount",
+      "s3": "If at max HP, +<cc>50</>% Damage Amount",
+      "s4": "If at max HP, +<cc>50</>% Damage Amount",
+      "s5": "If at max HP, +<cc>50</>% Damage Amount"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_dll_010",
+    "name": "The Golden Rule",
+    "slug": "the-golden-rule",
+    "rarity": "Legend",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1180.webp",
+    "localImagePath": "images/the-golden-rule.webp",
+    "descriptions": {
+      "s1": "+20% Damage Amount, +20 Shield gain",
+      "s2": "+20% Damage Amount, +20 Shield gain",
+      "s3": "+20% Damage Amount, +20 Shield gain",
+      "s4": "+20% Damage Amount, +20 Shield gain",
+      "s5": "+20% Damage Amount, +20 Shield gain"
+    },
+    "rawDescriptions": {
+      "s1": "+<cc>20</>% Damage Amount, +<cc>20</> $Shield$ gain",
+      "s2": "+<cc>20</>% Damage Amount, +<cc>20</> $Shield$ gain",
+      "s3": "+<cc>20</>% Damage Amount, +<cc>20</> $Shield$ gain",
+      "s4": "+<cc>20</>% Damage Amount, +<cc>20</> $Shield$ gain",
+      "s5": "+<cc>20</>% Damage Amount, +<cc>20</> $Shield$ gain"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "diallos",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_011",
+    "name": "Verdant Day",
+    "slug": "verdant-day",
+    "rarity": "Legend",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1305.webp",
+    "localImagePath": "images/verdant-day.webp",
+    "descriptions": {
+      "s1": "On odd turns, +8% Attack, +12% Defense",
+      "s2": "On odd turns, +8% Attack, +12% Defense",
+      "s3": "On odd turns, +8% Attack, +12% Defense",
+      "s4": "On odd turns, +8% Attack, +12% Defense",
+      "s5": "On odd turns, +8% Attack, +12% Defense"
+    },
+    "rawDescriptions": {
+      "s1": "On odd turns, +<cc>8</>% Attack, +<cc>12</>% Defense",
+      "s2": "On odd turns, +<cc>8</>% Attack, +<cc>12</>% Defense",
+      "s3": "On odd turns, +<cc>8</>% Attack, +<cc>12</>% Defense",
+      "s4": "On odd turns, +<cc>8</>% Attack, +<cc>12</>% Defense",
+      "s5": "On odd turns, +<cc>8</>% Attack, +<cc>12</>% Defense"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_012",
+    "name": "Verdant Night",
+    "slug": "verdant-night",
+    "rarity": "Legend",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1306.webp",
+    "localImagePath": "images/verdant-night.webp",
+    "descriptions": {
+      "s1": "On even turns, +12% Attack, +8% Defense",
+      "s2": "On even turns, +12% Attack, +8% Defense",
+      "s3": "On even turns, +12% Attack, +8% Defense",
+      "s4": "On even turns, +12% Attack, +8% Defense",
+      "s5": "On even turns, +12% Attack, +8% Defense"
+    },
+    "rawDescriptions": {
+      "s1": "On even turns, +<cc>12</>% Attack, +<cc>8</>% Defense",
+      "s2": "On even turns, +<cc>12</>% Attack, +<cc>8</>% Defense",
+      "s3": "On even turns, +<cc>12</>% Attack, +<cc>8</>% Defense",
+      "s4": "On even turns, +<cc>12</>% Attack, +<cc>8</>% Defense",
+      "s5": "On even turns, +<cc>12</>% Attack, +<cc>8</>% Defense"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_dll_009",
+    "name": "Viadeus’s Reactor",
+    "slug": "viadeuss-reactor",
+    "rarity": "Legend",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1099.webp",
+    "localImagePath": "images/viadeuss-reactor.webp",
+    "descriptions": {
+      "s1": "When an Upgrade Card is activated, 1 Damage Reduction",
+      "s2": "When an Upgrade Card is activated, 1 Damage Reduction",
+      "s3": "When an Upgrade Card is activated, 1 Damage Reduction",
+      "s4": "When an Upgrade Card is activated, 1 Damage Reduction",
+      "s5": "When an Upgrade Card is activated, 1 Damage Reduction"
+    },
+    "rawDescriptions": {
+      "s1": "When an Upgrade Card is $activate$d, <cc>1</> $Damage Reduction$",
+      "s2": "When an Upgrade Card is $activate$d, <cc>1</> $Damage Reduction$",
+      "s3": "When an Upgrade Card is $activate$d, <cc>1</> $Damage Reduction$",
+      "s4": "When an Upgrade Card is $activate$d, <cc>1</> $Damage Reduction$",
+      "s5": "When an Upgrade Card is $activate$d, <cc>1</> $Damage Reduction$"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "diallos",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_p_dll_005",
+    "name": "Wings of Light",
+    "slug": "wings-of-light",
+    "rarity": "Legend",
+    "type": "Armor (Giáp)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1179.webp",
+    "localImagePath": "images/wings-of-light.webp",
+    "descriptions": {
+      "s1": "When Ego Points are 3 or lower, 0.2 Ego Points on Critical Hit",
+      "s2": "When Ego Points are 3 or lower, 0.2 Ego Points on Critical Hit",
+      "s3": "When Ego Points are 3 or lower, 0.2 Ego Points on Critical Hit",
+      "s4": "When Ego Points are 3 or lower, 0.2 Ego Points on Critical Hit",
+      "s5": "When Ego Points are 3 or lower, 0.2 Ego Points on Critical Hit"
+    },
+    "rawDescriptions": {
+      "s1": "When $Ego Points$ are <cc>3</> or lower, <cc>0.2</> $Ego Points$ on Critical Hit",
+      "s2": "When $Ego Points$ are <cc>3</> or lower, <cc>0.2</> $Ego Points$ on Critical Hit",
+      "s3": "When $Ego Points$ are <cc>3</> or lower, <cc>0.2</> $Ego Points$ on Critical Hit",
+      "s4": "When $Ego Points$ are <cc>3</> or lower, <cc>0.2</> $Ego Points$ on Critical Hit",
+      "s5": "When $Ego Points$ are <cc>3</> or lower, <cc>0.2</> $Ego Points$ on Critical Hit"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "diallos",
+      "delang",
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_004",
+    "name": "Clover of the Forest",
+    "slug": "clover-of-the-forest",
+    "rarity": "Rare",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1232.webp",
+    "localImagePath": "images/clover-of-the-forest.webp",
+    "descriptions": {
+      "s1": "On Recover through a card, +10% Attack to allies for 1 turn (max 1 stack)",
+      "s2": "On Recover through a card, +10% Attack to allies for 1 turn (max 1 stack)",
+      "s3": "On Recover through a card, +10% Attack to allies for 1 turn (max 1 stack)",
+      "s4": "On Recover through a card, +10% Attack to allies for 1 turn (max 1 stack)",
+      "s5": "On Recover through a card, +10% Attack to allies for 1 turn (max 1 stack)"
+    },
+    "rawDescriptions": {
+      "s1": "On $Recover$ through a card, +<cc>10</>% Attack to allies for <cc>1</> turn (max <cc>1</> stack)",
+      "s2": "On $Recover$ through a card, +<cc>10</>% Attack to allies for <cc>1</> turn (max <cc>1</> stack)",
+      "s3": "On $Recover$ through a card, +<cc>10</>% Attack to allies for <cc>1</> turn (max <cc>1</> stack)",
+      "s4": "On $Recover$ through a card, +<cc>10</>% Attack to allies for <cc>1</> turn (max <cc>1</> stack)",
+      "s5": "On $Recover$ through a card, +<cc>10</>% Attack to allies for <cc>1</> turn (max <cc>1</> stack)"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_006",
+    "name": "Mask of Evil Spirits",
+    "slug": "mask-of-evil-spirits",
+    "rarity": "Rare",
+    "type": "Armor (Giáp)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1117.webp",
+    "localImagePath": "images/mask-of-evil-spirits.webp",
+    "descriptions": {
+      "s1": "At the start of the next turn after taking Damage, 60% Fixed Shield",
+      "s2": "At the start of the next turn after taking Damage, 60% Fixed Shield",
+      "s3": "At the start of the next turn after taking Damage, 60% Fixed Shield",
+      "s4": "At the start of the next turn after taking Damage, 60% Fixed Shield",
+      "s5": "At the start of the next turn after taking Damage, 60% Fixed Shield"
+    },
+    "rawDescriptions": {
+      "s1": "At the start of the next turn after taking Damage, <cc>60</>% $Fixed Shield$",
+      "s2": "At the start of the next turn after taking Damage, <cc>60</>% $Fixed Shield$",
+      "s3": "At the start of the next turn after taking Damage, <cc>60</>% $Fixed Shield$",
+      "s4": "At the start of the next turn after taking Damage, <cc>60</>% $Fixed Shield$",
+      "s5": "At the start of the next turn after taking Damage, <cc>60</>% $Fixed Shield$"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_005",
+    "name": "Poacher’s Pathfinder",
+    "slug": "poachers-pathfinder",
+    "rarity": "Rare",
+    "type": "Accessory (Phụ kiện)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1160.webp",
+    "localImagePath": "images/poachers-pathfinder.webp",
+    "descriptions": {
+      "s1": "In Sekred battle, +25% Damage, 2 Vulnerable to all enemies",
+      "s2": "In Sekred battle, +25% Damage, 2 Vulnerable to all enemies",
+      "s3": "In Sekred battle, +25% Damage, 2 Vulnerable to all enemies",
+      "s4": "In Sekred battle, +25% Damage, 2 Vulnerable to all enemies",
+      "s5": "In Sekred battle, +25% Damage, 2 Vulnerable to all enemies"
+    },
+    "rawDescriptions": {
+      "s1": "In Sekred battle, +<cc>25</>% Damage, <cc>2</> $Vulnerable$ to all enemies",
+      "s2": "In Sekred battle, +<cc>25</>% Damage, <cc>2</> $Vulnerable$ to all enemies",
+      "s3": "In Sekred battle, +<cc>25</>% Damage, <cc>2</> $Vulnerable$ to all enemies",
+      "s4": "In Sekred battle, +<cc>25</>% Damage, <cc>2</> $Vulnerable$ to all enemies",
+      "s5": "In Sekred battle, +<cc>25</>% Damage, <cc>2</> $Vulnerable$ to all enemies"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  },
+  {
+    "id": "eq_sec_007",
+    "name": "The Fading Flower of Life",
+    "slug": "the-fading-flower-of-life",
+    "rarity": "Rare",
+    "type": "Weapon (Vũ khí)",
+    "chaosWorld": "Swamp of Judgment",
+    "imageUrl": "https://cdn.czndecksmeta.com/item/relics/relic_1301.webp",
+    "localImagePath": "images/the-fading-flower-of-life.webp",
+    "descriptions": {
+      "s1": "If at max HP, +40% Damage Amount",
+      "s2": "If at max HP, +40% Damage Amount",
+      "s3": "If at max HP, +40% Damage Amount",
+      "s4": "If at max HP, +40% Damage Amount",
+      "s5": "If at max HP, +40% Damage Amount"
+    },
+    "rawDescriptions": {
+      "s1": "If at max HP, +<cc>40</>% Damage Amount",
+      "s2": "If at max HP, +<cc>40</>% Damage Amount",
+      "s3": "If at max HP, +<cc>40</>% Damage Amount",
+      "s4": "If at max HP, +<cc>40</>% Damage Amount",
+      "s5": "If at max HP, +<cc>40</>% Damage Amount"
+    },
+    "stats": {
+      "s1": {
+        "atk": 28,
+        "def": 10,
+        "hp": 22
+      },
+      "s2": {
+        "atk": 45,
+        "def": 17,
+        "hp": 41
+      },
+      "s3": {
+        "atk": 62,
+        "def": 23,
+        "hp": 60
+      },
+      "s4": {
+        "atk": 74,
+        "def": 27,
+        "hp": 73
+      },
+      "s5": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      }
+    },
+    "rewardTag": [
+      "encounter"
+    ]
+  }
+]

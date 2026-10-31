@@ -12,11 +12,15 @@ ai_config.json
 logs/*
 !logs/.gitkeep
 scratch/
+tools/archive/
 tools/archive_templates/
 dist/
+*.zip
 
 # Environments
 .env
+.env.*
+!.env.example
 .venv/
 venv/
 ENV/

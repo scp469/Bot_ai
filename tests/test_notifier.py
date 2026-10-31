@@ -5,9 +5,9 @@ import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
 
-from notifier import Notifier
-from bot_engine import BotEngine
-from config import Mode, LeftButton
+from czn_bot.notifier import Notifier
+from czn_bot.runner import BotRunner as BotEngine
+from czn_bot.states import Mode, LeftButton
 
 
 class TestNotifier(unittest.TestCase):
@@ -49,12 +49,12 @@ class TestNotifier(unittest.TestCase):
         self.assertTrue(result)
         mock_urlopen.assert_called_once()
 
-    @patch("subprocess.Popen")
-    def test_send_windows_toast(self, mock_popen):
+    @patch("subprocess.run")
+    def test_send_windows_toast(self, mock_run):
         with patch("sys.platform", "win32"):
             result = self.notifier.send_windows_toast("Alert", "Bot stopped")
             self.assertTrue(result)
-            mock_popen.assert_called_once()
+            mock_run.assert_called_once()
 
     @patch.object(Notifier, "notify")
     def test_alert_helpers(self, mock_notify):
@@ -90,6 +90,7 @@ class TestBotEngineNotifierIntegration(unittest.TestCase):
             detector=self.mock_det,
             notifier=self.mock_notifier,
         )
+        self.engine.enable_chaos_ai = False
         self.engine.is_running = True
         self.engine.beep = MagicMock()
         self.dummy_screen = np.zeros((10, 10, 3), dtype=np.uint8)

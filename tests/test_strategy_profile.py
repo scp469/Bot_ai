@@ -3,8 +3,11 @@ Unit tests for Chaos Strategy Profiles (Safe, Balanced, Aggressive).
 """
 import unittest
 
-from chaos_pathfinder import ChaosNode, ChaosNodeType, IslandChoice, select_best_island
-from strategy_profile import (
+from czn_bot.chaos.pathfinder import (
+    ChaosNode,
+    ChaosNodeType,
+    IslandChoice,
+    select_best_island,
     StrategyMode,
     get_strategy_profile,
     PROFILE_SAFE,

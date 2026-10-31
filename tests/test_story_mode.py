@@ -10,9 +10,10 @@ from unittest.mock import MagicMock
 import cv2
 import numpy as np
 
-from config import State, Mode, LeftButton, TAP_COORDS
-from detector import ScreenDetector
-from bot_engine import BotEngine
+from czn_bot.states import State, Mode, LeftButton
+from czn_bot.coords import TAP_COORDS
+from czn_bot.vision.detector import ScreenDetector
+from czn_bot.runner import BotRunner as BotEngine
 
 
 class TestStoryMode(unittest.TestCase):
@@ -126,8 +127,8 @@ class TestStoryMode(unittest.TestCase):
         self.mock_adb.tap.assert_any_call(1272, 48)
         self.assertIsNone(self.engine._last_action)
 
-    def test_handle_story_dialogue_does_not_skip_in_chaos_mode(self):
-        """In Chaos mode, STORY_DIALOGUE should NOT skip dialogues or tap buttons."""
+    def test_handle_story_dialogue_skips_in_chaos_mode(self):
+        """In Chaos mode, STORY_DIALOGUE should automatically fast-forward and skip dialogues."""
         self.engine.mode = Mode.CHAOS
         details = {
             "skip_coord": (1272, 48),
@@ -135,7 +136,9 @@ class TestStoryMode(unittest.TestCase):
         }
         result = self.engine._handle_story_dialogue(self.dummy_screen, details)
         self.assertTrue(result)
-        self.assertEqual(self.mock_adb.tap.call_count, 0)
+        self.assertGreater(self.mock_adb.tap.call_count, 0)
+        self.mock_adb.tap.assert_any_call(1395, 48)
+        self.mock_adb.tap.assert_any_call(1272, 48)
         self.assertIsNone(self.engine._last_action)
 
     def test_detect_story_victory_screen(self):

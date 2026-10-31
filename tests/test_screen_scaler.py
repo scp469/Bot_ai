@@ -2,8 +2,8 @@
 Unit tests for ScreenScaler and resolution check logic.
 """
 import unittest
-from config import ScreenScaler
-from adb_client import ADBClient
+from czn_bot.vision.templates import ScreenScaler
+from czn_bot.device.adb import ADBClient
 
 
 class TestScreenScaler(unittest.TestCase):

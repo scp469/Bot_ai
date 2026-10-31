@@ -5,8 +5,9 @@ import os
 import unittest
 import cv2
 
-from detector import ScreenDetector
-from config import State
+from czn_bot.vision.detector import ScreenDetector
+from czn_bot.states import State
+from czn_bot.constants import TEMPLATES_DIR, TEMPLATE_THRESHOLDS
 
 
 class TestChaosDetector(unittest.TestCase):
@@ -120,16 +121,30 @@ class TestChaosDetector(unittest.TestCase):
 
     def test_per_template_threshold(self):
         """Verify that per-template threshold overrides are respected."""
-        from config import TEMPLATE_THRESHOLDS
         self.assertEqual(self.detector._get_threshold("in_match_check"), TEMPLATE_THRESHOLDS["in_match_check"])
         self.assertEqual(self.detector._get_threshold("chaos_leave_button"), TEMPLATE_THRESHOLDS["chaos_leave_button"])
     def test_detect_chaos_safe_zone(self):
-        """Verify that Safe Zone / Rest site is detected as CHAOS_SAFE_ZONE."""
+        """Verify that Safe Zone / Rest site is detected as CHAOS_SAFE_ZONE with rest_coord."""
         img = cv2.imread(os.path.join(self.fixture_dir, "chaos_safe_zone.png"))
         if img is not None:
             state, details = self.detector.detect(img)
             self.assertEqual(state, State.CHAOS_SAFE_ZONE)
             self.assertIn("skip_coord", details)
+            self.assertIn("rest_coord", details)
+
+    def test_detect_chaos_equipment_screen(self):
+        """Verify that screen with equipment_title is detected as CHAOS_EQUIPMENT."""
+        import numpy as np
+        screen = np.zeros((900, 1600, 3), dtype=np.uint8)
+        tpl_path = os.path.join(TEMPLATES_DIR, "equipment_title.png")
+        if os.path.exists(tpl_path):
+            tpl = cv2.imread(tpl_path)
+            if tpl is not None:
+                th, tw = tpl.shape[:2]
+                screen[80:80+th, 700:700+tw] = tpl
+                state, details = self.detector.detect(screen)
+                self.assertEqual(state, State.CHAOS_EQUIPMENT)
+                self.assertIn("confirm_coord", details)
 
     def test_detect_choose_fate(self):
         """Verify that Choose your fate screen is detected as CHAOS_CHOOSE_EPIPHANY."""

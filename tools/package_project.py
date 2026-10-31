@@ -16,9 +16,12 @@ EXCLUDE_DIRS = {
     ".venv",
     "venv",
     ".pytest_cache",
+    ".antigravity",
+    ".vscode",
     "logs",
     "scratch",
     "dist",
+    "archive",
     "archive_templates",
 }
 
@@ -28,17 +31,23 @@ EXCLUDE_EXTENSIONS = {
     ".pyd",
 }
 
+EXCLUDE_FILES = {
+    ".env",
+    "ai_config.json",
+}
+
 
 def clean_project_caches():
     """Remove any existing __pycache__ directories and .pyc files."""
     removed_count = 0
     for root, dirs, files in os.walk(BASE_DIR):
         for d in list(dirs):
-            if d in ("__pycache__", ".pytest_cache"):
+            if d in ("__pycache__", ".pytest_cache") or "sao chép" in d.lower():
                 full_path = os.path.join(root, d)
-                shutil.rmtree(full_path, ignore_errors=True)
+                if d in ("__pycache__", ".pytest_cache"):
+                    shutil.rmtree(full_path, ignore_errors=True)
+                    removed_count += 1
                 dirs.remove(d)
-                removed_count += 1
         for f in files:
             if any(f.endswith(ext) for ext in EXCLUDE_EXTENSIONS):
                 try:
@@ -54,8 +63,14 @@ def should_include_file(rel_path: str) -> bool:
     parts = rel_path.replace("\\", "/").split("/")
     # Exclude files inside blacklisted directories
     for part in parts:
-        if part in EXCLUDE_DIRS:
+        if part in EXCLUDE_DIRS or "sao chép" in part.lower():
             return False
+    # Exclude sensitive files (.env, .env.*, ai_config.json)
+    filename = os.path.basename(rel_path)
+    if filename in EXCLUDE_FILES or "sao chép" in filename.lower():
+        return False
+    if filename.startswith(".env") and filename != ".env.example":
+        return False
     # Exclude unwanted extensions
     _, ext = os.path.splitext(rel_path)
     if ext.lower() in EXCLUDE_EXTENSIONS:

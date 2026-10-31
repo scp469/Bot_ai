@@ -1,0 +1,14 @@
+{
+  "python.analysis.extraPaths": [
+    "src",
+    "apps"
+  ],
+  "python.autoComplete.extraPaths": [
+    "src",
+    "apps"
+  ],
+  "python.analysis.typeCheckingMode": "off",
+  "files.exclude": {
+    "tools/archive": true
+  }
+}

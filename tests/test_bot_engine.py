@@ -5,9 +5,11 @@ import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
 
-from config import State, Mode, LeftButton, TAP_COORDS, MAX_SAME_ACTION
-from bot_engine import BotEngine
-from chaos_pathfinder import IslandChoice
+from czn_bot.states import State, Mode, LeftButton
+from czn_bot.coords import TAP_COORDS
+from czn_bot.constants import MAX_SAME_ACTION
+from czn_bot.runner import BotRunner as BotEngine
+from czn_bot.chaos.pathfinder import IslandChoice
 
 
 class TestBotEngine(unittest.TestCase):
@@ -15,6 +17,7 @@ class TestBotEngine(unittest.TestCase):
         self.mock_adb = MagicMock()
         self.mock_detector = MagicMock()
         self.engine = BotEngine(adb_client=self.mock_adb, detector=self.mock_detector)
+        self.engine.enable_chaos_ai = False
         self.engine.is_running = True
         self.engine.beep = MagicMock()
         self.dummy_screen = np.zeros((100, 100, 3), dtype=np.uint8)
@@ -147,19 +150,30 @@ class TestBotEngine(unittest.TestCase):
         self.assertTrue(result)
         self.mock_adb.tap.assert_not_called()
 
-    @patch("chaos_hp_reader.get_team_hp", return_value=(0.85, False))
-    @patch("chaos_map_reader.parse_chaos_minimap", return_value=([], {}, {}, []))
+    @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
+    @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=([], {}, {}, []))
     def test_handle_chaos_map_invalid_minimap_halts(self, mock_parse, mock_hp):
-        """If parse_chaos_minimap returns empty roots, halts bot safely."""
+        """If parse_chaos_minimap returns empty roots repeatedly, halts bot safely after retries."""
         self.engine.mode = Mode.CHAOS
+        self.engine.max_map_retries = 1
         result = self.engine._handle_chaos_map(self.dummy_screen, {})
         self.assertFalse(result)
         self.assertFalse(self.engine.is_running)
         self.mock_adb.tap.assert_not_called()
 
-    @patch("chaos_hp_reader.get_team_hp", return_value=(0.85, False))
-    @patch("chaos_map_reader.parse_chaos_minimap", return_value=([0, 1], {}, {}, [10]))
-    @patch("chaos_pathfinder.select_best_island", return_value=(None, {}))
+    @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
+    @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=([], {}, {}, []))
+    def test_handle_chaos_map_minimap_transition_retries(self, mock_parse, mock_hp):
+        """Verify that first empty minimap doesn't immediately halt, but waits for camera transition."""
+        self.engine.mode = Mode.CHAOS
+        self.engine.max_map_retries = 5
+        result = self.engine._handle_chaos_map(self.dummy_screen, {})
+        self.assertTrue(result)
+        self.assertTrue(self.engine.is_running)
+
+    @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
+    @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=([0, 1], {}, {}, [10]))
+    @patch("czn_bot.flows.chaos.select_best_island", return_value=(None, {}))
     def test_handle_chaos_map_no_safe_path_halts(self, mock_path, mock_parse, mock_hp):
         """If select_best_island returns None, halts bot safely."""
         self.engine.mode = Mode.CHAOS
@@ -168,9 +182,9 @@ class TestBotEngine(unittest.TestCase):
         self.assertFalse(self.engine.is_running)
         self.mock_adb.tap.assert_not_called()
 
-    @patch("chaos_hp_reader.get_team_hp", return_value=(0.85, False))
-    @patch("chaos_map_reader.parse_chaos_minimap", return_value=({IslandChoice.MIDDLE: "c1_r3"}, {}, {}, ["boss"]))
-    @patch("chaos_pathfinder.select_best_island", return_value=(None, {}))
+    @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
+    @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=({IslandChoice.MIDDLE: "c1_r3"}, {}, {}, ["boss"]))
+    @patch("czn_bot.flows.chaos.select_best_island", return_value=(None, {}))
     def test_handle_chaos_map_single_island_fallback_when_no_path(self, mock_path, mock_parse, mock_hp):
         """If select_best_island returns None but there's only 1 island, bot falls back to that island instead of halting."""
         self.engine.mode = Mode.CHAOS
@@ -213,6 +227,7 @@ class TestBotEngine(unittest.TestCase):
         """CHAOS_CHOOSE_EPIPHANY should wait without tapping, reset unknown counter, and return True."""
         self.engine.mode = Mode.CHAOS
         self.engine._unknown_streak = 2
+        self.engine.auto_pick_epiphany = False
         # Multiple iterations: verify it never taps when auto_pick_epiphany is False
         for _ in range(5):
             result = self.engine._handle_chaos_choose_epiphany(self.dummy_screen, {"score_card_reward": 0.8})
@@ -252,6 +267,34 @@ class TestBotEngine(unittest.TestCase):
         self.assertTrue(result)
         self.mock_adb.tap.assert_not_called()
 
+    @patch("time.sleep", return_value=None)
+    def test_handle_chaos_safe_zone_always_heals(self, mock_sleep):
+        """Verify that CHAOS_SAFE_ZONE taps Rest and confirm, not skip."""
+        from czn_bot.coords import TAP_COORDS
+        self.engine.mode = Mode.CHAOS
+        details = {
+            "skip_coord": TAP_COORDS["chaos_safe_zone_skip"],
+            "rest_coord": TAP_COORDS["chaos_safe_zone_rest"],
+            "confirm_coord": TAP_COORDS["chaos_safe_zone_confirm"],
+        }
+        result = self.engine._handle_chaos_safe_zone(self.dummy_screen, details)
+        self.assertTrue(result)
+        # Should tap Rest and confirm
+        self.mock_adb.tap.assert_any_call(*TAP_COORDS["chaos_safe_zone_rest"])
+        self.mock_adb.tap.assert_any_call(*TAP_COORDS["chaos_safe_zone_confirm"])
+
+    @patch("time.sleep", return_value=None)
+    def test_handle_chaos_equipment_equips_and_confirms(self, mock_sleep):
+        """Verify that CHAOS_EQUIPMENT selects equipment, equips, and taps confirm."""
+        self.engine.mode = Mode.CHAOS
+        details = {
+            "confirm_coord": (1360, 806),
+        }
+        result = self.engine._handle_chaos_equipment(self.dummy_screen, details)
+        self.assertTrue(result)
+        # Must tap confirm coord
+        self.mock_adb.tap.assert_any_call(1360, 806)
+
     # ── Pre-match & Unknown Handlers ──────────────────────────────────
 
     def test_handle_pre_match_disabled(self):
@@ -284,6 +327,60 @@ class TestBotEngine(unittest.TestCase):
         r3 = self.engine._handle_unknown(self.dummy_screen, {})
         self.assertFalse(r3)
         self.assertFalse(self.engine.is_running)
+
+    def test_handle_unknown_delegates_to_ai_vision_tap(self):
+        """When AI Vision analyzes UNKNOWN screen and returns tap, bot executes tap and resets streak."""
+        self.engine._unknown_streak = 2
+        self.engine.enable_chaos_ai = True
+        self.engine.rule_manager = MagicMock()
+        self.engine.rule_manager.get_api_key.return_value = "fake_key"
+        self.engine.chaos_brain = MagicMock()
+        self.engine.chaos_brain.analyze_unknown_screen.return_value = {
+            "screen_type": "popup",
+            "action": "tap",
+            "tap_coord": [1200, 100],
+            "reason": "Đóng popup quảng cáo"
+        }
+
+        result = self.engine._handle_unknown(self.dummy_screen, {})
+        self.assertTrue(result)
+        self.assertEqual(self.engine._unknown_streak, 0)
+        self.mock_adb.tap.assert_called()
+        args, _ = self.mock_adb.tap.call_args
+        self.assertAlmostEqual(args[0], 1200, delta=5)
+        self.assertAlmostEqual(args[1], 100, delta=5)
+
+    def test_handle_unknown_delegates_to_ai_vision_wait(self):
+        """When AI Vision returns wait on battle animation, bot waits and resets streak."""
+        self.engine._unknown_streak = 2
+        self.engine.enable_chaos_ai = True
+        self.engine.rule_manager = MagicMock()
+        self.engine.rule_manager.get_api_key.return_value = "fake_key"
+        self.engine.chaos_brain = MagicMock()
+        self.engine.chaos_brain.analyze_unknown_screen.return_value = {
+            "screen_type": "battle_animation",
+            "action": "wait",
+            "wait_seconds": 0.01,
+            "reason": "Hoạt cảnh kỹ năng đang diễn ra"
+        }
+
+        result = self.engine._handle_unknown(self.dummy_screen, {})
+        self.assertTrue(result)
+        self.assertEqual(self.engine._unknown_streak, 0)
+
+    def test_handle_unknown_offline_ui_scanner_dismisses_popup(self):
+        """When AI Vision fails/unavailable, Offline UI Scanner detects Close button and taps to dismiss."""
+        self.engine._unknown_streak = 1
+        self.engine.enable_chaos_ai = False  # Simulate offline/no API
+        self.engine._scan_unknown_screen_elements = MagicMock(return_value=("Nút Đóng (close_x)", 1400, 80))
+
+        result = self.engine._handle_unknown(self.dummy_screen, {})
+        self.assertTrue(result)
+        self.assertEqual(self.engine._unknown_streak, 0)
+        self.mock_adb.tap.assert_called()
+        args, _ = self.mock_adb.tap.call_args
+        self.assertAlmostEqual(args[0], 1400, delta=5)
+        self.assertAlmostEqual(args[1], 80, delta=5)
 
     # ── Tap Guard Tests ───────────────────────────────────────────────
 
@@ -410,7 +507,7 @@ class TestBotEngine(unittest.TestCase):
     def test_execute_tap_with_hybrid_verification_success(self):
         """When Hybrid OCR is enabled and expected text is present, tap succeeds."""
         import cv2
-        from detector import ScreenDetector
+        from czn_bot.vision.detector import ScreenDetector
         self.engine.detector = ScreenDetector()
         self.engine.enable_hybrid_verification = True
         real_screen = np.zeros((900, 1600, 3), dtype=np.uint8)
@@ -427,7 +524,7 @@ class TestBotEngine(unittest.TestCase):
     def test_execute_tap_with_hybrid_verification_false_positive_rejected(self):
         """When Hybrid OCR is enabled but wrong text is present (false positive), tap is aborted."""
         import cv2
-        from detector import ScreenDetector
+        from czn_bot.vision.detector import ScreenDetector
         self.engine.detector = ScreenDetector()
         self.engine.enable_hybrid_verification = True
         real_screen = np.zeros((900, 1600, 3), dtype=np.uint8)

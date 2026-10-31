@@ -1,0 +1,23 @@
+{
+  "include": [
+    "src",
+    "apps",
+    "tests",
+    "tools",
+    "main.py",
+    "gui.py"
+  ],
+  "exclude": [
+    "tools/archive",
+    "**/__pycache__",
+    "logs",
+    "scratch",
+    "dist"
+  ],
+  "extraPaths": [
+    "src",
+    "apps"
+  ],
+  "typeCheckingMode": "off",
+  "reportMissingImports": "warning"
+}

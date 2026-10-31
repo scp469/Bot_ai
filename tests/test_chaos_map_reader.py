@@ -6,17 +6,18 @@ import unittest
 import cv2
 import numpy as np
 
-from chaos_map_reader import (
+from czn_bot.vision.map_reader import (
     extract_minimap,
     is_chaos_map_screen,
     classify_node_type,
     parse_chaos_minimap,
 )
-from chaos_pathfinder import (
+from czn_bot.chaos.pathfinder import (
     ChaosNodeType,
     IslandChoice,
     select_best_island,
 )
+from czn_bot.constants import TEMPLATES_DIR
 
 
 class TestChaosMapReader(unittest.TestCase):
@@ -47,7 +48,7 @@ class TestChaosMapReader(unittest.TestCase):
 
     def test_classify_templates(self):
         """Test node classification against saved templates."""
-        tpl_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates")
+        tpl_dir = TEMPLATES_DIR
         
         sword = cv2.imread(os.path.join(tpl_dir, "chaos_node_sword.png"))
         if sword is not None:
@@ -108,7 +109,7 @@ class TestChaosMapReader(unittest.TestCase):
 
     def test_row_to_island_choice(self):
         """Test row index to IslandChoice mapping."""
-        from chaos_map_reader import _row_to_island_choice
+        from czn_bot.vision.map_reader import _row_to_island_choice
         self.assertEqual(_row_to_island_choice(1, 85), IslandChoice.TOP)
         self.assertEqual(_row_to_island_choice(3, 198), IslandChoice.MIDDLE)
         self.assertEqual(_row_to_island_choice(4, 254), IslandChoice.BOTTOM)
@@ -126,7 +127,7 @@ class TestChaosMapReader(unittest.TestCase):
 
     def test_detect_3d_island_coords(self):
         """Test dynamic 3D detection on fixture images."""
-        from chaos_map_reader import detect_3d_island_coords
+        from czn_bot.vision.map_reader import detect_3d_island_coords
 
         # 3 islands map
         coords_3 = detect_3d_island_coords(self.img_map_3, [IslandChoice.TOP, IslandChoice.MIDDLE, IslandChoice.BOTTOM])
@@ -157,8 +158,8 @@ class TestChaosMapReader(unittest.TestCase):
             self.assertIsNotNone(evals[IslandChoice.TOP].best_path)
     def test_seraph_boss_map(self):
         """Test Seraph angel boss map with 4 columns and bottom pin position."""
-        from detector import ScreenDetector
-        from config import State
+        from czn_bot.vision.detector import ScreenDetector
+        from czn_bot.states import State
 
         seraph_path = os.path.join(self.fixture_dir, "chaos_map_seraph.png")
         if os.path.exists(seraph_path):

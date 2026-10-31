@@ -1,7 +1,7 @@
 """
-Automated PyInstaller Build Script for Chaos Zero Nightmare AI Bot.
-Packages main.py, GUI, OpenCV, CustomTkinter, Google GenAI SDK, and template assets
-into a single standalone executable.
+Automated PyInstaller Build Script for Chaos Zero Nightmare Bot.
+Packages main.py, GUI, OpenCV, CustomTkinter, and template assets
+into a single standalone offline executable.
 """
 import os
 import sys
@@ -17,7 +17,7 @@ def build_executable():
     print("=" * 60)
 
     try:
-        import PyInstaller
+        import PyInstaller  # type: ignore
         print(f"[*] Found PyInstaller version: {PyInstaller.__version__}")
     except ImportError:
         print("[!] PyInstaller chưa được cài đặt.")
@@ -35,7 +35,8 @@ def build_executable():
     except ImportError:
         ctk_dir = ""
 
-    templates_dir = os.path.join(BASE_DIR, "templates")
+    data_templates_dir = os.path.join(BASE_DIR, "data", "templates")
+    data_rules_dir = os.path.join(BASE_DIR, "data", "rules")
     dist_dir = os.path.join(BASE_DIR, "dist")
     build_dir = os.path.join(BASE_DIR, "build")
 
@@ -45,10 +46,14 @@ def build_executable():
         "--name=ChaosZeroNightmare_AIBot",
         "--noconsole",
         "--onefile",
-        f"--add-data={templates_dir};templates",
-        f"--add-data={os.path.join(BASE_DIR, 'card_rules.json')};.",
-        f"--add-data={os.path.join(BASE_DIR, 'event_rules.json')};.",
+        f"--add-data={data_templates_dir};data/templates",
+        f"--add-data={data_rules_dir};data/rules",
     ]
+
+    # Also support legacy flat templates if present
+    legacy_templates = os.path.join(BASE_DIR, "templates")
+    if os.path.exists(legacy_templates):
+        cmd.append(f"--add-data={legacy_templates};templates")
 
     if ctk_dir:
         cmd.append(f"--add-data={ctk_dir};customtkinter")
@@ -60,10 +65,38 @@ def build_executable():
         "PIL.Image",
         "cv2",
         "numpy",
-        "google.genai",
-        "google.genai.types",
         "requests",
         "urllib3",
+        "czn_bot",
+        "czn_bot.settings",
+        "czn_bot.constants",
+        "czn_bot.coords",
+        "czn_bot.states",
+        "czn_bot.device.adb",
+        "czn_bot.device.mock",
+        "czn_bot.vision.templates",
+        "czn_bot.vision.ocr",
+        "czn_bot.vision.detector",
+        "czn_bot.vision.hp_reader",
+        "czn_bot.vision.map_reader",
+        "czn_bot.chaos.pathfinder",
+        "czn_bot.chaos.rules",
+        "czn_bot.chaos.decisions",
+        "czn_bot.chaos.ai_brain",
+        "apps",
+        "apps.cli",
+        "apps.gui",
+        "czn_bot.vision.state_classifier",
+        "czn_bot.chaos.state_machine",
+        "czn_bot.flows.base",
+        "czn_bot.flows.replay",
+        "czn_bot.flows.progress",
+        "czn_bot.flows.story",
+        "czn_bot.flows.chaos",
+        "czn_bot.runner",
+        "czn_bot.recovery",
+        "czn_bot.stats",
+        "czn_bot.notifier",
     ]
     for hi in hidden_imports:
         cmd.append(f"--hidden-import={hi}")
@@ -82,7 +115,7 @@ def build_executable():
         print("=" * 60)
         print(f"File thực thi: {exe_path}")
         print("Bạn có thể chia sẻ trực tiếp file .exe này cho người dùng khác.")
-        print("Người dùng sẽ tự điền API Key cá nhân trong giao diện để sử dụng.")
+        print("Bot hoạt động 100% offline, không cần cấu hình API Key.")
         print("=" * 60)
         return True
     else:

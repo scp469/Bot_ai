@@ -1,0 +1,458 @@
+[
+  {
+    "name": "Rossweisse",
+    "class": "striker",
+    "ego": "NARCISSISM",
+    "partner": {
+      "name": "Sig",
+      "skill": "Frail Dominion of Kyrken",
+      "desc": "2 Dominion ShardIncrease Damage Amount of #match_comb_char#’s Justice Attack Cards by 50% for 2 turns"
+    },
+    "faint_memory": "140 / 180",
+    "is_dt_mode": true,
+    "equipment": [
+      {
+        "name": "Criticism of Discord",
+        "type": "WEAPON",
+        "rarity": "UNIQUE",
+        "stars": 5,
+        "effect": "+18% AttackOn Ravage, decrease Stress of allies by 1",
+        "stats": {
+          "atk": 82.0,
+          "def": 31.0,
+          "hp": 83.0
+        }
+      },
+      {
+        "name": "Crown of Corruption",
+        "type": "ARMOR",
+        "rarity": "LEGEND",
+        "stars": 5,
+        "effect": "Decrease max HP by 10%+10% Critical Chance to Justice Attack Cards of this unit",
+        "stats": {
+          "atk": 82.0,
+          "def": 31.0,
+          "hp": 83.0
+        }
+      },
+      {
+        "name": "Overloaded Power Engine",
+        "type": "ACC",
+        "rarity": "LEGEND",
+        "stars": 5,
+        "effect": "+3% Critical Damage to Attack Cards of this unit for each Bind card of this unit stacked this turn (max 30%)",
+        "stats": {
+          "atk": 82.0,
+          "def": 31.0,
+          "hp": 83.0
+        }
+      }
+    ],
+    "removed_cards": [
+      {
+        "name": "Sword Slash",
+        "cost": 1.0,
+        "id": "c_30134_srt1"
+      },
+      {
+        "name": "Sword Slash",
+        "cost": 1.0,
+        "id": "c_30134_srt2"
+      },
+      {
+        "name": "Standing Blade",
+        "cost": 1.0,
+        "id": "c_30134_srt3"
+      }
+    ],
+    "cards": [
+      {
+        "name": "Flicker Blade (Blink)",
+        "cost": 0.0,
+        "category": "ATK",
+        "rarity": "RARE",
+        "copied": false,
+        "desc": "[fc]600[/]% DamageOn polarization, split into [fc]Shard:Light (Blink) and Shard:Dark (Blink)[/]",
+        "spark_notes": [],
+        "raw_id": "c_30134_srt4_rsp4"
+      },
+      {
+        "name": "Sword Resonance",
+        "cost": 1.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": false,
+        "desc": "Create 3 Sword Tassel[fc]Activate effect for 1 random Light or Dark card[/]",
+        "spark_notes": [
+          "Spark (Caligo): Draw 1"
+        ],
+        "raw_id": "c_30134_uni1_rsp1"
+      },
+      {
+        "name": "Radiant Sword Flow",
+        "cost": 1.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": false,
+        "desc": "[fc]Increase Damage Amount of this unit by 15% for each Justice Card in hand for 1 turn (max 75%)[/]",
+        "spark_notes": [],
+        "raw_id": "c_30134_uni2_rsp5"
+      },
+      {
+        "name": "Blade of the Cycle",
+        "cost": 1.0,
+        "category": "ATK",
+        "rarity": "LEGEND",
+        "copied": false,
+        "desc": "200% Damage4 Brand of the Cycle[fc]Draw 1 card(s) of this unit, then decrease Cost of those cards by 1 for 1 turn[/]",
+        "spark_notes": [],
+        "raw_id": "c_30134_uni3_rsp3"
+      },
+      {
+        "name": "Kyrken’s Apostle",
+        "cost": 0.0,
+        "category": "POWER",
+        "rarity": "UNIQUE",
+        "copied": false,
+        "desc": "Draw 21 Kyrken’s Aegis",
+        "spark_notes": [],
+        "raw_id": "c_30134_uni4"
+      },
+      {
+        "name": "Sword Resonance",
+        "cost": 1.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Activate effect for all Light and Dark cards in hand",
+        "spark_notes": [
+          "Spark (Caligo): Draw 1"
+        ],
+        "raw_id": "c_30134_uni1_rsp5"
+      },
+      {
+        "name": "Sword Resonance",
+        "cost": 1.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Create 3 Sword Tassel[fc]Activate effect for 1 random Light or Dark card[/]",
+        "spark_notes": [
+          "Spark (Caligo): Draw 1"
+        ],
+        "raw_id": "c_30134_uni1_rsp1"
+      },
+      {
+        "name": "Sword Resonance",
+        "cost": 1.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Create 3 Sword Tassel[fc]Activate effect for 1 random Light or Dark card[/]",
+        "spark_notes": [
+          "Spark (Caligo): Draw 1"
+        ],
+        "raw_id": "c_30134_uni1_rsp1"
+      },
+      {
+        "name": "Memory: Loss",
+        "cost": 0.0,
+        "category": "POWER",
+        "rarity": "UNIQUE",
+        "copied": false,
+        "desc": "When an ally Skill Card is stacked, +10% Attack to this unit (1 time per turn, 2 times per battle)Increase Damage Amount of Justice Attribute Attack Cards of this unit by 25%",
+        "spark_notes": [],
+        "raw_id": "card_ds05_b_c1_4_1"
+      }
+    ]
+  },
+  {
+    "name": "Tiphera",
+    "class": "controller",
+    "ego": "NORMS",
+    "partner": {
+      "name": "Tiana",
+      "skill": "Phase Alignment",
+      "desc": "Draw 1 Exhaust card(s)The next 2 time(s) an Ego Skill is used, Draw 1 Exhaust card(s)Decrease Cost of the next Ego Skill used by 1"
+    },
+    "faint_memory": "140 / 180",
+    "is_dt_mode": true,
+    "equipment": [
+      {
+        "name": "Runic Hammer",
+        "type": "WEAPON",
+        "rarity": "LEGEND",
+        "stars": 5,
+        "effect": "+20% Critical Damage to ally Unique Attack Cards (cannot stack)",
+        "stats": {
+          "atk": 82.0,
+          "def": 31.0,
+          "hp": 83.0
+        }
+      },
+      {
+        "name": "The Final Command",
+        "type": "ACC",
+        "rarity": "UNIQUE",
+        "stars": 5,
+        "effect": "When AP is gained through a card or Ego Skill of this unit, +3% Attack to allies for 1 turn (max 6 stacks)",
+        "stats": {
+          "atk": 82.0,
+          "def": 31.0,
+          "hp": 83.0
+        }
+      }
+    ],
+    "removed_cards": [
+      {
+        "name": "Matter Disintegration",
+        "cost": 1.0,
+        "id": "c_30084_srt1"
+      },
+      {
+        "name": "Barrier Deployment",
+        "cost": 1.0,
+        "id": "c_30084_srt2"
+      },
+      {
+        "name": "Barrier Deployment",
+        "cost": 1.0,
+        "id": "c_30084_srt3"
+      }
+    ],
+    "cards": [
+      {
+        "name": "Quantum Seed",
+        "cost": 0.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": false,
+        "desc": "Heal 100%[fc]Select 1 Archetype card[/][fc]Create 1 in hand and Draw Pile each[/]",
+        "spark_notes": [
+          "Spark (Caligo): Draw 1"
+        ],
+        "raw_id": "c_30084_srt4_rsp2"
+      },
+      {
+        "name": "Dual Creation",
+        "cost": 1.0,
+        "category": "POWER",
+        "rarity": "LEGEND",
+        "copied": false,
+        "desc": "[fc]When an Archetype card is moved to hand, duplicate that card and remove a random effect (5 time(s) per turn)[/]",
+        "spark_notes": [],
+        "raw_id": "c_30084_uni3_rsp5"
+      },
+      {
+        "name": "Event Horizon",
+        "cost": 2.0,
+        "category": "SKILL",
+        "rarity": "UNIQUE",
+        "copied": false,
+        "desc": "1 APDraw 1Increase Damage Amount of the first Hit of next Attack Card by 40%",
+        "spark_notes": [],
+        "raw_id": "c_30084_uni4"
+      },
+      {
+        "name": "Quantum Seed",
+        "cost": 0.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Heal 100%[fc]Select 1 Archetype card[/][fc]Create 1 in hand and Draw Pile each[/]",
+        "spark_notes": [
+          "Spark (Caligo): Draw 1"
+        ],
+        "raw_id": "c_30084_srt4_rsp2"
+      },
+      {
+        "name": "Quantum Seed",
+        "cost": 0.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Heal 100%[fc]Select 1 Archetype card[/][fc]Create 1 in hand and Draw Pile each[/]",
+        "spark_notes": [
+          "Spark (Caligo): Draw 1"
+        ],
+        "raw_id": "c_30084_srt4_rsp2"
+      },
+      {
+        "name": "Quantum Seed",
+        "cost": 0.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Heal 100%[fc]Select 1 Archetype card[/][fc]Create 1 in hand and Draw Pile each[/]",
+        "spark_notes": [],
+        "raw_id": "c_30084_srt4_rsp2"
+      },
+      {
+        "name": "Enveloping Light",
+        "cost": 1.0,
+        "category": "POWER",
+        "rarity": "LEGEND",
+        "copied": false,
+        "desc": "When an ally Skill or Upgrade Card is used, create 1 Celestial Wrath in hand (3 times per turn)",
+        "spark_notes": [
+          "Divine Spark (c00111): Morale 1"
+        ],
+        "raw_id": "card_ds05_00009"
+      },
+      {
+        "name": "Memory: Loss",
+        "cost": 0.0,
+        "category": "POWER",
+        "rarity": "UNIQUE",
+        "copied": false,
+        "desc": "When an ally Skill Card is stacked, +6% Attack to allies (1 time per turn, 2 times per battle)Increase Damage Amount of Justice Attribute Attack Cards of this unit by 25%",
+        "spark_notes": [],
+        "raw_id": "card_ds05_b_c1_4_3"
+      }
+    ]
+  },
+  {
+    "name": "Veronica",
+    "class": "ranger",
+    "ego": "LOVE",
+    "partner": {
+      "name": "Rosaria",
+      "skill": "Security team, requesting support!",
+      "desc": "Draw 1 Upgrade Card(s)If there are no Upgrade Cards in Draw Pile, Draw 1"
+    },
+    "faint_memory": "180 / 180",
+    "is_dt_mode": true,
+    "equipment": [
+      {
+        "name": "Tentacles of a Ruined Age",
+        "type": "WEAPON",
+        "rarity": "UNIQUE",
+        "stars": 5,
+        "effect": "+8% ally AttackUpon enemy Defeat, -2 Stress to the Combatant with the highest Stress",
+        "stats": {
+          "atk": 82.0,
+          "def": 31.0,
+          "hp": 83.0
+        }
+      },
+      {
+        "name": "Split Design Core",
+        "type": "ACC",
+        "rarity": "LEGEND",
+        "stars": 5,
+        "effect": "At the start of the turn, increase Damage Amount of allies by 8% (3 times per battle)",
+        "stats": {
+          "atk": 82.0,
+          "def": 31.0,
+          "hp": 83.0
+        }
+      }
+    ],
+    "removed_cards": [
+      {
+        "name": "Rapid Fire",
+        "cost": 1.0,
+        "id": "c_1033_srt1"
+      },
+      {
+        "name": "Rapid Fire",
+        "cost": 1.0,
+        "id": "c_1033_srt2"
+      },
+      {
+        "name": "Illusion of Golden Daffodils",
+        "cost": 1.0,
+        "id": "c_1033_srt3"
+      },
+      {
+        "name": "Firing Preparation",
+        "cost": 1.0,
+        "id": "c_1033_srt4"
+      }
+    ],
+    "cards": [
+      {
+        "name": "Repose",
+        "cost": 0.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": false,
+        "desc": "Draw 2[fc][/] other Combatant's card(s)",
+        "spark_notes": [
+          "Spark (Caligo): Gain 1 AP"
+        ],
+        "raw_id": "c_1033_uni1_rsp1"
+      },
+      {
+        "name": "Pendant of Resolution",
+        "cost": 1.0,
+        "category": "POWER",
+        "rarity": "RARE",
+        "copied": false,
+        "desc": "When a Skill Card of a different Combatant is activated, [fc]1[/] Reload",
+        "spark_notes": [
+          "Divine Spark (c20111): At the start of the turn, 2 Agony to all enemies"
+        ],
+        "raw_id": "c_1033_uni2"
+      },
+      {
+        "name": "Sir Kowalski",
+        "cost": 1.0,
+        "category": "SKILL",
+        "rarity": "LEGEND",
+        "copied": false,
+        "desc": "Select 1 Ballista card in hand and +150% Damage Amount until activatedDraw 2",
+        "spark_notes": [
+          "Spark (Caligo): Reduce Cost of this card by 1"
+        ],
+        "raw_id": "c_1033_uni3_rsp1"
+      },
+      {
+        "name": "Repose",
+        "cost": 0.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Draw 2[fc][/] other Combatant's card(s)",
+        "spark_notes": [
+          "Spark (Caligo): Gain 1 AP"
+        ],
+        "raw_id": "c_1033_uni1_rsp1"
+      },
+      {
+        "name": "Repose",
+        "cost": 0.0,
+        "category": "SKILL",
+        "rarity": "RARE",
+        "copied": true,
+        "desc": "Draw 2[fc][/] other Combatant's card(s)",
+        "spark_notes": [
+          "Spark (Caligo): Gain 1 AP"
+        ],
+        "raw_id": "c_1033_uni1_rsp1"
+      },
+      {
+        "name": "Enveloping Light",
+        "cost": 1.0,
+        "category": "POWER",
+        "rarity": "LEGEND",
+        "copied": false,
+        "desc": "When an ally Skill or Upgrade Card is used, create 1 Celestial Wrath in hand (3 times per turn)",
+        "spark_notes": [
+          "Divine Spark (c20111): At the start of the turn, 2 Agony to all enemies"
+        ],
+        "raw_id": "card_ds05_00009"
+      },
+      {
+        "name": "Memory: Loss",
+        "cost": 0.0,
+        "category": "POWER",
+        "rarity": "UNIQUE",
+        "copied": false,
+        "desc": "When an ally Skill Card is stacked, +6% Attack to allies (1 time per turn, 2 times per battle)Increase Damage Amount of Justice Attribute Attack Cards of this unit by 25%",
+        "spark_notes": [],
+        "raw_id": "card_ds05_b_c1_4_3"
+      }
+    ]
+  }
+]

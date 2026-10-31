@@ -7,9 +7,10 @@ import unittest
 from unittest.mock import MagicMock, patch
 import cv2
 
-from config import Mode, TAP_COORDS
-from bot_engine import BotEngine
-from detector import ScreenDetector
+from czn_bot.states import Mode
+from czn_bot.coords import TAP_COORDS
+from czn_bot.runner import BotRunner as BotEngine
+from czn_bot.vision.detector import ScreenDetector
 
 
 class TestChaosIntegration(unittest.TestCase):
@@ -30,6 +31,8 @@ class TestChaosIntegration(unittest.TestCase):
         self.engine.loop_delay = 0.0
         self.engine.beep = MagicMock()
         self.engine.enable_dynamic_islands = False
+        self.engine.enable_chaos_ai = False
+        self.engine.enable_hybrid_verification = False
 
     @patch("time.sleep", return_value=None)
     def test_chaos_map_3_islands_dispatch(self, mock_sleep):
@@ -53,7 +56,7 @@ class TestChaosIntegration(unittest.TestCase):
         self.engine._run_loop()
 
         self.assertTrue(self.mock_adb.tap.called)
-        tap_args = self.mock_adb.tap.call_args[0]
+        tap_args = self.mock_adb.tap.call_args_list[0][0]
         valid_coords = [
             TAP_COORDS["chaos_island_3_top"],
             TAP_COORDS["chaos_island_3_middle"],
@@ -84,7 +87,7 @@ class TestChaosIntegration(unittest.TestCase):
         self.engine._run_loop()
 
         self.assertTrue(self.mock_adb.tap.called)
-        tap_args = self.mock_adb.tap.call_args[0]
+        tap_args = self.mock_adb.tap.call_args_list[0][0]
         # Detected centroids for 3 islands (banner targets)
         valid_dynamic_coords = [(1213, 143), (1441, 402), (1070, 707)]
         self.assertIn(tap_args, valid_dynamic_coords)
@@ -113,12 +116,13 @@ class TestChaosIntegration(unittest.TestCase):
 
         self.assertTrue(self.mock_adb.tap.called)
         tap_args = self.mock_adb.tap.call_args[0]
-        # Must tap one of the 2-island locations
+        # Must tap one of the 2-island locations (allowing small jitter delta if jitter tap was triggered)
         valid_2_island_coords = [
-            TAP_COORDS["chaos_island_2_top"],     # (1250, 240)
-            TAP_COORDS["chaos_island_2_bottom"],  # (1330, 420)
+            TAP_COORDS["chaos_island_2_top"],     # (1210, 140)
+            TAP_COORDS["chaos_island_2_bottom"],  # (1430, 400)
         ]
-        self.assertIn(tap_args, valid_2_island_coords)
+        is_valid = any(abs(tap_args[0] - vc[0]) <= 15 and abs(tap_args[1] - vc[1]) <= 15 for vc in valid_2_island_coords)
+        self.assertTrue(is_valid, f"tap_args {tap_args} not near {valid_2_island_coords}")
         # MUST NEVER tap the old empty coordinate (1100, 800)
         self.assertNotEqual(tap_args, (1100, 800))
 

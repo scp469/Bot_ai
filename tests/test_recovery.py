@@ -5,9 +5,9 @@ import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
 
-from recovery import RecoveryManager
-from bot_engine import BotEngine
-from config import State
+from czn_bot.recovery import RecoveryManager
+from czn_bot.runner import BotRunner as BotEngine
+from czn_bot.states import State
 
 
 class TestRecoveryManager(unittest.TestCase):
@@ -61,6 +61,7 @@ class TestBotEngineRecoveryIntegration(unittest.TestCase):
             recovery_manager=self.mock_recovery,
         )
         self.engine.enable_recovery = True
+        self.engine.enable_chaos_ai = False
         self.engine.is_running = True
         self.engine.beep = MagicMock()
         self.dummy_screen = np.zeros((10, 10, 3), dtype=np.uint8)

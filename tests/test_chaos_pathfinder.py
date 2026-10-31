@@ -3,7 +3,7 @@ Unit tests for Chaos Pathfinder Core Engine.
 Covers Rule A, High/Low HP Scoring, Tie-Breaking, and Safety Fallbacks.
 """
 import unittest
-from chaos_pathfinder import (
+from czn_bot.chaos.pathfinder import (
     ChaosNode,
     ChaosNodeType,
     IslandChoice,

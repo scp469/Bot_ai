@@ -1,0 +1,970 @@
+{
+  "version": "1.0.0",
+  "game": "Chaos Zero Nightmare",
+  "updated_at": "2026-10-28",
+  "world": "Swamp of Judgment",
+  "total_equipments": 27,
+  "priority_tiers": {
+    "tier_s_must_pick": "Priority 90-100: Top tier / Game-changing equipment (Pick immediately)",
+    "tier_a_high_priority": "Priority 80-89: Very strong synergy and core stat amplifiers",
+    "tier_b_situational": "Priority 70-79: Good for specific archetypes (Heal/Shield/Ravage/Crit)",
+    "tier_c_filler": "Priority 30-69: General filler stats or niche conditions"
+  },
+  "equipments": [
+    {
+      "id": "eq_sec_010",
+      "slug": "branch-of-eternity",
+      "name": "Branch of Eternity",
+      "filename": "branch-of-eternity.webp",
+      "template_path": "swamp_of_judgment_equipment/images/branch-of-eternity.webp",
+      "rarity": "Unique",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_s_must_pick",
+      "priority": 95,
+      "condition": "has_healer",
+      "trigger": "on_heal_or_recover",
+      "synergy_tags": [
+        "Heal",
+        "Fixed Damage",
+        "AoE",
+        "Healer DPS"
+      ],
+      "best_characters": [
+        "Nia",
+        "Mika",
+        "Healers"
+      ],
+      "recommendation_vi": "Cực kỳ bá đạo cho đội hình có Healer (như Nia). Biến 50% lượng hồi máu thành sát thương AoE cố định bỏ qua phòng ngự toàn bộ địch.",
+      "discard_if": "no_healing_cards",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to all enemies",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_013",
+      "slug": "verdant-shackles",
+      "name": "Verdant Shackles",
+      "filename": "verdant-shackles.webp",
+      "template_path": "swamp_of_judgment_equipment/images/verdant-shackles.webp",
+      "rarity": "Unique",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_s_must_pick",
+      "priority": 93,
+      "condition": "always_active",
+      "trigger": "passive_constant",
+      "synergy_tags": [
+        "Stat Boost",
+        "Attack",
+        "Defense",
+        "Universal"
+      ],
+      "best_characters": [
+        "All Combatants"
+      ],
+      "recommendation_vi": "Trang bị vạn năng: +12% Công và +12% Thủ vĩnh viễn không cần bất kỳ điều kiện kích hoạt nào.",
+      "discard_if": "never",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "+12% Attack, +12% Defense",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_009",
+      "slug": "dormant-seeds",
+      "name": "Dormant Seeds",
+      "filename": "dormant-seeds.webp",
+      "template_path": "swamp_of_judgment_equipment/images/dormant-seeds.webp",
+      "rarity": "Unique",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_s_must_pick",
+      "priority": 92,
+      "condition": "shield_archetype",
+      "trigger": "on_card_shield_gain",
+      "synergy_tags": [
+        "Shield",
+        "Survival",
+        "Fixed Shield"
+      ],
+      "best_characters": [
+        "Haru",
+        "Hilde",
+        "Tanks"
+      ],
+      "recommendation_vi": "Cung cấp thêm 100% Khiên Cố định (1 lần/lượt) khi nhận khiên từ bài, gia tăng gấp đôi khả năng sống sót của Tank/DPS.",
+      "discard_if": "zero_shield_deck",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When Shield is gained through a card, 100% Fixed Shield (1 time per turn)",
+      "reward_tags": [
+        "secred",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_dll_010",
+      "slug": "the-golden-rule",
+      "name": "The Golden Rule",
+      "filename": "the-golden-rule.webp",
+      "template_path": "swamp_of_judgment_equipment/images/the-golden-rule.webp",
+      "rarity": "Legend",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_s_must_pick",
+      "priority": 92,
+      "condition": "always_active",
+      "trigger": "passive_and_shield_gain",
+      "synergy_tags": [
+        "Damage Amp",
+        "Shield",
+        "Balanced"
+      ],
+      "best_characters": [
+        "All DPS",
+        "Bruisers",
+        "Shield Users"
+      ],
+      "recommendation_vi": "Giá trị công thủ toàn diện: +20% Sát thương và nhận thêm +20 điểm Khiên mỗi lần tạo khiên.",
+      "discard_if": "never",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "+20% Damage Amount, +20 Shield gain",
+      "reward_tags": [
+        "diallos",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_007",
+      "slug": "mask-of-flames",
+      "name": "Mask of Flames",
+      "filename": "mask-of-flames.webp",
+      "template_path": "swamp_of_judgment_equipment/images/mask-of-flames.webp",
+      "rarity": "Unique",
+      "type": "Armor (Giáp)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_s_must_pick",
+      "priority": 90,
+      "condition": "vulnerable_debuff_applied",
+      "trigger": "attacking_vulnerable_target",
+      "synergy_tags": [
+        "Vulnerable",
+        "Damage Amplifier",
+        "DPS"
+      ],
+      "best_characters": [
+        "Rin",
+        "Sereniel",
+        "Dingo",
+        "Chizuru"
+      ],
+      "recommendation_vi": "Tăng thẳng 35% Sát thương lên mục tiêu dính trạng thái Dễ Bị Thương (Vulnerable). Tuyệt vời cho mọi đội hình có debuff này.",
+      "discard_if": "no_vulnerable_sources",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "Increase Damage Amount by 35% against targets in a Vulnerable state",
+      "reward_tags": [
+        "secred",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_008",
+      "slug": "the-flower-of-life",
+      "name": "The Flower of Life",
+      "filename": "the-flower-of-life.webp",
+      "template_path": "swamp_of_judgment_equipment/images/the-flower-of-life.webp",
+      "rarity": "Legend",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_s_must_pick",
+      "priority": 89,
+      "condition": "full_hp_maintained",
+      "trigger": "at_max_hp",
+      "synergy_tags": [
+        "Max HP",
+        "First Turn Burst",
+        "Shield Synergy"
+      ],
+      "best_characters": [
+        "Main DPS with Shield/Tank support"
+      ],
+      "recommendation_vi": "Tăng khổng lồ +50% Sát thương khi đầy máu (Max HP). Đạt hiệu quả tối đa khi kết hợp cùng Tanker cấp Khiên liên tục.",
+      "discard_if": "self_damaging_skills",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "If at max HP, +50% Damage Amount",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_dll_001",
+      "slug": "cavalry-of-lightning",
+      "name": "Cavalry of Lightning",
+      "filename": "cavalry-of-lightning.webp",
+      "template_path": "swamp_of_judgment_equipment/images/cavalry-of-lightning.webp",
+      "rarity": "Legend",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_s_must_pick",
+      "priority": 88,
+      "condition": "target_has_shield",
+      "trigger": "damage_enemy_with_shield",
+      "synergy_tags": [
+        "Shield Breaker",
+        "Anti-Shield",
+        "Burst"
+      ],
+      "best_characters": [
+        "Chizuru",
+        "Rin",
+        "Sereniel",
+        "Main DPS"
+      ],
+      "recommendation_vi": "Khắc tinh quái khiên: +100% Sát thương cho thẻ Tấn công tiếp theo ngay sau khi đánh vào mục tiêu có Khiên.",
+      "discard_if": "no_shield_enemies",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When Damage is dealt to a target possessing Shield, +100% Damage Amount to the next activated Attack Card",
+      "reward_tags": [
+        "diallos",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_003",
+      "slug": "branch-of-the-sacred-tree",
+      "name": "Branch of the Sacred Tree",
+      "filename": "branch-of-the-sacred-tree.webp",
+      "template_path": "swamp_of_judgment_equipment/images/branch-of-the-sacred-tree.webp",
+      "rarity": "Legend",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 86,
+      "condition": "has_ally_healer",
+      "trigger": "on_ally_heal_or_recover",
+      "synergy_tags": [
+        "Ally Heal",
+        "AoE",
+        "Fixed Damage"
+      ],
+      "best_characters": [
+        "Support",
+        "Healers"
+      ],
+      "recommendation_vi": "Kích hoạt khi đồng minh hồi máu/phục hồi, gây 35% sát thương cố định diện rộng cho toàn bộ kẻ địch.",
+      "discard_if": "no_healing_cards",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On Heal or Recover through an ally ability, inflict Fixed Damage equal to 35% of Recover Amount to all enemies",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_003",
+      "slug": "sun-setting-bow",
+      "name": "Sun-Setting Bow",
+      "filename": "sun-setting-bow.webp",
+      "template_path": "swamp_of_judgment_equipment/images/sun-setting-bow.webp",
+      "rarity": "Legend",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 86,
+      "condition": "high_cost_attacks",
+      "trigger": "on_play_2plus_cost_attack",
+      "synergy_tags": [
+        "Heavy Attack",
+        "High Cost",
+        "Nuke"
+      ],
+      "best_characters": [
+        "Haru",
+        "Chizuru",
+        "Burst DPS"
+      ],
+      "recommendation_vi": "Tăng 30% Sát thương cho thẻ Tấn công có tiêu hao từ 2 AP trở lên (1 lần/lượt), tối ưu hóa các đòn nuke hạng nặng.",
+      "discard_if": "only_1_cost_cards",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "Increase Damage Amount of Attack Cards with a Cost of 2 or higher by 30% (1 time per turn)",
+      "reward_tags": [
+        "secred",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_008",
+      "slug": "bone-ring-of-wildfire",
+      "name": "Bone Ring of Wildfire",
+      "filename": "bone-ring-of-wildfire.webp",
+      "template_path": "swamp_of_judgment_equipment/images/bone-ring-of-wildfire.webp",
+      "rarity": "Legend",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 85,
+      "condition": "upgrade_card_activation",
+      "trigger": "on_upgrade_card_play",
+      "synergy_tags": [
+        "Upgrade Card",
+        "Burst Damage",
+        "Buff"
+      ],
+      "best_characters": [
+        "Tiphera",
+        "Chizuru",
+        "Rossweisse",
+        "DPS"
+      ],
+      "recommendation_vi": "Khi kích hoạt thẻ Nâng cấp (Upgrade Card), +30% Sát thương trong 1 lượt. Dồn sát thương cực tốt ở lượt setup.",
+      "discard_if": "no_upgrade_cards_in_deck",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "reward_tags": [
+        "secred",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_dll_006",
+      "slug": "ring-of-the-seraphim",
+      "name": "Ring of the Seraphim",
+      "filename": "ring-of-the-seraphim.webp",
+      "template_path": "swamp_of_judgment_equipment/images/ring-of-the-seraphim.webp",
+      "rarity": "Legend",
+      "type": "Armor (Giáp)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 85,
+      "condition": "upgrade_card_activation",
+      "trigger": "on_upgrade_card_play",
+      "synergy_tags": [
+        "Upgrade Card",
+        "Burst",
+        "Damage Amp"
+      ],
+      "best_characters": [
+        "DPS",
+        "Combatants with Upgrades"
+      ],
+      "recommendation_vi": "+30% Sát thương trong 1 lượt khi kích hoạt thẻ Nâng cấp. Tương đương Bone Ring of Wildfire nhưng ở vị trí Giáp.",
+      "discard_if": "no_upgrade_cards_in_deck",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When an Upgrade Card is activated, +30% Damage Amount for 1 turn",
+      "reward_tags": [
+        "diallos",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_004",
+      "slug": "immortal-scale",
+      "name": "Immortal Scale",
+      "filename": "immortal-scale.webp",
+      "template_path": "swamp_of_judgment_equipment/images/immortal-scale.webp",
+      "rarity": "Legend",
+      "type": "Armor (Giáp)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 84,
+      "condition": "counterattack_archetype",
+      "trigger": "on_gain_counterattack",
+      "synergy_tags": [
+        "Counterattack",
+        "Reflect",
+        "Defense"
+      ],
+      "best_characters": [
+        "Hilde",
+        "Season",
+        "Counter Tanks"
+      ],
+      "recommendation_vi": "Cực kỳ mạnh cho đội hình Phản đòn: cộng thêm 1 tầng Counterattack mỗi khi nhận hiệu ứng phản đòn.",
+      "discard_if": "no_counterattack_skills",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When gaining Counterattack through an ability, add 1 Counterattack",
+      "reward_tags": [
+        "secred",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_002",
+      "slug": "sword-reflected-in-the-lake",
+      "name": "Sword Reflected in the Lake",
+      "filename": "sword-reflected-in-the-lake.webp",
+      "template_path": "swamp_of_judgment_equipment/images/sword-reflected-in-the-lake.webp",
+      "rarity": "Legend",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 84,
+      "condition": "hand_size_ge_6",
+      "trigger": "hand_count_6_or_more",
+      "synergy_tags": [
+        "Hand Size",
+        "Card Draw",
+        "Damage Amp"
+      ],
+      "best_characters": [
+        "Nia",
+        "Tiphera",
+        "Draw Engine Decks"
+      ],
+      "recommendation_vi": "Tăng 25% Sát thương khi giữ từ 6 lá bài trên tay trở lên. Kích hoạt liên tục trong các bộ bài có khả năng rút bài mạnh.",
+      "discard_if": "low_card_draw_comp",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When there are 6 or more cards in hand, increase Damage Amount by 25%",
+      "reward_tags": [
+        "secred",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_009",
+      "slug": "branch-of-the-evil-tree",
+      "name": "Branch of the Evil Tree",
+      "filename": "branch-of-the-evil-tree.webp",
+      "template_path": "swamp_of_judgment_equipment/images/branch-of-the-evil-tree.webp",
+      "rarity": "Legend",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 83,
+      "condition": "has_healer",
+      "trigger": "on_heal_or_recover",
+      "synergy_tags": [
+        "Heal",
+        "Fixed Damage",
+        "Single Target"
+      ],
+      "best_characters": [
+        "Nia",
+        "Mika",
+        "Healers"
+      ],
+      "recommendation_vi": "Bản thu nhỏ đơn mục tiêu của Branch of Eternity: chuyển 50% lượng hồi máu thành sát thương cố định lên 1 địch ngẫu nhiên.",
+      "discard_if": "no_healing_cards",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to a random enemy",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_dll_005",
+      "slug": "wings-of-light",
+      "name": "Wings of Light",
+      "filename": "wings-of-light.webp",
+      "template_path": "swamp_of_judgment_equipment/images/wings-of-light.webp",
+      "rarity": "Legend",
+      "type": "Armor (Giáp)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 83,
+      "condition": "low_ego_and_crit",
+      "trigger": "crit_hit_while_ego_le_3",
+      "synergy_tags": [
+        "Ego Generation",
+        "Crit",
+        "Ego Burst"
+      ],
+      "best_characters": [
+        "Ego Reliant DPS",
+        "Fast Attackers"
+      ],
+      "recommendation_vi": "Khi Điểm Bản Ngã (Ego Points) từ 3 trở xuống, hồi 0.2 Ego Points mỗi đòn chí mạng. Cứu cánh sạc nhanh chiêu cuối.",
+      "discard_if": "low_crit_or_non_ego_deck",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When Ego Points are 3 or lower, 0.2 Ego Points on Critical Hit",
+      "reward_tags": [
+        "diallos",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_010",
+      "slug": "call-of-the-ancient-spirit",
+      "name": "Call of the Ancient Spirit",
+      "filename": "call-of-the-ancient-spirit.webp",
+      "template_path": "swamp_of_judgment_equipment/images/call-of-the-ancient-spirit.webp",
+      "rarity": "Legend",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 82,
+      "condition": "high_crit_build",
+      "trigger": "on_critical_hit",
+      "synergy_tags": [
+        "Crit",
+        "Self-Heal",
+        "Sustain"
+      ],
+      "best_characters": [
+        "Haru",
+        "Rin",
+        "Dingo",
+        "Crit DPS"
+      ],
+      "recommendation_vi": "Hồi 10% máu cố định mỗi khi đánh chí mạng. Giúp carry tự bảo kê bản thân không lo tụt máu.",
+      "discard_if": "low_crit_rate",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On Critical Hit, 10% Fixed Heal",
+      "reward_tags": [
+        "secred",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_dll_007",
+      "slug": "lead-colored-holy-water",
+      "name": "Lead-Colored Holy Water",
+      "filename": "lead-colored-holy-water.webp",
+      "template_path": "swamp_of_judgment_equipment/images/lead-colored-holy-water.webp",
+      "rarity": "Legend",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 81,
+      "condition": "ravage_archetype",
+      "trigger": "on_ravage_trigger",
+      "synergy_tags": [
+        "Ravage",
+        "Impair",
+        "Debuff"
+      ],
+      "best_characters": [
+        "Chizuru",
+        "Ravage Teams"
+      ],
+      "recommendation_vi": "Gây thêm 2 tầng Suy yếu (Impair) lên mục tiêu khi kích hoạt Tàn phá (Ravage), bóp nghẹt sát thương của boss.",
+      "discard_if": "no_ravage_cards",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On Ravage, 2 Impair to the target",
+      "reward_tags": [
+        "diallos",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_005",
+      "slug": "star-lit-cloak",
+      "name": "Star-Lit Cloak",
+      "filename": "star-lit-cloak.webp",
+      "template_path": "swamp_of_judgment_equipment/images/star-lit-cloak.webp",
+      "rarity": "Unique",
+      "type": "Armor (Giáp)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 80,
+      "condition": "general_defense",
+      "trigger": "taking_damage",
+      "synergy_tags": [
+        "Damage Reduction",
+        "Defense",
+        "Survival"
+      ],
+      "best_characters": [
+        "Frontline",
+        "Tanks",
+        "All"
+      ],
+      "recommendation_vi": "Giảm 10% sát thương gánh chịu (1 lần mỗi lượt), tăng độ bền vững trong các trận chiến boss dài hơi.",
+      "discard_if": "speedrun_burst_comp",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "Decrease Damage Taken by 10% (1 time per turn)",
+      "reward_tags": [
+        "secred",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_005",
+      "slug": "poachers-pathfinder",
+      "name": "Poacher’s Pathfinder",
+      "filename": "poachers-pathfinder.webp",
+      "template_path": "swamp_of_judgment_equipment/images/poachers-pathfinder.webp",
+      "rarity": "Rare",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_a_high_priority",
+      "priority": 80,
+      "condition": "sekred_battle",
+      "trigger": "in_sekred_battle",
+      "synergy_tags": [
+        "Sekred",
+        "Vulnerable AoE",
+        "World Specific"
+      ],
+      "best_characters": [
+        "All Combatants in Sekred"
+      ],
+      "recommendation_vi": "Trang bị chuyên biệt cực mạnh trong ải Sekred của Swamp of Judgment: +25% Sát thương và gây 2 điểm Dễ bị thương lên toàn bộ địch.",
+      "discard_if": "not_in_sekred",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "In Sekred battle, +25% Damage, 2 Vulnerable to all enemies",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_dll_009",
+      "slug": "viadeuss-reactor",
+      "name": "Viadeus’s Reactor",
+      "filename": "viadeuss-reactor.webp",
+      "template_path": "swamp_of_judgment_equipment/images/viadeuss-reactor.webp",
+      "rarity": "Legend",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 78,
+      "condition": "upgrade_card_activation",
+      "trigger": "on_upgrade_card_play",
+      "synergy_tags": [
+        "Upgrade Card",
+        "Damage Reduction"
+      ],
+      "best_characters": [
+        "Support",
+        "Tanks"
+      ],
+      "recommendation_vi": "Nhận 1 tầng Giảm sát thương khi kích hoạt thẻ Upgrade. Tăng tính phòng thủ cho tuyến sau.",
+      "discard_if": "no_upgrade_cards",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "When an Upgrade Card is activated, 1 Damage Reduction",
+      "reward_tags": [
+        "diallos",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_011",
+      "slug": "verdant-day",
+      "name": "Verdant Day",
+      "filename": "verdant-day.webp",
+      "template_path": "swamp_of_judgment_equipment/images/verdant-day.webp",
+      "rarity": "Legend",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 77,
+      "condition": "odd_turns",
+      "trigger": "odd_turns_1_3_5",
+      "synergy_tags": [
+        "Turn Rotation",
+        "Hybrid Stats"
+      ],
+      "best_characters": [
+        "All Combatants"
+      ],
+      "recommendation_vi": "Vào các lượt lẻ (1, 3, 5), +8% Tấn công và +12% Phòng thủ. Rất có lợi ở Lượt 1 mở đầu trận đấu.",
+      "discard_if": "need_constant_burst",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On odd turns, +8% Attack, +12% Defense",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_012",
+      "slug": "verdant-night",
+      "name": "Verdant Night",
+      "filename": "verdant-night.webp",
+      "template_path": "swamp_of_judgment_equipment/images/verdant-night.webp",
+      "rarity": "Legend",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 77,
+      "condition": "even_turns",
+      "trigger": "even_turns_2_4_6",
+      "synergy_tags": [
+        "Turn Rotation",
+        "Hybrid Stats"
+      ],
+      "best_characters": [
+        "All Combatants"
+      ],
+      "recommendation_vi": "Vào các lượt chẵn (2, 4, 6), +12% Tấn công và +8% Phòng thủ. Bổ trợ đắc lực ở lượt dồn tài nguyên thứ 2.",
+      "discard_if": "need_turn_1_kill",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On even turns, +12% Attack, +8% Defense",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_001",
+      "slug": "dagger-that-tricked-the-shadow",
+      "name": "Dagger That Tricked the Shadow",
+      "filename": "dagger-that-tricked-the-shadow.webp",
+      "template_path": "swamp_of_judgment_equipment/images/dagger-that-tricked-the-shadow.webp",
+      "rarity": "Legend",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 76,
+      "condition": "crit_build",
+      "trigger": "passive_constant",
+      "synergy_tags": [
+        "Crit Damage",
+        "DPS"
+      ],
+      "best_characters": [
+        "Rin",
+        "Dingo",
+        "Haru"
+      ],
+      "recommendation_vi": "Tăng 12% sát thương chí mạng. Hiệu quả cao nhất khi kết hợp với buff hoặc trang bị tăng Crit Rate.",
+      "discard_if": "low_crit_rate",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "+12% Critical Damage",
+      "reward_tags": [
+        "secred",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_007",
+      "slug": "the-fading-flower-of-life",
+      "name": "The Fading Flower of Life",
+      "filename": "the-fading-flower-of-life.webp",
+      "template_path": "swamp_of_judgment_equipment/images/the-fading-flower-of-life.webp",
+      "rarity": "Rare",
+      "type": "Weapon (Vũ khí)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 76,
+      "condition": "full_hp_maintained",
+      "trigger": "at_max_hp",
+      "synergy_tags": [
+        "Max HP",
+        "Burst",
+        "Early Battle"
+      ],
+      "best_characters": [
+        "DPS with Shield Support"
+      ],
+      "recommendation_vi": "Phiên bản Rare của The Flower of Life: tăng 40% Sát thương khi giữ đầy máu. Rất tốt cho turn 1 mở màn.",
+      "discard_if": "no_shield_or_self_damage",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "If at max HP, +40% Damage Amount",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_p_sec_006",
+      "slug": "fairy-kings-crown",
+      "name": "Fairy King’s Crown",
+      "filename": "fairy-kings-crown.webp",
+      "template_path": "swamp_of_judgment_equipment/images/fairy-kings-crown.webp",
+      "rarity": "Legend",
+      "type": "Armor (Giáp)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 75,
+      "condition": "crit_synergy",
+      "trigger": "passive_constant",
+      "synergy_tags": [
+        "Crit Rate",
+        "Consistency"
+      ],
+      "best_characters": [
+        "Rin",
+        "Dingo",
+        "Haru"
+      ],
+      "recommendation_vi": "+6% Tỷ lệ Chí mạng, giúp ổn định các hiệu ứng kích hoạt theo đòn đánh crit.",
+      "discard_if": "non_crit_build",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "+6% Critical Chance",
+      "reward_tags": [
+        "secred",
+        "delang",
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_006",
+      "slug": "mask-of-evil-spirits",
+      "name": "Mask of Evil Spirits",
+      "filename": "mask-of-evil-spirits.webp",
+      "template_path": "swamp_of_judgment_equipment/images/mask-of-evil-spirits.webp",
+      "rarity": "Rare",
+      "type": "Armor (Giáp)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 74,
+      "condition": "post_damage_reaction",
+      "trigger": "start_of_turn_after_taking_damage",
+      "synergy_tags": [
+        "Reactive Defense",
+        "Shield"
+      ],
+      "best_characters": [
+        "Frontline Tanks",
+        "Vulnerable Targets"
+      ],
+      "recommendation_vi": "Tự động tạo 60% Khiên Cố định ở đầu lượt sau khi bị tấn công ở lượt trước. Rất ổn định cho người ôm dame.",
+      "discard_if": "full_dodge_or_invulnerable",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "At the start of the next turn after taking Damage, 60% Fixed Shield",
+      "reward_tags": [
+        "encounter"
+      ]
+    },
+    {
+      "id": "eq_sec_004",
+      "slug": "clover-of-the-forest",
+      "name": "Clover of the Forest",
+      "filename": "clover-of-the-forest.webp",
+      "template_path": "swamp_of_judgment_equipment/images/clover-of-the-forest.webp",
+      "rarity": "Rare",
+      "type": "Accessory (Phụ kiện)",
+      "chaos_world": "Swamp of Judgment",
+      "tier": "tier_b_situational",
+      "priority": 73,
+      "condition": "card_recover",
+      "trigger": "on_recover_card_play",
+      "synergy_tags": [
+        "Heal/Recover",
+        "Team Buff",
+        "Attack"
+      ],
+      "best_characters": [
+        "Nia",
+        "Healers"
+      ],
+      "recommendation_vi": "Khi Phục hồi qua thẻ bài, buff 10% Tấn công cho toàn đội trong 1 lượt. Trang bị hỗ trợ tốt giá rẻ.",
+      "discard_if": "no_recovery_cards",
+      "stats_5star": {
+        "atk": 82,
+        "def": 31,
+        "hp": 83
+      },
+      "description_en": "On Recover through a card, +10% Attack to allies for 1 turn (max 1 stack)",
+      "reward_tags": [
+        "encounter"
+      ]
+    }
+  ]
+}

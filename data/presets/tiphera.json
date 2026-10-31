@@ -1,0 +1,49 @@
+{
+  "character": "Tiphera",
+  "archetype": "Quantum_Trinity",
+  "version": "1.0.0",
+  "core_cards": [
+    {
+      "card_id": "tiphera_quantum_seed_cost0_create2_draw1",
+      "min_copies": 1,
+      "max_copies": 3,
+      "priority": 95
+    },
+    {
+      "card_id": "tiphera_dual_creation_unique_2archetypes",
+      "min_copies": 1,
+      "max_copies": 2,
+      "priority": 92
+    },
+    {
+      "card_id": "tiphera_form_convergence_draw2_double",
+      "min_copies": 1,
+      "max_copies": 2,
+      "priority": 90
+    },
+    {
+      "card_id": "tiphera_creation_and_destruction_upgrade_ap0",
+      "min_copies": 1,
+      "max_copies": 2,
+      "priority": 88
+    },
+    {
+      "card_id": "tiphera_archetype_trinity",
+      "min_copies": 1,
+      "max_copies": 1,
+      "priority": 85
+    }
+  ],
+  "epiphany_targets": {
+    "tiphera_quantum_seed": "tiphera_quantum_seed_cost0_create2_draw1",
+    "tiphera_dual_creation": "tiphera_dual_creation_unique_2archetypes",
+    "tiphera_form_convergence": "tiphera_form_convergence_draw2_double",
+    "tiphera_creation_and_destruction": "tiphera_creation_and_destruction_upgrade_ap0"
+  },
+  "removal_priority": [
+    "tiphera_matter_disintegration_base",
+    "tiphera_barrier_deployment_base"
+  ],
+  "max_deck_size": 8
+}
+

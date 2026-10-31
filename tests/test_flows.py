@@ -3,8 +3,10 @@ Unit tests for modular Flows: ReplayFlow, ProgressFlow, StoryFlow, and ChaosFlow
 Tests state handling, action generation, and decision boundaries without requiring ADB or emulator.
 """
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 import numpy as np
+import cv2
 
 from czn_bot.states import State, LeftButton
 from czn_bot.coords import TAP_COORDS
@@ -258,9 +260,9 @@ class TestChaosFlow(unittest.TestCase):
         self.flow._epiphany_wait_count = 2
         act_rem = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "remove_card"}, self.dummy_screen)
         self.assertEqual(act_rem.type, ActionType.TAP)
-        self.assertEqual(act_rem.x, 400)
-        self.assertEqual(act_rem.y, 450)
-        self.assertEqual(act_rem.extra["extra_actions"][0], ("tap", (1360, 806)))
+        self.assertEqual(act_rem.x, 530)
+        self.assertEqual(act_rem.y, 300)
+        self.assertEqual(act_rem.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_remove_card_confirm"]))
 
         # 4. etched_memory
         self.flow._epiphany_wait_count = 2
@@ -269,6 +271,69 @@ class TestChaosFlow(unittest.TestCase):
         self.assertEqual(act_mem.x, 800)
         self.assertEqual(act_mem.y, 500)
         self.assertEqual(act_mem.extra["extra_actions"][0], ("tap", (800, 850)))
+
+        # 5. card_reward (1 reward card assigned to combatant)
+        self.flow._epiphany_wait_count = 2
+        act_card_reward = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "card_reward"}, self.dummy_screen)
+        self.assertEqual(act_card_reward.type, ActionType.TAP)
+        self.assertEqual(act_card_reward.x, TAP_COORDS["chaos_card_reward_combatant_2"][0])
+        self.assertEqual(act_card_reward.y, TAP_COORDS["chaos_card_reward_combatant_2"][1])
+        self.assertIn("Card Reward: Assign", act_card_reward.name)
+        self.assertEqual(act_card_reward.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_card_reward_confirm"]))
+
+    def test_chaos_card_reward_real_fixture(self):
+        """Regression test for card_reward sub-screen on actual game screenshot fixture."""
+        fixture_path = Path("tests/fixtures/labeled/CHAOS_CHOOSE_EPIPHANY/chaos_card_reward.png")
+        if not fixture_path.exists():
+            self.skipTest("Fixture not found")
+
+        screen = cv2.imread(str(fixture_path))
+        self.flow.auto_pick_epiphany = True
+        self.flow._epiphany_wait_count = 2
+
+        action = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "card_reward"}, screen)
+        self.assertEqual(action.type, ActionType.TAP)
+        # Must tap combatant 2 (middle) and confirm
+        self.assertEqual(action.x, TAP_COORDS["chaos_card_reward_combatant_2"][0])
+        self.assertEqual(action.y, TAP_COORDS["chaos_card_reward_combatant_2"][1])
+        self.assertEqual(action.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_card_reward_confirm"]))
+        self.assertIn("Kaleidoscope", action.name)
+        self.assertEqual(action.extra["combatant_idx"], 1)
+
+    def test_chaos_remove_card_real_fixture(self):
+        """Regression test for remove_card sub-screen on actual game fixture identifying Sword Slash."""
+        fixture_path = Path("tests/fixtures/labeled/CHAOS_CHOOSE_EPIPHANY/chaos_remove_card.png")
+        if not fixture_path.exists():
+            self.skipTest("Fixture not found")
+
+        screen = cv2.imread(str(fixture_path))
+        self.flow.auto_pick_epiphany = True
+        self.flow._epiphany_wait_count = 2
+
+        action = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "remove_card"}, screen)
+        self.assertEqual(action.type, ActionType.TAP)
+        # Should identify Sword Slash at slot 0 (530, 300) and tap remove button
+        self.assertEqual(action.x, 530)
+        self.assertEqual(action.y, 300)
+        self.assertEqual(action.extra["extra_actions"][0], ("tap", TAP_COORDS["chaos_remove_card_confirm"]))
+        self.assertEqual(action.extra["decision"], "remove")
+
+    def test_chaos_remove_card_skip_when_no_trash(self):
+        """When no visible card is an unwanted starter card, flow should tap Skip."""
+        self.flow.auto_pick_epiphany = True
+        self.flow._epiphany_wait_count = 2
+
+        # Mock vision.extract_remove_cards to return non-basic high tier cards
+        mock_cards = [
+            {"slot": 0, "tap_coord": (530, 300), "title": "Flicker Blade Blink"},
+            {"slot": 1, "tap_coord": (740, 300), "title": "Sword Resonance Activate All"},
+        ]
+        with patch.object(self.flow.vision, "extract_remove_cards", return_value=mock_cards):
+            action = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "remove_card"}, self.dummy_screen)
+            self.assertEqual(action.type, ActionType.TAP)
+            self.assertEqual(action.x, TAP_COORDS["chaos_remove_card_skip"][0])
+            self.assertEqual(action.y, TAP_COORDS["chaos_remove_card_skip"][1])
+            self.assertEqual(action.extra["decision"], "skip")
 
     def test_chaos_after_battle(self):
         action = self.flow.handle(State.CHAOS_AFTER_BATTLE, {}, self.dummy_screen)

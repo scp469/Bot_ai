@@ -1,0 +1,49 @@
+{
+  "character": "Rossweisse",
+  "archetype": "Flow_Burst",
+  "version": "1.0.0",
+  "core_cards": [
+    {
+      "card_id": "rossweisse_flicker_blade_blink",
+      "min_copies": 1,
+      "max_copies": 2,
+      "priority": 95
+    },
+    {
+      "card_id": "rossweisse_sword_resonance_activate_all",
+      "min_copies": 1,
+      "max_copies": 3,
+      "priority": 92
+    },
+    {
+      "card_id": "rossweisse_blade_of_the_cycle_draw_discount",
+      "min_copies": 1,
+      "max_copies": 2,
+      "priority": 90
+    },
+    {
+      "card_id": "rossweisse_radiant_sword_flow_justice_buff",
+      "min_copies": 1,
+      "max_copies": 2,
+      "priority": 88
+    },
+    {
+      "card_id": "rossweisse_kyrkens_apostle_draw2",
+      "min_copies": 1,
+      "max_copies": 1,
+      "priority": 85
+    }
+  ],
+  "epiphany_targets": {
+    "rossweisse_flicker_blade": "rossweisse_flicker_blade_blink",
+    "rossweisse_sword_resonance": "rossweisse_sword_resonance_activate_all",
+    "rossweisse_blade_of_the_cycle": "rossweisse_blade_of_the_cycle_draw_discount",
+    "rossweisse_radiant_sword_flow": "rossweisse_radiant_sword_flow_justice_buff"
+  },
+  "removal_priority": [
+    "rossweisse_sword_slash_base",
+    "rossweisse_standing_blade_base"
+  ],
+  "max_deck_size": 8
+}
+

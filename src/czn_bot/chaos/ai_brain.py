@@ -17,6 +17,8 @@ from czn_bot.states import State
 from czn_bot.chaos.rules import ChaosRuleManager
 from czn_bot.chaos.decisions import CardInfo, EventChoiceInfo, ResourceInfo, ChaosVision
 from czn_bot.chaos.pathfinder import IslandChoice, IslandEvaluation
+from czn_bot.chaos.deck_evaluator import DeckEvaluator
+from czn_bot.chaos.deck_preset import load_preset
 
 logger = logging.getLogger("ChaosBot.AIBrain")
 
@@ -42,6 +44,16 @@ class ChaosAIBrain:
         self.rule_manager = rule_manager or ChaosRuleManager()
         self._genai_client = None
         self._current_api_key = None
+        self.deck_evaluator = DeckEvaluator()
+        try:
+            for char in ["rossweisse", "tiphera"]:
+                try:
+                    p = load_preset(char, card_rules=self.rule_manager.card_rules)
+                    self.deck_evaluator.presets[p.character] = p
+                except Exception:
+                    pass
+        except Exception:
+            pass
 
     def _get_client(self, override_key: Optional[str] = None):
         """
@@ -299,6 +311,18 @@ Trả về duy nhất JSON:
         return State.UNKNOWN, {}
 
     def _heuristic_card_decision(self, cards: List[CardInfo], resources: ResourceInfo) -> Dict[str, Any]:
+        if getattr(self, "deck_evaluator", None):
+            best_idx, breakdowns = self.deck_evaluator.evaluate_epiphany_choices(cards)
+            if breakdowns and 0 <= best_idx < len(breakdowns):
+                chosen = breakdowns[best_idx]
+                conf = cards[best_idx].confidence if hasattr(cards[best_idx], "confidence") and cards[best_idx].confidence > 0 else 0.85
+                return {
+                    "action": "choose_card",
+                    "target_index": best_idx,
+                    "confidence": conf,
+                    "score": chosen.total_score,
+                    "reason": f"[DeckEvaluator] {chosen.card_title} ({chosen.total_score:.1f}đ): {'; '.join(chosen.reasons)}"
+                }
         card_rules = self.rule_manager.card_rules
         priority_list = card_rules.get("priority_list", [])
         weights = card_rules.get("keyword_weights", {})

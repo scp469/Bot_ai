@@ -43,6 +43,12 @@ TAP_COORDS = {
     "equipment_confirm":      (1360, 806),  # Confirm button for Chaos equipment screen
     "modal_close_button":     (800, 837),   # Close button on info modal
     "tap_to_close":           (800, 850),   # Tap to close dialog
+    "chaos_card_reward_combatant_1": (800, 300),  # Top combatant on Card Reward screen
+    "chaos_card_reward_combatant_2": (800, 500),  # Middle combatant on Card Reward screen
+    "chaos_card_reward_combatant_3": (800, 700),  # Bottom combatant on Card Reward screen
+    "chaos_card_reward_confirm":     (1450, 838), # Confirm button on Card Reward screen
+    "chaos_remove_card_skip":        (1230, 837), # Skip button [>| Skip] on Remove Card screen
+    "chaos_remove_card_confirm":     (1498, 838), # Remove button on Remove Card screen
     "chaos_event_choice_3_left":   (375, 765),  # Event choice 1 (left) in 3-choice layout
     "chaos_event_choice_3_middle": (795, 765),  # Event choice 2 (middle) in 3-choice layout
     "chaos_event_choice_3_right":  (1215, 765), # Event choice 3 (right) in 3-choice layout

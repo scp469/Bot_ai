@@ -64,6 +64,17 @@ EVENT_BOTTOM_1_CHOICE = [
 
 EVENT_BANNER_ROI = (150, 130, 1300, 150)
 
+REMOVE_CARD_GRID = [
+    {"slot": 0, "roi": (430, 115, 200, 370), "tap": (530, 300)},
+    {"slot": 1, "roi": (640, 115, 200, 370), "tap": (740, 300)},
+    {"slot": 2, "roi": (850, 115, 200, 370), "tap": (950, 300)},
+    {"slot": 3, "roi": (1060, 115, 200, 370), "tap": (1160, 300)},
+    {"slot": 4, "roi": (430, 500, 200, 370), "tap": (530, 685)},
+    {"slot": 5, "roi": (640, 500, 200, 370), "tap": (740, 685)},
+    {"slot": 6, "roi": (850, 500, 200, 370), "tap": (950, 685)},
+    {"slot": 7, "roi": (1060, 500, 200, 370), "tap": (1160, 685)},
+]
+
 
 @dataclass
 class CardInfo:
@@ -80,6 +91,7 @@ class CardInfo:
     description_vi: str = ""
     character: str = ""
     template_path: str = ""
+    confidence: float = 0.0
 
 
 @dataclass
@@ -288,6 +300,7 @@ class ChaosVision:
                         if kw not in found_keywords:
                             found_keywords.append(kw)
 
+            card_conf = 0.90 if matched_card else (0.60 if title else 0.30)
             card = CardInfo(
                 slot=item["slot"],
                 name=item["name"],
@@ -301,11 +314,55 @@ class ChaosVision:
                 priority=priority,
                 description_vi=desc_vi,
                 character=char_name,
-                template_path=tpl_path
+                template_path=tpl_path,
+                confidence=card_conf
             )
             extracted.append(card)
 
         return extracted
+
+    def extract_single_card_reward(self, screen: np.ndarray) -> Dict[str, Any]:
+        """
+        Extract the single reward card offered on the Card Reward screen (left region).
+        Returns title, raw_text, is_memory flag, and card crop.
+        """
+        if screen is None or getattr(screen, "size", 0) == 0:
+            return {"title": "Card Reward", "raw_text": "", "is_memory": False, "crop": None}
+        crop = self.crop_roi(screen, (100, 160, 440, 660))
+        norm = self.preprocess_image(crop, method="normalize") if crop is not None and crop.size > 0 else None
+        raw_text = (self.ocr.read_text(norm) if norm is not None else "") or (self.ocr.read_text(crop) if crop is not None else "")
+
+        title = "Card Reward"
+        lines = [ln.strip() for ln in raw_text.split("\n") if ln.strip()]
+        if lines:
+            cleaned_line = re.sub(r"^[^a-zA-Z0-9]+", "", lines[0]).strip()
+            if cleaned_line:
+                title = cleaned_line
+
+        is_memory = "memory" in raw_text.lower()
+        return {
+            "title": title,
+            "raw_text": raw_text,
+            "is_memory": is_memory,
+            "crop": crop
+        }
+
+    def extract_remove_cards(self, screen: np.ndarray) -> List[Dict[str, Any]]:
+        """Extract up to 8 visible cards on the Remove Card screen."""
+        if screen is None or getattr(screen, "size", 0) == 0:
+            return []
+        results = []
+        for item in REMOVE_CARD_GRID:
+            crop = self.crop_roi(screen, item["roi"])
+            header = crop[:70, :] if crop is not None and crop.shape[0] >= 70 else crop
+            title = self.ocr.read_text(header).strip() if header is not None else ""
+            if len(title) > 2:
+                results.append({
+                    "slot": item["slot"],
+                    "tap_coord": item["tap"],
+                    "title": title,
+                })
+        return results
 
     def extract_event_choices(self, screen: np.ndarray) -> List[EventChoiceInfo]:
         """

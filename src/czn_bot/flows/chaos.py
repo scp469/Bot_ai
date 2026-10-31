@@ -295,8 +295,30 @@ class ChaosFlow(Flow):
                 return Action.none(name="Wait for card animation to stabilize")
 
             self._epiphany_wait_count = 0
-            epiphany_type = details.get("type") or details.get("epiphany_type", "card_reward")
+            epiphany_type = details.get("type") or details.get("epiphany_type", "epiphany")
             res = self.vision.extract_resources(screen) if screen is not None else ResourceInfo(1.0, False, 0)
+
+            # Sub-screen 0: card_reward (1 card on left, assign to 1 of 3 combatants on right)
+            if epiphany_type == "card_reward":
+                card_info = self.vision.extract_single_card_reward(screen) if screen is not None else {"title": "Card Reward"}
+                card_title = card_info.get("title", "Card Reward")
+                # Default target: middle combatant (index 1), can be directed by deck engine
+                combatant_idx = 1
+                combatant_coords = [
+                    TAP_COORDS.get("chaos_card_reward_combatant_1", (800, 300)),
+                    TAP_COORDS.get("chaos_card_reward_combatant_2", (800, 500)),
+                    TAP_COORDS.get("chaos_card_reward_combatant_3", (800, 700)),
+                ]
+                tap_coord = combatant_coords[combatant_idx]
+                confirm_coord = TAP_COORDS.get("chaos_card_reward_confirm", (1450, 838))
+                return Action.tap(
+                    tap_coord[0], tap_coord[1],
+                    name=f"Card Reward: Assign '{card_title}' to Combatant {combatant_idx + 1}",
+                    extra_actions=[
+                        ("tap", confirm_coord),
+                    ],
+                    extra={"card_title": card_title, "combatant_idx": combatant_idx}
+                )
 
             # Sub-screen 1: choose_fate (Lựa chọn định mệnh / Sự kiện)
             if epiphany_type == "choose_fate":
@@ -323,12 +345,34 @@ class ChaosFlow(Flow):
                     extra_actions=[("tap", (1425, 835))]
                 )
 
-            # Sub-screen 3: remove_card (Thanh lọc thẻ)
+            # Sub-screen 3: remove_card (Thanh lọc thẻ hoặc Skip nếu không có thẻ rác)
             if epiphany_type == "remove_card":
+                visible = self.vision.extract_remove_cards(screen) if screen is not None else []
+                target_coord = (530, 300)
+                card_name = "Basic Card"
+                reason = "Xóa thẻ cơ bản mặc định (Slot 0)"
+
+                if visible and hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
+                    names = [c["title"] for c in visible]
+                    decision, target_slot, eval_reason = self.ai_brain.deck_evaluator.evaluate_card_removal(names, "Rossweisse")
+                    if decision == "skip":
+                        skip_coord = TAP_COORDS.get("chaos_remove_card_skip", (1230, 837))
+                        return Action.tap(
+                            skip_coord[0], skip_coord[1],
+                            name=f"Remove Card: Skip ({eval_reason})",
+                            extra={"decision": "skip", "reason": eval_reason}
+                        )
+                    elif target_slot is not None and target_slot < len(visible):
+                        target_coord = visible[target_slot]["tap_coord"]
+                        card_name = visible[target_slot]["title"]
+                        reason = eval_reason
+
+                remove_btn = TAP_COORDS.get("chaos_remove_card_confirm", (1498, 838))
                 return Action.tap(
-                    400, 450,
-                    name="Remove Card (Slot 1)",
-                    extra_actions=[("tap", (1360, 806))]
+                    target_coord[0], target_coord[1],
+                    name=f"Remove Card: {card_name}",
+                    extra_actions=[("tap", remove_btn)],
+                    extra={"decision": "remove", "card_name": card_name, "reason": reason}
                 )
 
             # Sub-screen 4: etched_memory (Khắc ký ức)

@@ -24,6 +24,7 @@ class DeckCard:
     character: str
     variant: str = "Base"
     is_copied: bool = False
+    placeholder: bool = False  # slot known only by count, real card identity not observed yet
 
 
 class DeckState:
@@ -56,82 +57,100 @@ class DeckState:
             ]
             self._record_event("INITIALIZE_DECK", char, details={"initial_size": len(cards)})
 
+    def _placeholder(self, character: str, n: int) -> DeckCard:
+        return DeckCard(
+            card_id=f"unknown_{character.lower()}_{n}",
+            card_name="",
+            character=character,
+            variant="Base",
+            placeholder=True,
+        )
+
+    def _pop_placeholder(self, character: str) -> Optional[DeckCard]:
+        deck = self._decks.get(character, [])
+        for i in range(len(deck) - 1, -1, -1):
+            if deck[i].placeholder:
+                return deck.pop(i)
+        return None
+
+    @staticmethod
+    def _base_name(name: str) -> str:
+        """'Flicker Blade (Aegis)' -> 'flicker blade' (strip variant suffix, punctuation)."""
+        n = re.sub(r"\(.*?\)", " ", (name or "").lower())
+        return " ".join(re.sub(r"[^\w\s]", " ", n).split())
+
     def initialize_default_team(
         self,
         characters: List[str],
         default_starter_size: int = 7,
-        card_rules: Optional[Dict[str, Any]] = None
+        card_rules: Optional[Dict[str, Any]] = None,  # kept for backward compatibility, unused
     ) -> None:
         """
-        Initialize sensible starter decks for characters if not already initialized.
-        In Chaos Zero Nightmare, starting combatants begin with ~7-8 starter cards.
+        Create a deck of *placeholder* slots (count only, no invented card identities).
+        Real cards replace placeholders when observed (reconcile_from_remove_screen) or
+        picked/upgraded. Placeholders never count towards copy limits.
         """
         for char in characters:
             if char not in self._decks or len(self._decks[char]) == 0:
-                starter_cards = []
-                char_lower = char.lower()
-
-                # Look for real starter cards from card_rules if available
-                attack_card = None
-                skill_card = None
-                if card_rules and "cards" in card_rules:
-                    for c in card_rules["cards"]:
-                        if c.get("character", "").lower() == char_lower:
-                            ctype = c.get("type", "")
-                            if ctype == "Basic Attack" and not attack_card:
-                                attack_card = c
-                            elif ctype == "Basic Skill" and not skill_card:
-                                skill_card = c
-
-                atk_id = attack_card.get("id") if attack_card else f"{char_lower}_basic_attack_base"
-                atk_name = attack_card.get("name") if attack_card else "Basic Attack"
-                skl_id = skill_card.get("id") if skill_card else f"{char_lower}_basic_skill_base"
-                skl_name = skill_card.get("name") if skill_card else "Basic Skill"
-
-                for i in range(4):
-                    starter_cards.append(DeckCard(
-                        card_id=atk_id,
-                        card_name=atk_name,
-                        character=char,
-                        variant="Base"
-                    ))
-                for i in range(2):
-                    starter_cards.append(DeckCard(
-                        card_id=skl_id,
-                        card_name=skl_name,
-                        character=char,
-                        variant="Base"
-                    ))
-                if default_starter_size > 6:
-                    starter_cards.append(DeckCard(
-                        card_id=f"{char_lower}_starter_special",
-                        card_name="Special Starter",
-                        character=char,
-                        variant="Base"
-                    ))
-                self._decks[char] = starter_cards
-                self._record_event("INITIALIZE_DECK", char, details={"initial_size": len(starter_cards)})
+                self._decks[char] = [
+                    self._placeholder(char, i + 1) for i in range(default_starter_size)
+                ]
+                self._record_event("INITIALIZE_DECK", char, details={
+                    "initial_size": default_starter_size, "placeholder": True,
+                })
 
     def sync_deck_size(self, character: str, target_size: int) -> None:
         """
-        Synchronize in-memory deck count with observed on-screen badge count.
+        Synchronize in-memory deck count with the on-screen badge count.
+        Grows with placeholders; shrinks by dropping placeholders first (real cards last).
         """
         if character not in self._decks:
             self._decks[character] = []
-        current = len(self._decks[character])
+        deck = self._decks[character]
+        current = len(deck)
         if current == target_size:
             return
         if current < target_size:
             for i in range(target_size - current):
-                self._decks[character].append(DeckCard(
-                    card_id=f"{character.lower()}_synced_card_{i+1}",
-                    card_name="Synced Card",
-                    character=character,
-                    variant="Base"
-                ))
+                deck.append(self._placeholder(character, current + i + 1))
         else:
-            self._decks[character] = self._decks[character][:target_size]
+            for _ in range(current - target_size):
+                if self._pop_placeholder(character) is None:
+                    dropped = deck.pop()
+                    logger.warning(
+                        f"[DeckState] Badge={target_size} < bộ nhớ={current}: buộc bỏ thẻ thật '{dropped.card_name}'"
+                    )
         self._record_event("SYNC_DECK_SIZE", character, details={"previous_size": current, "new_size": target_size})
+
+    def reconcile_from_remove_screen(
+        self,
+        character: str,
+        observed: List[Dict[str, str]],
+        total_size: Optional[int] = None,
+    ) -> None:
+        """
+        Replace the deck with cards actually seen on the Remove Card screen.
+        observed: [{"card_id":..., "card_name":..., "variant":...}] (visible cards only).
+        If the grid is scrollable and only part of the deck is visible, the remaining
+        slots stay as placeholders so the total size is preserved.
+        """
+        if not observed:
+            return
+        size = max(total_size if total_size is not None else len(self._decks.get(character, [])), len(observed))
+        real = [
+            DeckCard(
+                card_id=o.get("card_id", ""),
+                card_name=o.get("card_name", ""),
+                character=character,
+                variant=o.get("variant", "Base") or "Base",
+            )
+            for o in observed
+        ]
+        rest = [self._placeholder(character, i + 1) for i in range(size - len(real))]
+        self._decks[character] = real + rest
+        self._record_event("RECONCILE_DECK", character, details={
+            "observed": len(real), "placeholders": len(rest), "new_deck_size": len(self._decks[character]),
+        })
 
     def get_deck(self, character: str) -> List[DeckCard]:
         return list(self._decks.get(character, []))
@@ -149,6 +168,8 @@ class DeckState:
         cid_norm = cid_lower.replace("_", " ")
         count = 0
         for c in self._decks.get(character, []):
+            if c.placeholder:
+                continue
             c_id = c.card_id.lower()
             c_name = c.card_name.lower() if c.card_name else ""
 
@@ -208,86 +229,54 @@ class DeckState:
         logger.info(f"[DeckState] '{card_name}' (+1) thêm vào deck {character}. Tổng bài: {len(self._decks[character])}")
 
     def record_card_removed(self, character: str, card_id: str, card_name: str = "") -> bool:
-        """Record a card being removed from a character's deck."""
+        """
+        Record a card removal. Matching is strict (exact id/name, then same base name).
+        If the card is unknown, one *placeholder* slot is removed so the size stays correct;
+        real cards are never dropped on a guess. Returns True only if a real card matched.
+        """
         deck = self._decks.get(character, [])
-        target_id_lower = card_id.lower().strip() if card_id else ""
-        target_name_lower = card_name.lower().strip() if card_name else ""
+        tid = (card_id or "").lower().strip()
+        tname = (card_name or "").lower().strip()
+        tbase = self._base_name(card_name)
 
-        # Pass 1: Exact match on card_id or card_name
-        for i, card in enumerate(deck):
-            c_id = card.card_id.lower()
-            c_name = card.card_name.lower()
-            if (target_id_lower and c_id == target_id_lower) or (target_name_lower and c_name == target_name_lower):
-                removed = deck.pop(i)
-                self._record_event("CARD_REMOVED", character, {
-                    "card_id": removed.card_id,
-                    "card_name": removed.card_name,
-                    "new_deck_size": len(deck),
-                })
-                logger.info(f"[DeckState] '{removed.card_name}' (-1) đã xóa khỏi deck {character}. Còn lại: {len(deck)}")
+        def _remove(i: int, note: str = "") -> None:
+            removed = deck.pop(i)
+            details = {"card_id": removed.card_id, "card_name": removed.card_name, "new_deck_size": len(deck)}
+            if note:
+                details["note"] = note
+            self._record_event("CARD_REMOVED", character, details)
+            logger.info(f"[DeckState] '{removed.card_name or removed.card_id}' (-1) khỏi deck {character}. Còn: {len(deck)}")
+
+        # Pass 1: exact id / name
+        for i, c in enumerate(deck):
+            if c.placeholder:
+                continue
+            if (tid and c.card_id.lower() == tid) or (tname and c.card_name.lower() == tname):
+                _remove(i)
                 return True
 
-        # Pass 2: Substring or normalized match
-        for i, card in enumerate(deck):
-            c_id = card.card_id.lower()
-            c_name = card.card_name.lower()
-            if (target_name_lower and (target_name_lower in c_name or c_name in target_name_lower or target_name_lower in c_id)) or \
-               (target_id_lower and (target_id_lower in c_id or c_id in target_id_lower)):
-                removed = deck.pop(i)
-                self._record_event("CARD_REMOVED", character, {
-                    "card_id": removed.card_id,
-                    "card_name": removed.card_name,
-                    "new_deck_size": len(deck),
-                })
-                logger.info(f"[DeckState] '{removed.card_name}' (-1) đã xóa khỏi deck {character}. Còn lại: {len(deck)}")
-                return True
-
-        # Pass 3: Starter basic fallback
-        basic_terms = ["basic attack", "sword slash", "matter disintegration", "stroke", "standing blade", "barrier deployment", "basic skill"]
-        is_basic = any(term in target_name_lower or term in target_id_lower for term in basic_terms)
-        if is_basic:
-            for i, card in enumerate(deck):
-                c_name = card.card_name.lower()
-                c_id = card.card_id.lower()
-                if any(term in c_name or term in c_id for term in basic_terms):
-                    removed = deck.pop(i)
-                    self._record_event("CARD_REMOVED", character, {
-                        "card_id": removed.card_id,
-                        "card_name": removed.card_name,
-                        "new_deck_size": len(deck),
-                    })
-                    logger.info(f"[DeckState] '{removed.card_name}' (-1) đã xóa khỏi deck {character}. Còn lại: {len(deck)}")
+        # Pass 2: same base name (ignores variant suffix, min length 4 to avoid junk matches)
+        if len(tbase) >= 4:
+            for i, c in enumerate(deck):
+                if not c.placeholder and self._base_name(c.card_name) == tbase:
+                    _remove(i)
                     return True
 
-        # Pass 4: Fallback to maintain synchronized deck size if deck is non-empty
-        if deck:
-            removed = None
-            for i, card in enumerate(deck):
-                c_name = card.card_name.lower()
-                c_id = card.card_id.lower()
-                if any(term in c_name or term in c_id for term in ["basic", "slash", "starter", "synced"]):
-                    removed = deck.pop(i)
-                    break
-            if removed is None:
-                removed = deck.pop()
+        # Not found: keep size in sync using a placeholder, never guess a real card
+        ph = self._pop_placeholder(character)
+        if ph is not None:
             self._record_event("CARD_REMOVED", character, {
-                "card_id": removed.card_id,
-                "card_name": removed.card_name,
-                "requested_id": card_id,
-                "requested_name": card_name,
-                "note": "fallback_removed_starter_to_keep_deck_synced",
-                "new_deck_size": len(deck),
+                "card_id": card_id, "card_name": card_name,
+                "note": "card_unknown_removed_placeholder", "new_deck_size": len(deck),
             })
-            logger.info(f"[DeckState] '{removed.card_name}' (-1, fallback sync) đã xóa khỏi deck {character}. Còn lại: {len(deck)}")
-            return True
+            logger.warning(f"[DeckState] '{card_name}' chưa có trong bộ nhớ, trừ 1 slot placeholder ({character}).")
+            return False
 
-        # If deck was completely empty
         self._record_event("CARD_REMOVED", character, {
-            "card_id": card_id,
-            "card_name": card_name,
-            "note": "deck_was_empty",
-            "new_deck_size": len(deck),
+            "card_id": card_id, "card_name": card_name,
+            "note": "card_not_found_no_change", "new_deck_size": len(deck),
         })
+        logger.warning(f"[DeckState] Không tìm thấy '{card_name}' để xóa trong deck {character}; giữ nguyên.")
         return False
 
     def record_card_upgraded(
@@ -298,41 +287,50 @@ class DeckState:
         variant_name: str = "",
         card_id: str = "",
         card_name: str = "",
-        new_variant: str = ""
+        new_variant: str = "",
     ) -> bool:
-        """Record an Epiphany / Fate upgrade replacing a base card."""
+        """
+        Record an Epiphany/Fate upgrade. An upgrade REPLACES a card, deck size never changes.
+        Resolution order: exact base id -> same base name -> convert one placeholder slot.
+        If nothing matches, the deck is left untouched (no +1).
+        """
         base_id = base_card_id or card_id
         variant_id = new_variant_id or card_id
         v_name = variant_name or new_variant or "Upgraded"
-
+        tbase = self._base_name(card_name)
         deck = self._decks.get(character, [])
-        for card in deck:
-            if card.card_id == base_id or (card_name and card.card_name.lower() in card_name.lower()):
-                card.card_id = variant_id
-                card.variant = v_name
-                self._record_event("CARD_UPGRADED", character, {
-                    "base_card_id": base_id,
-                    "new_variant_id": variant_id,
-                    "variant_name": v_name,
-                })
-                logger.info(f"[DeckState] Thẻ '{card.card_name}' nâng cấp thành [{v_name}] ({variant_id})")
-                return True
 
-        # If base card not found in memory deck, still add the upgraded card via record_card_picked
+        def _apply(card: DeckCard, note: str = "") -> bool:
+            card.card_id = variant_id or card.card_id
+            if card_name:
+                card.card_name = card_name
+            card.variant = v_name
+            card.placeholder = False
+            details = {"base_card_id": base_id, "new_variant_id": variant_id, "variant_name": v_name,
+                       "new_deck_size": len(deck)}
+            if note:
+                details["note"] = note
+            self._record_event("CARD_UPGRADED", character, details)
+            logger.info(f"[DeckState] Nâng cấp '{card.card_name}' -> [{v_name}] ({variant_id})")
+            return True
+
+        for card in deck:
+            if not card.placeholder and base_id and card.card_id == base_id:
+                return _apply(card)
+        if len(tbase) >= 4:
+            for card in deck:
+                if not card.placeholder and self._base_name(card.card_name) == tbase:
+                    return _apply(card)
+        for card in deck:
+            if card.placeholder:
+                return _apply(card, note="converted_placeholder")
+
         self._record_event("CARD_UPGRADED", character, {
-            "base_card_id": base_id,
-            "new_variant_id": variant_id,
-            "variant_name": v_name,
-            "note": "base_card_not_found_fallback_added_to_deck",
+            "base_card_id": base_id, "new_variant_id": variant_id, "variant_name": v_name,
+            "note": "base_card_not_found_no_change", "new_deck_size": len(deck),
         })
-        self.record_card_picked(
-            character=character,
-            card_id=variant_id,
-            card_name=card_name or v_name,
-            variant=v_name,
-            source="epiphany_upgrade"
-        )
-        return True
+        logger.warning(f"[DeckState] Không tìm thấy thẻ gốc cho '{card_name}' ({character}); giữ nguyên deck.")
+        return False
 
     def record_card_copied(self, character: str, card_id: str, card_name: str) -> None:
         """Record a card being duplicated."""

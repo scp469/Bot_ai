@@ -353,29 +353,32 @@ class ChaosRuleManager:
                 variants = self.cards_by_name[key]
                 return variants[0] if len(variants) == 1 else max(variants, key=_score_variant)
 
-        # 3. Bidirectional substring match
+        # 3. Substring match. Card name inside OCR text is always allowed; OCR text inside a
+        #    card name (truncated title) needs >= 6 chars and must cover >= 60% of the name.
         for name_lower, variants in self.cards_by_name.items():
             name_norm = " ".join(re.sub(r"[^\w\s%]", " ", name_lower).split())
-            if (
-                name_lower in text_lower
-                or name_norm in text_norm
-                or (len(text_norm) >= 5 and text_norm in name_lower)
-                or (len(text_lower) >= 5 and text_lower in name_lower)
-            ):
+            truncated = (
+                (len(text_norm) >= 6 and text_norm in name_norm and len(text_norm) >= 0.6 * len(name_norm))
+                or (len(text_lower) >= 6 and text_lower in name_lower and len(text_lower) >= 0.6 * len(name_lower))
+            )
+            if name_lower in text_lower or name_norm in text_norm or truncated:
                 return variants[0] if len(variants) == 1 else max(variants, key=_score_variant)
 
-        # 4. Partial token / stem overlap for OCR typos (e.g. "Sword Slas" -> "Sword Slash")
-        best_cand = None
-        best_sim = 0.0
+        # 4. Fuzzy match for OCR typos (e.g. "Sword Slas" -> "Sword Slash").
+        #    Strict: ratio >= 0.85, text >= 5 chars, and clearly better than the runner-up name.
+        if len(text_norm) < 5:
+            return None
+        scored: Dict[str, Tuple[float, Dict[str, Any]]] = {}
         for name_lower, variants in self.cards_by_name.items():
-            for v in variants:
-                v_name = v.get("name", "").lower()
-                sim = difflib.SequenceMatcher(None, text_lower, v_name).ratio()
-                if sim > best_sim and sim >= 0.75:
-                    best_sim = sim
-                    best_cand = v
-
-        return best_cand
+            ratio = difflib.SequenceMatcher(None, text_norm, name_lower).ratio()
+            if ratio >= 0.85:
+                scored[name_lower] = (ratio, variants[0] if len(variants) == 1 else max(variants, key=_score_variant))
+        if not scored:
+            return None
+        ranked = sorted(scored.values(), key=lambda t: t[0], reverse=True)
+        if len(ranked) > 1 and ranked[0][0] - ranked[1][0] < 0.05:
+            return None  # ambiguous, refuse to guess
+        return ranked[0][1]
 
     def match_event_choice(self, text: str) -> Optional[Tuple[Dict[str, Any], Dict[str, Any]]]:
         """Match OCR text from an event choice button against events_database."""

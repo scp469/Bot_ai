@@ -308,36 +308,105 @@ class TestDeckAuditFixes(unittest.TestCase):
         with open(rules_path, "r", encoding="utf-8") as f:
             cls.card_rules = json.load(f)
 
-    def test_initialize_default_team_canonical_cards(self):
+    def test_initialize_default_team_uses_placeholders_not_invented_cards(self):
         ds = DeckState()
         team = ["Rossweisse", "Tiphera", "Nia"]
         ds.initialize_default_team(team, card_rules=self.card_rules)
 
-        ross_deck = ds.get_deck("Rossweisse")
-        self.assertEqual(len(ross_deck), 7)
-        # Should have canonical sword slash starter cards
-        atk_cards = [c for c in ross_deck if c.card_id == "rossweisse_sword_slash_base"]
-        self.assertGreaterEqual(len(atk_cards), 4)
+        for char in team:
+            deck = ds.get_deck(char)
+            self.assertEqual(len(deck), 7)
+            self.assertTrue(all(c.placeholder for c in deck))
+        # Placeholders must never count towards copy limits
+        self.assertEqual(ds.count_copies("Rossweisse", "rossweisse_sword_slash_base"), 0)
+        self.assertEqual(ds.count_copies("Rossweisse", "Sword Slash"), 0)
 
-        tiphera_deck = ds.get_deck("Tiphera")
-        self.assertEqual(len(tiphera_deck), 7)
-        t_atk = [c for c in tiphera_deck if c.card_id == "tiphera_matter_disintegration_base"]
-        self.assertGreaterEqual(len(t_atk), 4)
-
-    def test_remove_card_by_rule_id_and_ocr_name(self):
+    def test_remove_known_card_by_id_and_name(self):
         ds = DeckState()
-        ds.initialize_default_team(["Rossweisse"], card_rules=self.card_rules)
+        ds.reconcile_from_remove_screen("Rossweisse", [
+            {"card_id": "rossweisse_sword_slash_base", "card_name": "Sword Slash"},
+            {"card_id": "rossweisse_sword_slash_base", "card_name": "Sword Slash"},
+            {"card_id": "rossweisse_standing_blade_base", "card_name": "Standing Blade"},
+        ])
+        self.assertTrue(ds.record_card_removed("Rossweisse", card_id="rossweisse_sword_slash_base"))
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 2)
+        self.assertTrue(ds.record_card_removed("Rossweisse", card_id="", card_name="Sword Slash"))
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 1)
+        self.assertEqual(ds.get_deck("Rossweisse")[0].card_name, "Standing Blade")
+
+    def test_remove_unknown_card_drops_placeholder_never_a_real_card(self):
+        ds = DeckState()
+        ds.initialize_default_team(["Rossweisse"])
+        ds.record_card_picked("Rossweisse", "rossweisse_flicker_blade_blink", "Flicker Blade (Blink)")
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 8)
+
+        ok = ds.record_card_removed("Rossweisse", card_id="x_unknown", card_name="Totally Unknown Card")
+        self.assertFalse(ok)  # nothing real matched
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 7)  # a placeholder was consumed
+        # the real card is untouched
+        self.assertEqual(ds.count_copies("Rossweisse", "rossweisse_flicker_blade_blink"), 1)
+
+    def test_remove_unknown_card_with_no_placeholder_changes_nothing(self):
+        ds = DeckState()
+        ds.record_card_picked("Rossweisse", "rossweisse_flicker_blade_blink", "Flicker Blade (Blink)")
+        self.assertFalse(ds.record_card_removed("Rossweisse", card_id="nope", card_name="Nope Nope"))
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 1)
+
+    def test_upgrade_never_changes_deck_size(self):
+        ds = DeckState()
+        ds.reconcile_from_remove_screen("Rossweisse", [
+            {"card_id": "rossweisse_flicker_blade_base", "card_name": "Flicker Blade"},
+            {"card_id": "rossweisse_sword_slash_base", "card_name": "Sword Slash"},
+        ])
+        # matched by base name ("Flicker Blade (Aegis)" -> "flicker blade")
+        self.assertTrue(ds.record_card_upgraded(
+            "Rossweisse", card_id="rossweisse_flicker_blade_aegis",
+            card_name="Flicker Blade (Aegis)", new_variant="Aegis"))
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 2)
+        self.assertEqual(ds.get_deck("Rossweisse")[0].variant, "Aegis")
+
+    def test_upgrade_unknown_base_converts_placeholder_or_noop(self):
+        ds = DeckState()
+        ds.initialize_default_team(["Rossweisse"])
+        self.assertTrue(ds.record_card_upgraded(
+            "Rossweisse", card_id="rossweisse_radiant_sword_flow_x", card_name="Radiant Sword Flow (X)",
+            new_variant="X"))
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 7)  # unchanged, no +1
+        self.assertEqual(sum(1 for c in ds.get_deck("Rossweisse") if c.placeholder), 6)
+
+        empty = DeckState()
+        self.assertFalse(empty.record_card_upgraded(
+            "Rossweisse", card_id="a_b", card_name="Whatever Card", new_variant="V"))
+        self.assertEqual(empty.get_deck_size("Rossweisse"), 0)  # no +1 fabricated
+
+    def test_reconcile_keeps_total_size_when_grid_is_partial(self):
+        ds = DeckState()
+        ds.sync_deck_size("Rossweisse", 12)  # badge says 12, only 8 visible (scrollable grid)
+        observed = [{"card_id": f"c{i}", "card_name": f"Card Number {i}"} for i in range(8)]
+        ds.reconcile_from_remove_screen("Rossweisse", observed)
+        self.assertEqual(ds.get_deck_size("Rossweisse"), 12)
+        self.assertEqual(sum(1 for c in ds.get_deck("Rossweisse") if c.placeholder), 4)
+
+    def test_flow_reconcile_infers_owner_from_fixture_like_cards(self):
+        from types import SimpleNamespace
+        from czn_bot.flows.chaos import ChaosFlow
+        from czn_bot.chaos.deck_evaluator import DeckEvaluator
+        from czn_bot.chaos.rules import ChaosRuleManager
+
+        flow = ChaosFlow.__new__(ChaosFlow)
+        flow.ai_brain = SimpleNamespace(deck_evaluator=DeckEvaluator())
+        flow.rule_manager = ChaosRuleManager()
+        flow.team_characters = ["Rossweisse", "Tiphera", "Nia"]
+        flow.active_character = "Tiphera"  # deliberately wrong: screen must override it
+        visible = [{"title": t} for t in [
+            "Sword Slash", "Sword Slash", "Standing Blade", "Flicker Blade (Aegis)",
+            "Radiant Sword Flow", "Sword Resonance", "Blade of the Cycle"]]
+        owner = flow._reconcile_remove_screen(visible)
+        self.assertEqual(owner, "Rossweisse")
+        ds = flow.ai_brain.deck_evaluator.deck_state
         self.assertEqual(ds.get_deck_size("Rossweisse"), 7)
-
-        # Remove by exact ID
-        ok1 = ds.record_card_removed("Rossweisse", card_id="rossweisse_sword_slash_base")
-        self.assertTrue(ok1)
-        self.assertEqual(ds.get_deck_size("Rossweisse"), 6)
-
-        # Remove by OCR text name
-        ok2 = ds.record_card_removed("Rossweisse", card_id="", card_name="Sword Slash")
-        self.assertTrue(ok2)
-        self.assertEqual(ds.get_deck_size("Rossweisse"), 5)
+        self.assertEqual(ds.count_copies("Rossweisse", "Sword Slash"), 2)
+        self.assertEqual(ds.get_deck_size("Tiphera"), 0)  # not polluted
 
     def test_sync_deck_size_dynamically(self):
         ds = DeckState()
@@ -457,6 +526,24 @@ class TestDeckAuditFixes(unittest.TestCase):
             on_screen_counts=[0, 8, 8]
         )
         self.assertGreater(evaluator.deck_state.get_deck_size("Rossweisse"), 0)
+
+class TestRealBadgeAndMatching(unittest.TestCase):
+    def test_badge_counts_on_real_card_reward_fixture(self):
+        import cv2
+        from czn_bot.chaos.decisions import ChaosVision
+        path = os.path.join(PROJECT_ROOT, "tests", "fixtures", "labeled",
+                            "CHAOS_CHOOSE_EPIPHANY", "chaos_card_reward.png")
+        img = cv2.imread(path)
+        self.assertIsNotNone(img)
+        self.assertEqual(ChaosVision().extract_card_reward_combatant_counts(img), [7, 8, 8])
+
+    def test_match_card_rejects_junk_and_ambiguous_text(self):
+        from czn_bot.chaos.rules import ChaosRuleManager
+        rm = ChaosRuleManager()
+        self.assertIsNone(rm.match_card("Card Reward"))
+        self.assertIsNone(rm.match_card("ab"))
+        self.assertIsNone(rm.match_card("Select the combatant"))
+        self.assertEqual(rm.match_card("Sword Slas")["name"], "Sword Slash")
 
 
 if __name__ == "__main__":

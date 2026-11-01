@@ -8,6 +8,7 @@ Handles:
 """
 import os
 import re
+import time
 import base64
 import logging
 from dataclasses import dataclass, field
@@ -15,7 +16,7 @@ from typing import Dict, List, Optional, Tuple, Any
 import cv2
 import numpy as np
 
-from czn_bot.constants import SCREEN_WIDTH, SCREEN_HEIGHT, TEMPLATES_DIR, DATA_TEMPLATES_DIR, TEMPLATES
+from czn_bot.constants import SCREEN_WIDTH, SCREEN_HEIGHT, TEMPLATES_DIR, DATA_TEMPLATES_DIR, TEMPLATES, PROJECT_ROOT
 from czn_bot.vision.hp_reader import get_team_hp
 from czn_bot.vision.ocr import get_ocr_service, OcrService
 from czn_bot.chaos.rules import ChaosRuleManager
@@ -531,9 +532,17 @@ class ChaosVision:
             (1079, 480, 47, 61),
             (1079, 680, 47, 61),
         ]
-        for roi in badge_rois:
+        for slot, roi in enumerate(badge_rois):
             crop = self.crop_roi(screen, roi)
             d = self._recognize_badge_digit(crop)
+            if os.environ.get("CZN_DUMP_BADGES") == "1" and crop is not None and crop.size:
+                # Collect real badge samples: rename file to its true count to build labeled tests
+                try:
+                    dump_dir = os.path.join(PROJECT_ROOT, "logs", "badges")
+                    os.makedirs(dump_dir, exist_ok=True)
+                    cv2.imwrite(os.path.join(dump_dir, f"badge_{int(time.time()*1000)}_s{slot}_read{d}.png"), crop)
+                except Exception:
+                    pass
             if (d is None or d <= 0 or d > 40) and hasattr(self, "ocr") and self.ocr and self.ocr.is_available:
                 try:
                     txt = self.ocr.read_text(crop).strip()

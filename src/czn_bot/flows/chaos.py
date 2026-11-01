@@ -415,9 +415,11 @@ class ChaosFlow(Flow):
                 reason = "Xóa thẻ cơ bản mặc định (Slot 0)"
                 target_slot = None
 
+                remove_char = self.active_character
                 if visible and hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
                     names = [c["title"] for c in visible]
-                    decision, target_slot, eval_reason = self.ai_brain.deck_evaluator.evaluate_card_removal(names, self.active_character)
+                    remove_char = self._reconcile_remove_screen(visible)
+                    decision, target_slot, eval_reason = self.ai_brain.deck_evaluator.evaluate_card_removal(names, remove_char)
                     if decision == "skip":
                         skip_coord = TAP_COORDS.get("chaos_remove_card_skip", (1230, 837))
                         return Action.tap(
@@ -444,7 +446,7 @@ class ChaosFlow(Flow):
                 def _on_remove_card_success():
                     if hasattr(self, "ai_brain") and getattr(self.ai_brain, "deck_evaluator", None):
                         self.ai_brain.deck_evaluator.deck_state.record_card_removed(
-                            self.active_character, card_id=cid, card_name=cname
+                            remove_char, card_id=cid, card_name=cname
                         )
 
                 remove_btn = TAP_COORDS.get("chaos_remove_card_confirm", (1498, 838))
@@ -573,6 +575,45 @@ class ChaosFlow(Flow):
             return Action.none(name="Transitioning Animation")
 
         return Action.none(name="Chaos Flow: Idle")
+
+    def _reconcile_remove_screen(self, visible: List[Dict[str, Any]]) -> str:
+        """
+        Use the cards visible on the Remove Card screen as ground truth for DeckState.
+        The owner character is inferred from the matched cards (majority, >= 2 agreeing
+        cards, must be in the team); otherwise falls back to self.active_character.
+        Returns the character whose deck this screen shows.
+        """
+        from collections import Counter
+
+        deck_state = self.ai_brain.deck_evaluator.deck_state
+        observed: List[Dict[str, str]] = []
+        chars: List[str] = []
+        for c in visible:
+            title = (c.get("title") or "").strip()
+            if len(title) < 3:
+                continue
+            m = self.rule_manager.match_card(title) if getattr(self, "rule_manager", None) else None
+            if m:
+                observed.append({
+                    "card_id": m.get("id", ""), "card_name": m.get("name", title),
+                    "variant": m.get("variant", "Base"),
+                })
+                if m.get("character"):
+                    chars.append(m["character"])
+            else:
+                observed.append({"card_id": re.sub(r"[^\w]+", "_", title.lower()).strip("_"),
+                                 "card_name": title, "variant": "Base"})
+
+        owner = self.active_character
+        if chars:
+            top, n = Counter(chars).most_common(1)[0]
+            if n >= 2 and top in self.team_characters:
+                owner = top
+        try:
+            deck_state.reconcile_from_remove_screen(owner, observed)
+        except Exception as e:
+            logger.warning(f"Lỗi đối soát deck từ màn Remove Card: {e}")
+        return owner
 
     def on_action_executed(self, action: Action, success: bool = True) -> None:
         """Called after an action executes. Invokes on_success callback if execution succeeded."""

@@ -1,7 +1,7 @@
 """
 Mini-map Parser, DAG Builder, and 3D Island detector for Chaos Mode.
 Parses the bottom-left mini-map (X: 20..660, Y: 570..890) into a Directed Acyclic Graph (DAG)
-compatible with `czn_bot.chaos.pathfinder`.
+compatible with Chaos map DAG pathfinding.
 """
 import os
 import logging

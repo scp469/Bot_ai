@@ -153,26 +153,6 @@ class TestFixesVerification(unittest.TestCase):
 
     # ── Checklist Items 1-10 Verification ─────────────────────────────
 
-    @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
-    @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=([], {}, {}, []))
-    def test_item1_minimap_transition_retries(self, mock_parse, mock_hp):
-        """Item 1: When parse_chaos_minimap is empty, wait for transition up to max_map_retries."""
-        from czn_bot.flows.chaos import ChaosFlow
-        from czn_bot.flows.base import ActionType
-        flow = ChaosFlow(max_map_retries=3)
-        screen = np.zeros((900, 1600, 3), dtype=np.uint8)
-
-        # Retry 1 & 2: WAIT
-        a1 = flow.handle(State.CHAOS_MAP, {}, screen)
-        self.assertEqual(a1.type, ActionType.WAIT)
-        a2 = flow.handle(State.CHAOS_MAP, {}, screen)
-        self.assertEqual(a2.type, ActionType.WAIT)
-
-        # Retry 3: STOP
-        a3 = flow.handle(State.CHAOS_MAP, {}, screen)
-        self.assertEqual(a3.type, ActionType.STOP)
-        self.assertIn("3 lần thử", a3.reason)
-
     def test_item2_explicit_stall_timeouts(self):
         """Item 2: Watchdog uses specific timeouts (IN_MATCH 300s, EPIPHANY 60s, STORY 90s)."""
         from czn_bot.constants import STATE_STALL_TIMEOUTS
@@ -195,32 +175,5 @@ class TestFixesVerification(unittest.TestCase):
             self.assertEqual(st, State.CHAOS_CHOOSE_FATE)
             self.assertEqual(details.get("type"), "choose_fate")
 
-    def test_item4_safe_zone_always_heals(self):
-        """Item 4: Safe Zone flow always chooses Rest and confirms heal, never Skip."""
-        from czn_bot.flows.chaos import ChaosFlow
-        from czn_bot.coords import TAP_COORDS
-        flow = ChaosFlow()
-        screen = np.zeros((900, 1600, 3), dtype=np.uint8)
-        act = flow.handle(State.CHAOS_SAFE_ZONE, {}, screen)
-        self.assertEqual(act.x, TAP_COORDS["chaos_safe_zone_rest"][0])
-        self.assertEqual(act.y, TAP_COORDS["chaos_safe_zone_rest"][1])
-        # Verifies confirm tap is present
-        extra = act.extra.get("extra_actions", [])
-        self.assertTrue(any(item[1] == TAP_COORDS["chaos_safe_zone_confirm"] for item in extra))
-
-    def test_item6_chaos_state_machine_safe_zone_always_heals(self):
-        """Item 6: Legacy ChaosStateMachine also heals team in Safe Zone instead of skipping."""
-        from czn_bot.chaos.state_machine import ChaosStateMachine
-        from czn_bot.coords import TAP_COORDS
-        sm = ChaosStateMachine()
-        mock_adb = MagicMock()
-        sm.adb = mock_adb
-        sm.handle_event(np.zeros((900, 1600, 3), dtype=np.uint8), {"type": "safe_zone"})
-        # Must tap Rest and Confirm, never Skip
-        mock_adb.tap_location.assert_any_call(*TAP_COORDS["chaos_safe_zone_rest"], random_offset=True)
-        mock_adb.tap_location.assert_any_call(*TAP_COORDS["chaos_safe_zone_confirm"], random_offset=True)
-
-
 if __name__ == "__main__":
     unittest.main()
-

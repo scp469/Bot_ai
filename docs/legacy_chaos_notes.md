@@ -1,128 +1,107 @@
-# Legacy Chaos Architecture & Domain Knowledge Reference
+# Legacy Chaos Architecture & Domain Knowledge Reference (Audited vs backup-full-archive)
 
-> **Mục đích tài liệu:** Lưu trữ toàn bộ tri thức nghiệp vụ, luật chơi, cấu trúc dữ liệu JSON (Card/Event/Equipment/Presets), công thức đánh giá Deck và thuật toán tìm đường (Pathfinder) từ mã nguồn Chaos cũ (`src/czn_bot/chaos/` và `src/czn_bot/flows/chaos.py`) trước khi dọn dẹp mã nguồn cũ để tái thiết lập trong `chaos2`.
+> **Mục đích tài liệu:** Lưu trữ toàn bộ tri thức nghiệp vụ, luật chơi, cấu trúc dữ liệu JSON thực tế (`data/rules/`, `data/presets/`), công thức đánh giá Deck và thuật toán tìm đường (Pathfinder) đối chiếu trực tiếp từ nhánh `backup-full-archive` trước khi tái thiết lập trong `chaos2`.
 
 ---
 
-## 1. Cấu trúc và Schema các file Quy tắc (Rules & Presets)
+## 1. Cấu trúc và Schema Thực tế các file Quy tắc (Rules & Presets)
 
-Tất cả các file cấu hình nằm trong `data/rules/` và `data/presets/`.
-
-### 1.1. `data/rules/card_rules.json`
-- **Mục đích:** Danh mục toàn bộ thẻ bài (403+ thẻ) cùng trọng số từ khóa và danh sách ưu tiên chung.
-- **Schema:**
+### 1.1. `data/rules/card_rules.json` (Thực tế trong repo)
+- **Top-level keys:** `version`, `game`, `updated_at`, `total_cards` (403), `characters`, `priority_tiers`, `cards`.
+- **Cấu trúc mỗi card:**
   ```json
   {
-    "version": "1.0",
-    "description": "Bảng quy tắc ưu tiên lựa chọn thẻ bài Chaos",
-    "cards": [
-      {
-        "id": "rossweisse_amp_therapy_elasticity",
-        "name": "Amp Therapy",
-        "character": "Rossweisse",
-        "variant": "Elasticity",
-        "description": "...",
-        "priority": 90,
-        "template_path": "templates/cards/amp_therapy_elasticity.png"
-      }
-    ],
-    "priority_list": [
-      {"card_name": "Amp Therapy", "preferred_variant": "Elasticity", "priority": 1},
-      {"card_name": "Focus", "preferred_variant": "", "priority": 2},
-      {"card_name": "Passion", "preferred_variant": "", "priority": 3},
-      {"card_name": "Possession", "preferred_variant": "", "priority": 4},
-      {"card_name": "Mute Accent", "preferred_variant": "Skill", "priority": 5}
-    ],
-    "keyword_weights": {
-      "Elasticity": 60,
-      "Extra Attack": 35,
-      "Action Point": 40,
-      "Morale": 25,
-      "Rare": 30,
-      "Heal": 45,
-      "Discard": 15,
-      "Base": 5
-    },
-    "default_pick_index": 1
+    "id": "nia_stroke_base",
+    "filename": "stroke_base.png",
+    "character": "Nia",
+    "template_path": "Nia/stroke_base.png",
+    "name": "Stroke",
+    "variant": "Base",
+    "cost": 1,
+    "cost_type": "AP",
+    "type": "Basic Attack",
+    "target": "single_enemy",
+    "priority": 15,
+    "keywords": ["Basic Attack"],
+    "description": "100% Damage",
+    "description_vi": "Gây 100% sát thương đơn mục tiêu",
+    "condition": "filler_damage",
+    "discard_priority": 1
   }
   ```
+- *Lưu ý:* `keyword_weights` và `priority_list` trong code cũ là hằng số fallback nội bộ của class `ChaosRuleManager`, không nằm trong file JSON gốc.
 
-### 1.2. `data/rules/event_rules.json`
-- **Mục đích:** Cơ sở dữ liệu sự kiện ngẫu nhiên trong Chaos (Events) và các lựa chọn (Choices).
-- **Schema:**
+### 1.2. `data/rules/event_rules.json` (Thực tế trong repo)
+- **Top-level keys:** `events_database` (64 sự kiện), `total_events`, `updated_at`.
+- **Cấu trúc mỗi event:**
   ```json
   {
-    "version": "1.0",
-    "description": "Bảng quy tắc ưu tiên xử lý sự kiện ngẫu nhiên trong Chaos",
-    "priorities": {
-      "fight_boss_for_gear": true,
-      "take_quiz": true,
-      "avoid_credit_cost": true,
-      "heal_if_low_hp": true
-    },
-    "min_credit_reserve": 100,
-    "hp_critical_threshold": 0.50,
-    "events_database": [
+    "event_name": "A Child Locked in a Room",
+    "event_type": "Common / Laboratory",
+    "choices": [
       {
-        "event_name": "Tên sự kiện",
-        "choices": [
-          {
-            "choice_text": "Chuỗi text nhận diện OCR trên nút lựa chọn",
-            "cost_credits": 0,
-            "is_combat": false,
-            "is_quiz": false,
-            "is_heal": false,
-            "outcome_summary": "Tóm tắt kết quả lựa chọn"
-          }
-        ]
+        "choice_id": 1,
+        "choice_text": "Receive the memory of longing",
+        "outcome_summary": "Decrease all Combatants' Stress by 9, Apply Memory Encroachment 2",
+        "priority_score": 8,
+        "recommendation": "Chọn khi cần xả stress gấp cho toàn đội (-9 Stress)..."
       }
     ]
   }
   ```
+- *Lưu ý:* `priorities`, `min_credit_reserve`, `hp_critical_threshold` là các giá trị mặc định được định nghĩa trong code cũ, không lưu cứng trong JSON.
 
-### 1.3. `data/rules/equipment_rules.json`
-- **Mục đích:** Danh sách trang bị (27 trang bị đầm lầy Swamp of Judgment) và xếp hạng Tier (S > A > B).
-- **Schema:**
+### 1.3. `data/rules/equipment_rules.json` (Thực tế trong repo)
+- **Top-level keys:** `version`, `game`, `updated_at`, `world`, `total_equipments` (27 trang bị Swamp of Judgment), `priority_tiers`, `equipments`.
+- **Cấu trúc mỗi equipment:**
   ```json
   {
-    "version": "1.0",
-    "equipments": [
-      {
-        "name": "Tên trang bị",
-        "filename": "ten_file.webp",
-        "tier": "S",
-        "character": "All",
-        "template_path": "templates/equipment/ten_file.png",
-        "description": "Hiệu ứng trang bị"
-      }
-    ]
+    "id": "eq_sec_010",
+    "slug": "branch-of-eternity",
+    "name": "Branch of Eternity",
+    "filename": "branch-of-eternity.webp",
+    "template_path": "swamp_of_judgment_equipment/images/branch-of-eternity.webp",
+    "rarity": "Unique",
+    "type": "Weapon (Vũ khí)",
+    "chaos_world": "Swamp of Judgment",
+    "tier": "tier_s_must_pick",
+    "priority": 95,
+    "condition": "has_healer",
+    "trigger": "on_heal_or_recover",
+    "synergy_tags": ["Heal", "Fixed Damage", "AoE", "Healer DPS"],
+    "best_characters": ["Nia", "Mika", "Healers"],
+    "recommendation_vi": "Cực kỳ bá đạo cho đội hình có Healer (như Nia)...",
+    "discard_if": "no_healing_cards",
+    "stats_5star": {"atk": 82, "def": 31, "hp": 83},
+    "description_en": "On Heal or Recover through an ability, inflict Fixed Damage equal to 50% of Recover Amount to all enemies",
+    "reward_tags": ["encounter"]
   }
   ```
 
 ### 1.4. `data/presets/*.json` (Character Presets)
-- **Mục đích:** Cấu hình build deck riêng cho từng nhân vật (ví dụ: `rossweisse.json`, `tiphera.json`, `nia.json`).
-- **Schema:**
+- **Cấu trúc thực tế (ví dụ `rossweisse.json`):**
   ```json
   {
     "character": "Rossweisse",
-    "archetype": "Elasticity DPS",
+    "archetype": "Flow_Burst",
     "version": "1.0.0",
-    "max_deck_size": 10,
     "core_cards": [
       {
-        "card_id": "rossweisse_amp_therapy_elasticity",
+        "card_id": "rossweisse_flicker_blade_blink",
         "min_copies": 1,
         "max_copies": 2,
-        "priority": 90
+        "priority": 95
       }
     ],
     "epiphany_targets": {
-      "Amp Therapy": "rossweisse_amp_therapy_elasticity"
+      "rossweisse_flicker_blade": "rossweisse_flicker_blade_blink",
+      "rossweisse_sword_resonance": "rossweisse_sword_resonance_activate_all"
     },
     "removal_priority": [
-      "rossweisse_standing_blade_base",
-      "rossweisse_sword_slash_base"
-    ]
+      "rossweisse_sword_slash_base",
+      "rossweisse_standing_blade_base"
+    ],
+    "max_deck_size": 8
   }
   ```
 
@@ -133,33 +112,30 @@ Tất cả các file cấu hình nằm trong `data/rules/` và `data/presets/`.
 ### 2.1. Đánh giá lựa chọn Thức tỉnh / Epiphany
 - **Công thức:**
   $$\text{Total Score} = V_{\text{preset}} + V_{\text{marginal}} - P_{\text{bloat}}$$
-
-- **Chi tiết từng thành phần:**
-  1. $V_{\text{preset}}$ (Điểm giá trị cơ bản & Preset):
-     - Gốc: `priority` của thẻ (nếu > 0) hoặc mặc định `50.0`.
-     - $+50.0$ nếu `card_id` hoặc tên thẻ khớp mục tiêu trong `preset.epiphany_targets`.
-     - $+\text{core\_rule.priority}$ nếu thẻ nằm trong `preset.core_cards`.
-  2. $V_{\text{marginal}}$ (Điểm biên tế & Ràng buộc bản sao):
-     - Số lượng bản sao hiện tại $C$:
-       - Nếu $C \ge \text{max\_copies}$: $-60.0$ (phạt vượt quá số lượng cần thiết).
-       - Nếu $C < \text{min\_copies}$: $+20.0$ (thưởng hoàn thiện bộ bài tối thiểu).
-     - Biến thể thẻ:
-       - Chứa từ khóa `"Elasticity"`: $+50.0$.
-       - Chứa từ khóa `"Action Point"`, `"AP"`, hoặc `"Draw"`: $+15.0$.
-  3. $P_{\text{bloat}}$ (Phạt phình Deck):
-     - Nếu $\text{current\_deck\_size} \ge \text{target\_deck\_size}$:
+- **Thành phần:**
+  1. $V_{\text{preset}}$:
+     - Điểm gốc: `card.priority` (nếu > 0) hoặc `50.0`.
+     - Khớp `epiphany_targets`: $+50.0$.
+     - Khớp `core_cards`: $+\text{core\_rule.priority}$.
+  2. $V_{\text{marginal}}$:
+     - Số lượng bản sao $C \ge \text{max\_copies}$: $-60.0$.
+     - $C < \text{min\_copies}$: $+20.0$.
+     - Biến thể chứa `"Elasticity"`: $+50.0$.
+     - Từ khóa hồi tài nguyên (`"Action Point"`, `"AP"`, `"Draw"`): $+15.0$.
+  3. $P_{\text{bloat}}$:
+     - Khi $\text{current\_deck\_size} \ge \text{target\_deck\_size}$:
        $$P_{\text{bloat}} = (\text{current\_deck\_size} - \text{target\_deck\_size} + 1) \times 12.0$$
 
 ### 2.2. Gán Thẻ Thưởng (Card Reward) cho Nhân vật
-1. **Thẻ đặc quyền nhân vật (Non-memory, có character cụ thể):** Gán trực tiếp cho nhân vật tương ứng trong đội hình nếu chưa chạm `max_copies`.
-2. **Khớp Core Card trong Preset:** Kiểm tra thẻ có nằm trong `core_cards` của nhân vật nào chưa đạt `max_copies` không.
-3. **Thẻ Ký Ức (Memory Card):** Ưu tiên gán cho chủ lực (main carry) nếu deck của chủ lực chưa chạm `max_deck_size`; nếu đã đầy, gán cho nhân vật có số thẻ ít nhất.
-4. **Mặc định:** Gán cho nhân vật có số thẻ ít nhất để tránh phình deck.
+1. Thẻ đặc quyền nhân vật (Non-memory, có `character` cụ thể): Gán cho nhân vật đó nếu chưa vượt `max_copies`.
+2. Khớp Core Card của nhân vật trong đội hình.
+3. Thẻ Ký Ức (Memory): Ưu tiên cho carry chủ lực nếu $\text{size} < \text{max\_deck\_size}$, ngược lại gán cho nhân vật có số thẻ ít nhất.
+4. Mặc định: Gán cho nhân vật có deck mỏng nhất (ít thẻ nhất) để chống phình deck.
 
 ### 2.3. Lọc & Xóa thẻ (Remove Card)
 1. Quét lưới 8 thẻ hiển thị, đối chiếu với danh sách `preset.removal_priority`.
 2. Nếu không có thẻ trong danh sách ưu tiên xóa, quét các thẻ khởi đầu cơ bản: `"Sword Slash"`, `"Standing Blade"`, `"Basic Attack"`, `"Basic Skill"`, `"Matter Disintegration"`, `"Barrier Deployment"`.
-3. Nếu không tìm thấy bất kỳ thẻ nào cần xóa trong 8 thẻ nhìn thấy: **Bấm SKIP** an toàn để bảo toàn tài nguyên (Credits), không xóa bừa.
+3. Nếu không tìm thấy bất kỳ thẻ nào cần xóa: **Bấm SKIP** an toàn để bảo toàn tài nguyên (Credits).
 
 ---
 
@@ -178,7 +154,7 @@ Tất cả các file cấu hình nằm trong `data/rules/` và `data/presets/`.
 - `IslandChoice.TOP`: Nhánh trên.
 - `IslandChoice.MIDDLE`: Nhánh giữa.
 - `IslandChoice.BOTTOM`: Nhánh dưới.
-- Ưu tiên khi điểm bằng nhau: `TOP (3) > MIDDLE (2) > BOTTOM (1)`.
+- Ưu tiên hòa điểm: `TOP (3) > MIDDLE (2) > BOTTOM (1)`.
 
 ### 3.3. Quy tắc An toàn (Luật A khi HP < 60%)
 - Nếu nhánh không có Tinh Anh (`ELITE`): Hợp lệ.
@@ -196,25 +172,12 @@ Tất cả các file cấu hình nằm trong `data/rules/` và `data/presets/`.
 
 ---
 
-## 4. Cơ chế Truy vấn Rules (ChaosRuleManager)
+## 4. Danh sách Lỗi Cũ & Anti-Patterns ĐÃ BIẾT (DO NOT MIGRATE TO CHAOS2)
 
-1. **Khớp Thẻ bài (`match_card`):**
-   - Bước 1: Khớp chính xác ID trong `cards_by_id`.
-   - Bước 2: Chuẩn hóa text (bỏ dấu, hạ thường, thay `_` bằng khoảng trắng) -> Khớp tên chính xác.
-   - Bước 3: Khớp chuỗi con (substring) có kiểm tra độ dài tối thiểu (>= 6 ký tự và chiếm >= 60% tên thẻ).
-   - Bước 4: Khớp mờ (fuzzy match) bằng `difflib.SequenceMatcher`: Yêu cầu `ratio >= 0.85`, độ dài >= 5 ký tự và cách biệt so với thẻ đứng thứ hai >= 0.05. Nếu mơ hồ thì từ chối đoán (`return None`).
-2. **Khớp Sự kiện (`match_event_choice`, `match_event_by_title`):**
-   - Khớp chuỗi OCR trên nút lựa chọn với danh mục `event_choices_index`.
-3. **Khớp Trang bị (`match_equipment`):**
-   - Khớp theo tên chuẩn hóa, tên file (`.webp`), hoặc tên template (`.png`).
-
----
-
-## 5. Danh sách Anti-Patterns & Lỗi cũ CẦN TRÁNH trong Chaos2 (DO NOT MIGRATE)
-
-1. **Hardcoded `active_character="Rossweisse"`:** Trong flow cũ, `active_character` luôn bị gán cứng mặc định là `"Rossweisse"` dẫn tới việc tính toán deck và lựa chọn thẻ sai lệch khi người dùng chạy đội hình khác. Trong Chaos2, thông tin nhân vật phải được lấy động từ cấu hình đội hình thực tế.
-2. **Chuỗi Tap Mù (Blind Tap Chains):** Flow cũ thường gửi chuỗi tap liên tiếp (ví dụ tap chọn slot rồi lập tức tap nút Confirm mà không qua vòng lặp kiểm tra trạng thái màn hình thực tế). Trong Chaos2: **Perception tách rời Action; mỗi action chỉ phát 1 tap duy nhất và buộc phải chờ verify ở frame tiếp theo**.
-3. **Phân mảnh Bộ lọc Temporal / K-frame:** Bản cũ tồn tại đồng thời `_settled_frames`, `frames_since_change`, `STATE_SETTLING_FRAMES` và `min_frames=2` ở nhiều nơi gây xung đột và trễ phản hồi. Trong Chaos2: **Chỉ duy nhất `SCREEN_REGISTRY` giữ K-frame settling per-state**.
-4. **Tap bừa vào vùng Đảo 3D:** Bản cũ cho phép tap fallback vào vùng đảo 3D khi tọa độ không chắc chắn. Trong Chaos2: **TapGuard từ chối mặc định nếu tọa độ không nằm trong vùng hợp lệ**.
-5. **Cộng dồn điểm biến thể Epiphany bị lặp:** Bản cũ khi chấm điểm Epiphany cộng dồn nhiều lần điểm Elasticity và Priority gây thổi phồng điểm số sai thực tế.
-
+1. **Gán cứng `active_character = "Rossweisse"`:** Bản cũ mặc định `active_character` là Rossweisse ở mọi nơi, làm hỏng việc tính deck và target epiphany khi người dùng chọn nhân vật khác (như Nia, Tiphera).
+2. **Lỗi đối chiếu key `epiphany_targets`:** Trong preset JSON, key là `rossweisse_flicker_blade` nhưng code cũ kiểm tra `cid == target_id or target_id in card_title.lower()`, bỏ qua hoàn toàn base card key mapping!
+3. **Chuỗi Tap Mù (Blind Tap Chains):** Code cũ gọi `tap()` liên tiếp (chọn slot rồi Confirm ngay lập tức) mà không xác nhận frame tiếp theo đã phản hồi chưa.
+4. **Hạ tầng K-frame phân mảnh:** Trộn lẫn `_settled_frames`, `frames_since_change`, `STATE_SETTLING_FRAMES`, `min_frames=2` ở nhiều file khác nhau gây trễ hoặc xung đột.
+5. **Tap bừa vào ROI Đảo 3D:** Code cũ có fallback tap vào vùng đảo ngay cả khi không có đường đi an toàn.
+6. **Không phân biệt được 3 thẻ cùng tên trong Epiphany:** Trong game thực tế, 3 thẻ Epiphany có thể có **cùng tên** (ví dụ "Dual Creation"), chỉ khác ở Tag (ví dụ `[Unique]` vs `[Unique / Initiation]`) và nội dung hiệu ứng. Code cũ chỉ so khớp theo tên nên nhận diện sai.
+7. **Bỏ qua xác nhận trạng thái nút Remove:** Xóa thẻ tốn điểm và không hoàn tác được. Code cũ tap trực tiếp mà không kiểm tra nút Remove đã chuyển từ xám sang cam (kích hoạt) hay chưa.

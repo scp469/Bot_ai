@@ -18,6 +18,8 @@ K_FRAMES_DIALOG: int = 2
 K_FRAMES_OBTAIN: int = 2
 K_FRAMES_EQUIPMENT: int = 2
 K_FRAMES_SETTLEMENT: int = 2
+K_FRAMES_REMOVE: int = 2
+K_FRAMES_EPIPHANY: int = 2
 
 # ── 3. Giới hạn số lần thử & Timeout an toàn (Safe Stop) ───────────────────────
 MAX_ACTION_RETRIES: int = 3         # Quá 3 lần không đạt expected_next -> Safe Stop
@@ -25,10 +27,13 @@ MAX_UNKNOWN_FRAMES: int = 5         # Quá 5 frame UNKNOWN liên tiếp -> Safe 
 DEFAULT_ACTION_TIMEOUT: float = 5.0 # Thời gian chờ verify sau tap (giây)
 DEFAULT_DRY_RUN: bool = False       # Chế độ chạy thử không gửi tap
 
+# ── 3.1 Cấu hình bảo vệ hành động không hoàn tác & kết thúc lượt ──────────────
+ALLOW_LEAVE: bool = False           # Mặc định False: kết thúc cả lượt chạy, chỉ log "sẵn sàng Leave"
+IRREVERSIBLE_MODE: str = "log_only" # "log_only" | "auto" (Mặc định log_only: không phát tap cho hành động irreversible)
+
 # ── 4. Tọa độ & Vùng cấm theo màn hình (ĐO TRỰC TIẾP TRÊN FIXTURE 1600x900) ───
 
 # 4.1 EQUIPMENT
-# Hàng nhân vật (3 hàng)
 ROW_Y_RANGES: List[Tuple[int, int]] = [(170, 370), (370, 570), (570, 770)]
 ROW_ORANGE_BORDER_X: Tuple[int, int] = (972, 1015)
 ROW_ORANGE_CONNECTOR_X: Tuple[int, int] = (885, 972)
@@ -46,8 +51,8 @@ COORD_OBTAIN_BUTTON: Tuple[int, int] = (1426, 825)
 ZONE_OBTAIN_BUTTON: Tuple[int, int, int, int] = (1275, 791, 1578, 859)
 # Nút Skip trắng: bbox (945, 791, 1247, 858) -> CẤM TAP (bỏ qua trang bị/duplicate)
 ZONE_OBTAIN_SKIP: Tuple[int, int, int, int] = (945, 791, 1247, 858)
-# Vùng đọc số đếm panel (3/2/1) bằng OCR: (1500, 800, 85, 50)
-CROP_OBTAIN_COUNT: Tuple[int, int, int, int] = (1500, 800, 85, 50)
+# Vùng đọc số đếm trên nút Obtain (3/2/1) bằng OCR: (1495, 795, 90, 65)
+CROP_OBTAIN_COUNT: Tuple[int, int, int, int] = (1495, 795, 90, 65)
 
 # 4.3 SETTLEMENT
 # Nút Continue cam: bbox (1263, 785, 1581, 866), tâm (1426, 825)
@@ -59,6 +64,8 @@ ZONE_SETTLEMENT_TEMP_RETURN: Tuple[int, int, int, int] = (824, 792, 1126, 858)
 ZONE_SETTLEMENT_VOUCHER: Tuple[int, int, int, int] = (1272, 318, 1572, 378)
 # Tiêu đề Settlement: (800, 30, 280, 80)
 ROI_SETTLEMENT_TITLE: Tuple[int, int, int, int] = (800, 30, 280, 80)
+# Nút Leave bbox (824, 790, 1126, 860)
+ZONE_SETTLEMENT_LEAVE: Tuple[int, int, int, int] = (824, 790, 1126, 860)
 
 # 4.4 MODAL DIALOG 2 NÚT (Rest, Loot Certification)
 AUTO_CONFIRM_LOOT_DIALOG: bool = True
@@ -87,8 +94,8 @@ ZONE_FATE_ROUND_PLAY: Tuple[int, int, int, int] = (1185, 803, 1255, 872)
 # Lựa chọn ở dưới màn hình: tâm x ≈ [375, 765, 1215], y ≈ 765
 EVENT_3CHOICES_CENTERS: List[Tuple[int, int]] = [(375, 765), (795, 765), (1215, 765)]
 EVENT_WAYPOINT_CENTER: Tuple[int, int] = (795, 765)
-# Nút tròn kiếm góc dưới phải ≈(1470, 740, 1560, 830), tâm (1515, 780): chưa rõ -> CẤM TAP
-ZONE_EVENT_ROUND_SWORD: Tuple[int, int, int, int] = (1470, 740, 1560, 830)
+# Nút tròn kiếm góc dưới phải (1460, 725, 1570, 835), tâm (1515, 780): CẤM TAP MẶC ĐỊNH
+ZONE_EVENT_ROUND_SWORD: Tuple[int, int, int, int] = (1460, 725, 1570, 835)
 
 # 4.8 SAFE ZONE
 COORD_SAFE_ZONE_REST: Tuple[int, int] = (380, 680)
@@ -103,10 +110,20 @@ MAP_LANE_SAFE_TAPS: Dict[int, Tuple[int, int]] = {
 }
 # Vùng kiểm tra mũi tên cyan (▶)
 MAP_ARROW_ROIS: Dict[int, Tuple[int, int, int, int]] = {
-    0: (770, 185, 50, 50),
-    1: (995, 450, 50, 50),
-    2: (770, 715, 50, 50),
+    0: (770, 185, 60, 60),
+    1: (995, 450, 60, 60),
+    2: (770, 715, 60, 60),
+}
+# Vùng cờ từng làn (trên: 1150-1260, 65-200; giữa: 1390-1490, 316-460; dưới: 1150-1260, 585-735)
+MAP_FLAG_ROIS: Dict[int, Tuple[int, int, int, int]] = {
+    0: (1150, 65, 110, 135),
+    1: (1390, 316, 100, 144),
+    2: (1150, 585, 110, 150),
 }
 # Bounding box đảo 3D tổng quát (680, 80, 1480, 780): CẤM TAP NGOÀI CHAOS_MAP
 ZONE_MAP_3D_ISLANDS: Tuple[int, int, int, int] = (680, 80, 1480, 780)
 
+# 4.10 EPIPHANY & REMOVE CARD
+ZONE_EPIPHANY_VIEW_ORIGINAL: Tuple[int, int, int, int] = (1340, 92, 1570, 146) # CẤM TAP
+ZONE_REMOVE_CANCEL: Tuple[int, int, int, int] = (50, 790, 360, 870)
+ZONE_REMOVE_EXECUTE: Tuple[int, int, int, int] = (1240, 790, 1560, 870)

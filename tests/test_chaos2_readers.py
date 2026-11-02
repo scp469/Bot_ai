@@ -146,13 +146,15 @@ class TestChaos2Readers(unittest.TestCase):
         self.assertTrue(facts.choices[2].has_curse)
 
     def test_a4_read_event_facts_waypoint_single(self):
-        """Sự kiện Waypoint đơn: 1 lựa chọn ở giữa (795, 765), không có nút kiếm, không có curse."""
+        """Sự kiện Waypoint đơn: 1 lựa chọn ở giữa (795, 765), nút kiếm xám (present=True, active=False), không có curse."""
         img = self._load_state_img("event_waypoint_single.png")
         facts = read_event_facts(img)
 
         self.assertTrue(facts.is_waypoint)
         self.assertEqual(len(facts.choices), 1)
         self.assertEqual(facts.choices[0].center, (795, 765))
+        self.assertTrue(facts.sword_button_present)
+        self.assertFalse(facts.sword_button_active)
         self.assertFalse(facts.sword_button_detected)
         self.assertFalse(facts.has_curse)
 
@@ -196,9 +198,27 @@ class TestChaos2Readers(unittest.TestCase):
         self.assertEqual(facts.continue_center, (1426, 825))
         self.assertFalse(facts.temporary_return_detected)
 
+    def test_a1_read_equipment_recommended_rows(self):
+        """Hàng recommended_row đọc từ ảnh thật (Item 9): row 0, 1, 2."""
+        cases = [
+            ("equipment_row1_selected.png", 0),
+            ("equipment_row3_selected.png", 2),
+        ]
+        for fname, exp_rec in cases:
+            with self.subTest(fixture=fname):
+                img = self._load_state_img(fname)
+                facts = read_equipment_facts(img, detector=self.detector)
+                self.assertEqual(facts.recommended_row, exp_rec)
+
+        ready_img = cv2.imread("tests/fixtures/chaos_equipment_ready.png")
+        if ready_img is not None:
+            facts_ready = read_equipment_facts(ready_img, detector=self.detector)
+            self.assertEqual(facts_ready.selected_row, 1)
+            self.assertEqual(facts_ready.recommended_row, 1)
+
     # ── A7. SAFE ZONE FACTS ───────────────────────────────────────────────────
     def test_a7_read_safe_zone_facts(self):
-        """Trạm nghỉ: cả Rest icon và Skip đều sẵn sàng."""
+        """Trạm nghỉ: cả Rest icon và Skip đều sẵn sàng, interactions_left=1 (Item 9)."""
         for fname in ["safe_zone.png", "safe_zone_shop.png"]:
             with self.subTest(fixture=fname):
                 img = self._load_state_img(fname)
@@ -208,6 +228,8 @@ class TestChaos2Readers(unittest.TestCase):
                 self.assertTrue(facts.skip_available)
                 self.assertEqual(facts.rest_center, (380, 680))
                 self.assertEqual(facts.skip_center, (1426, 825))
+                self.assertEqual(facts.interactions_left, 1)
+                self.assertEqual(facts.interactions_count, 1)
 
     # ── A8. FATE FACTS ────────────────────────────────────────────────────────
     def test_a8_read_fate_facts(self):
@@ -233,21 +255,39 @@ class TestChaos2Readers(unittest.TestCase):
 
     # ── A10. HP FACTS ─────────────────────────────────────────────────────────
     def test_a10_read_hp_facts_variations(self):
-        """Thanh máu HUD đọc từ ảnh thật không mock."""
-        cases = [
+        """Thanh máu HUD đọc từ ảnh thật không mock (Item 1): trả về None khi không có HUD."""
+        # 1. Các màn CÓ HUD hợp lệ:
+        hud_cases = [
             ("map_1island.png", 1.00, False),
             ("map_2islands.png", 0.88, False),
-            ("choose_fate.png", 0.79, False),
             ("safe_zone_shop.png", 0.81, False),
+            ("settlement_dialog_leave.png", 0.55, True),
+            ("in_match.png", 1.00, False),
         ]
-        for fname, expected_hp, expected_is_low in cases:
+        for fname, expected_hp, expected_is_low in hud_cases:
             with self.subTest(fixture=fname):
                 img = self._load_state_img(fname)
                 facts = read_hp_facts(img)
 
-                self.assertIsNotNone(facts)
+                self.assertIsNotNone(facts, f"{fname} phải có HpFacts hợp lệ")
                 self.assertAlmostEqual(facts.hp_fraction, expected_hp, places=1)
                 self.assertEqual(facts.is_low_hp, expected_is_low)
+
+        # 2. Các màn KHÔNG CÓ HUD -> HpFacts PHẢI là None (Item 1)
+        no_hud_cases = [
+            "choose_fate.png",
+            "select_duplicate_card.png",
+            "select_duplicate_card_2.png",
+            "copy_card_complete.png",
+            "epiphany_choose_effect.png",
+            "remove_card_none_selected.png",
+            "remove_card_selected.png",
+        ]
+        for fname in no_hud_cases:
+            with self.subTest(no_hud=fname):
+                img = self._load_state_img(fname)
+                facts = read_hp_facts(img)
+                self.assertIsNone(facts, f"{fname} không có HUD nên HpFacts phải là None")
 
 
 class TestChaos2ClassifierRealFixtures(unittest.TestCase):
@@ -258,7 +298,7 @@ class TestChaos2ClassifierRealFixtures(unittest.TestCase):
         cls.classifier = ChaosClassifier(matcher=cls.detector.match)
 
     def test_classifier_accuracy_on_all_21_fixtures(self):
-        """Toàn bộ 21 ảnh thật đều phân loại đúng 100%, margin > 0.15, không UNKNOWN."""
+        """Toàn bộ 28 ảnh thật (21 cũ + 7 đợt 2) đều phân loại đúng 100%, margin > 0.15, không UNKNOWN."""
         expected_states = {
             "choose_fate.png": "CHAOS_CHOOSE_FATE",
             "equipment_row1_selected.png": "CHAOS_EQUIPMENT",
@@ -281,6 +321,14 @@ class TestChaos2ClassifierRealFixtures(unittest.TestCase):
             "settlement_confirm_dialog.png": "CHAOS_SETTLEMENT",
             "settlement_screen_1.png": "CHAOS_SETTLEMENT",
             "settlement_screen_2.png": "CHAOS_SETTLEMENT",
+            # 7 Round 2 Fixtures (Item 6):
+            "settlement_dialog_leave.png": "CHAOS_SETTLEMENT",
+            "select_duplicate_card_2.png": "CHAOS_SELECT_DUPLICATE_CARD",
+            "copy_card_complete.png": "CHAOS_COPY_COMPLETE",
+            "epiphany_choose_effect.png": "CHAOS_CHOOSE_EPIPHANY",
+            "in_match.png": "IN_MATCH",
+            "remove_card_none_selected.png": "CHAOS_REMOVE_CARD",
+            "remove_card_selected.png": "CHAOS_REMOVE_CARD",
         }
 
         for fname, expected in expected_states.items():
@@ -324,9 +372,82 @@ class TestChaos2ClassifierRealFixtures(unittest.TestCase):
 class TestPartCBehaviorAndGuard(unittest.TestCase):
     def setUp(self):
         self.guard = TapGuard()
+        self.fixtures_dir = Path("tests/fixtures/states")
+
+    def test_part_c_real_fixtures_facts(self):
+        """Kiểm tra Facts trên 7 fixture đợt 2 theo đúng Ground Truth (Item 6)."""
+        # 1. settlement_dialog_leave: SETTLEMENT, có Leave, dialog confirm y≈569
+        img_leave = cv2.imread(str(self.fixtures_dir / "settlement_dialog_leave.png"))
+        dfacts_leave = read_dialog_facts(img_leave)
+        self.assertEqual(dfacts_leave.dialog_type, "loot")
+        self.assertEqual(dfacts_leave.confirm_center, (1055, 569))
+
+        # 2. select_duplicate_card_2: 3 thẻ Nia's Curiosity / G Chord / Quantum Seed; cost 0/1/0; pin ở Quantum Seed
+        img_dup2 = cv2.imread(str(self.fixtures_dir / "select_duplicate_card_2.png"))
+        dup_facts = read_duplicate_card_facts(img_dup2)
+        self.assertEqual(len(dup_facts.cards), 3)
+        self.assertEqual(dup_facts.cards[0].name, "Nia's Curiosity")
+        self.assertEqual(dup_facts.cards[0].cost, 0)
+        self.assertFalse(dup_facts.cards[0].has_pin)
+        self.assertEqual(dup_facts.cards[1].name, "G Chord")
+        self.assertEqual(dup_facts.cards[1].cost, 1)
+        self.assertFalse(dup_facts.cards[1].has_pin)
+        self.assertEqual(dup_facts.cards[2].name, "Quantum Seed")
+        self.assertEqual(dup_facts.cards[2].cost, 0)
+        self.assertTrue(dup_facts.cards[2].has_pin)
+
+        # 3. copy_card_complete: COPY_COMPLETE, 2 thẻ Quantum Seed, thẻ phải có [Duplicated]
+        img_copy = cv2.imread(str(self.fixtures_dir / "copy_card_complete.png"))
+        copy_facts = read_copy_complete_facts(img_copy)
+        self.assertTrue(copy_facts.has_copy_complete)
+        self.assertEqual(copy_facts.duplicated_card_name, "Quantum Seed")
+        self.assertEqual(copy_facts.close_center, (800, 845))
+
+        # 4. epiphany_choose_effect: EPIPHANY, 3 thẻ Dual Creation, 3 tag, 3 effect
+        img_epi = cv2.imread(str(self.fixtures_dir / "epiphany_choose_effect.png"))
+        epi_facts = read_epiphany_facts(img_epi)
+        self.assertEqual(len(epi_facts.cards), 3)
+        for c in epi_facts.cards:
+            self.assertEqual(c.name, "Dual Creation")
+            self.assertTrue(len(c.effect_text) > 0)
+        self.assertEqual(epi_facts.cards[0].tag, "[Unique]")
+        self.assertEqual(epi_facts.cards[1].tag, "[Unique / Initiation]")
+        self.assertEqual(epi_facts.cards[2].tag, "[Unique / Initiation]")
+
+        # 5. in_match: HUD HP 1800/1800
+        img_match = cv2.imread(str(self.fixtures_dir / "in_match.png"))
+        hp_match = read_hp_facts(img_match)
+        self.assertIsNotNone(hp_match)
+        self.assertEqual(hp_match.current_hp, 1800)
+        self.assertEqual(hp_match.max_hp, 1800)
+        self.assertEqual(hp_match.hp_fraction, 1.0)
+
+        # 6. remove_card_none_selected: remove_enabled=False, selected_count=0, 0/130pt, 0/5
+        img_rem_none = cv2.imread(str(self.fixtures_dir / "remove_card_none_selected.png"))
+        rem_none_facts = read_remove_facts(img_rem_none)
+        self.assertFalse(rem_none_facts.remove_enabled)
+        self.assertEqual(rem_none_facts.selected_count, 0)
+        self.assertEqual(rem_none_facts.budget_used, 0)
+        self.assertEqual(rem_none_facts.budget_max, 130)
+        self.assertEqual(rem_none_facts.removals_used, 0)
+        self.assertEqual(rem_none_facts.removals_max, 5)
+        self.assertIsNone(rem_none_facts.selected_card_name)
+
+        # 7. remove_card_selected: remove_enabled=True, selected_count=1, 20/130pt, 1/5, Standing Blade
+        img_rem_sel = cv2.imread(str(self.fixtures_dir / "remove_card_selected.png"))
+        rem_sel_facts = read_remove_facts(img_rem_sel)
+        self.assertTrue(rem_sel_facts.remove_enabled)
+        self.assertEqual(rem_sel_facts.selected_count, 1)
+        self.assertEqual(rem_sel_facts.budget_used, 20)
+        self.assertEqual(rem_sel_facts.budget_max, 130)
+        self.assertEqual(rem_sel_facts.removals_used, 1)
+        self.assertEqual(rem_sel_facts.removals_max, 5)
+        self.assertEqual(rem_sel_facts.selected_card_name, "Standing Blade")
+        self.assertEqual(rem_sel_facts.cards_visible, 8)
+        self.assertEqual(rem_sel_facts.has_pin_cards, ["Sword Slash", "Sword Slash", "Standing Blade"])
 
     def test_tap_guard_blocks_forbidden_zones(self):
-        """TapGuard từ chối mặc định mọi tap rơi vào forbidden_tap_zones."""
+        """TapGuard từ chối mặc định mọi tap rơi vào forbidden_tap_zones (Item 4)."""
         # 1. Epiphany: View original cấm tap
         res = self.guard.validate_coords(1400, 115, "CHAOS_CHOOSE_EPIPHANY")
         self.assertFalse(res.allowed)
@@ -350,8 +471,91 @@ class TestPartCBehaviorAndGuard(unittest.TestCase):
         res_ob_skip = self.guard.validate_coords(1050, 825, "CHAOS_OBTAIN_REWARD")
         self.assertFalse(res_ob_skip.allowed)
 
+        # 6. Event: Nút tròn kiếm cấm tap (G6)
+        res_sword = self.guard.validate_coords(1515, 780, "CHAOS_EVENT")
+        self.assertFalse(res_sword.allowed)
+
+        # 7. Safe Zone: Shop và Training cấm tap (Item 5)
+        res_shop = self.guard.validate_coords(800, 300, "CHAOS_SAFE_ZONE")
+        self.assertFalse(res_shop.allowed)
+        res_train = self.guard.validate_coords(1200, 250, "CHAOS_SAFE_ZONE")
+        self.assertFalse(res_train.allowed)
+
+        # 8. Choose Fate: Nút tròn ▶ cạnh Confirm cấm tap
+        res_play = self.guard.validate_coords(1220, 835, "CHAOS_CHOOSE_FATE")
+        self.assertFalse(res_play.allowed)
+
+        # 9. Settlement: Temporary Return và Obtain-voucher cấm tap
+        res_temp = self.guard.validate_coords(950, 825, "CHAOS_SETTLEMENT")
+        self.assertFalse(res_temp.allowed)
+        res_vouch = self.guard.validate_coords(1400, 350, "CHAOS_SETTLEMENT")
+        self.assertFalse(res_vouch.allowed)
+
+    def test_tap_guard_modal_dialog_overlay(self):
+        """Khi modal dialog đang mở (Item 5): Chỉ Confirm/Cancel được tap, tap ngoài bị chặn."""
+        ctx_dialog = {"dialog_active": True}
+        # Tap Confirm dialog (1055, 569) -> ALLOWED
+        res_conf = self.guard.validate_coords(1055, 569, "CHAOS_SETTLEMENT", context=ctx_dialog)
+        self.assertTrue(res_conf.allowed)
+
+        # Tap Cancel dialog (545, 569) -> ALLOWED
+        res_canc = self.guard.validate_coords(545, 569, "CHAOS_SETTLEMENT", context=ctx_dialog)
+        self.assertTrue(res_canc.allowed)
+
+        # Tap vào vùng nền ngoài dialog (1426, 825 - nút Continue cũ) -> BLOCKED
+        res_bg = self.guard.validate_coords(1426, 825, "CHAOS_SETTLEMENT", context=ctx_dialog)
+        self.assertFalse(res_bg.allowed)
+        self.assertIn("Hộp thoại Modal đang mở", res_bg.reason)
+
+    def test_tap_guard_map_lane_restriction(self):
+        """Trên CHAOS_MAP (Item 5): map_1island chỉ cho phép tap làn giữa (lane 1), chặn làn 0 và 2."""
+        ctx_1island = {"active_lanes": [1]}
+        # Tap làn 1 (Mid: 1250, 480) -> ALLOWED
+        res_mid = self.guard.validate_coords(1250, 480, "CHAOS_MAP", context=ctx_1island)
+        self.assertTrue(res_mid.allowed)
+
+        # Tap làn 0 (Top: 1080, 200) -> BLOCKED vì lane 0 không tồn tại
+        res_top = self.guard.validate_coords(1080, 200, "CHAOS_MAP", context=ctx_1island)
+        self.assertFalse(res_top.allowed)
+        self.assertIn("Làn 0 không tồn tại", res_top.reason)
+
+        # Tap làn 2 (Bot: 1080, 720) -> BLOCKED vì lane 2 không tồn tại
+        res_bot = self.guard.validate_coords(1080, 720, "CHAOS_MAP", context=ctx_1island)
+        self.assertFalse(res_bot.allowed)
+        self.assertIn("Làn 2 không tồn tại", res_bot.reason)
+
+    def test_irreversible_allowlist_and_rate_limiting(self):
+        """Item 8: IRREVERSIBLE_ALLOW mở hành động thật; log_only dedupe và giới hạn ảnh."""
+        from czn_bot.chaos2 import config
+        classifier = ChaosClassifier(matcher=ScreenDetector().match)
+        loop = ChaosLoop(classifier=classifier, dry_run=False)
+
+        real_screen = cv2.imread("tests/fixtures/chaos_choose_epiphany.png")
+
+        # 1. Khi chưa allow: action có is_irreversible=True bị chặn
+        act_blocked = ChaosAction.tap(
+            400, 480, expected_next="CHAOS_MAP", reason="Chọn thẻ Epiphany",
+            action_name="choose_epiphany", is_irreversible=True
+        )
+        SCREEN_REGISTRY["CHAOS_CHOOSE_EPIPHANY"].handler = lambda s, c: act_blocked
+        try:
+            for _ in range(3):
+                res = loop.step(real_screen)
+            self.assertEqual(res.type, "wait")
+            self.assertIn("IRREVERSIBLE_MODE='log_only'", res.reason)
+
+            # 2. Khi thêm vào IRREVERSIBLE_ALLOW -> Được tap thật
+            config.IRREVERSIBLE_ALLOW.append("choose_epiphany")
+            for _ in range(3):
+                res_allowed = loop.step(real_screen)
+            self.assertEqual(res_allowed.type, "tap")
+            self.assertEqual(res_allowed.target, (400, 480))
+        finally:
+            config.IRREVERSIBLE_ALLOW.clear()
+            SCREEN_REGISTRY["CHAOS_CHOOSE_EPIPHANY"].handler = None
+
     def test_irreversible_mode_log_only_suppresses_tap(self):
-        """Khi IRREVERSIBLE_MODE = 'log_only', ChaosLoop không phát tap cho màn irreversible."""
+        """Khi IRREVERSIBLE_MODE = 'log_only', ChaosLoop không phát tap cho màn/hành động irreversible."""
         detector = ScreenDetector()
         classifier = ChaosClassifier(matcher=detector.match)
         loop = ChaosLoop(classifier=classifier, dry_run=False)
@@ -359,17 +563,13 @@ class TestPartCBehaviorAndGuard(unittest.TestCase):
         real_screen = cv2.imread("tests/fixtures/chaos_choose_epiphany.png")
         self.assertIsNotNone(real_screen)
 
-        # Giả lập handler yêu cầu tap vào thẻ 1 (400, 480)
         action = ChaosAction.tap(400, 480, expected_next="CHAOS_MAP", reason="Chọn thẻ Epiphany")
 
-        # Đăng ký handler tạm thời
         SCREEN_REGISTRY["CHAOS_CHOOSE_EPIPHANY"].handler = lambda s, c: action
         try:
-            # Chạy K frames để ổn định màn hình
             for _ in range(3):
                 res_action = loop.step(real_screen)
 
-            # Vì IRREVERSIBLE_MODE = "log_only", loop PHẢI trả về wait, KHÔNG được phát tap
             self.assertEqual(res_action.type, "wait")
             self.assertIn("IRREVERSIBLE_MODE='log_only'", res_action.reason)
         finally:

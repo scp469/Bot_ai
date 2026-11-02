@@ -39,6 +39,8 @@ from .config import (
     ZONE_EPIPHANY_VIEW_ORIGINAL,
     ZONE_REMOVE_CANCEL,
     ZONE_REMOVE_EXECUTE,
+    ZONE_SAFE_ZONE_SHOP,
+    ZONE_SAFE_ZONE_TRAINING,
 )
 
 
@@ -294,7 +296,10 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
             Zone(800, 590, 1310, 700, "Nút Confirm Rest"),
             Zone(1200, 750, 1580, 890, "Nút Skip rời Safe Zone"),
         ),
-        forbidden_tap_zones=(),
+        forbidden_tap_zones=(
+            Zone(*ZONE_SAFE_ZONE_SHOP, "Khu vực Shop Delilang - CẤM TAP"),
+            Zone(*ZONE_SAFE_ZONE_TRAINING, "Khu vực Training - CẤM TAP"),
+        ),
         allowed_next_states={
             "CHAOS_MAP",
             "CHAOS_SAFE_ZONE",

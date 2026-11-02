@@ -24,6 +24,8 @@ from .config import (
     MAX_ACTION_RETRIES,
     MAX_UNKNOWN_FRAMES,
     IRREVERSIBLE_MODE,
+    IRREVERSIBLE_ALLOW,
+    IRREVERSIBLE_MAX_CAPTURES_PER_MIN,
 )
 from .guard import TapGuard
 from .registry import SCREEN_REGISTRY, ScreenDef
@@ -52,6 +54,9 @@ class ChaosLoop:
         self._retry_count: int = 0
         self._pending_action: Optional[ChaosAction] = None
         self._action_history: List[Dict[str, Any]] = []
+        self._logged_irreversible_actions: set = set()
+        self._irreversible_capture_times: List[float] = []
+        self._irreversible_captured_keys: set = set()
 
     def reset(self):
         """Reset trạng thái vòng lặp."""
@@ -174,18 +179,35 @@ class ChaosLoop:
             logger.warning(f"[TAP BLOCKED] {guard_res.reason}")
             return ChaosAction.stop(f"Guard CHẶN hành động: {guard_res.reason}")
 
-        # 7.1 Kiểm tra hành động không hoàn tác IRREVERSIBLE_MODE (G5)
-        is_irrev = getattr(sdef, "is_irreversible", False) or action.details.get("irreversible", False)
-        if is_irrev and IRREVERSIBLE_MODE == "log_only" and action.type == "tap":
-            self.save_debug_capture(screen, f"irreversible_log_only_{self._current_state}")
-            logger.info(
-                f"[IRREVERSIBLE log_only] SẼ {action.type} tại {action.target} "
-                f"vì '{action.reason}', mong đợi '{action.expected_next}' (KHÔNG TAP vì IRREVERSIBLE_MODE='log_only')"
-            )
-            return ChaosAction.wait(
-                1.0,
-                reason=f"Dừng an toàn hành động không hoàn tác trên {self._current_state} (IRREVERSIBLE_MODE='log_only')",
-            )
+        # 7.1 Kiểm tra hành động không hoàn tác IRREVERSIBLE_MODE (G5 & Item 8)
+        act_name = getattr(action, "action_name", "") or action.details.get("action_name", "")
+        is_irrev = getattr(action, "is_irreversible", False) or action.details.get("is_irreversible", False)
+
+        if is_irrev and action.type == "tap":
+            # Nếu hành động nằm trong danh sách được cấp phép thực thi thật hoặc chế độ auto
+            is_allowed = (act_name in IRREVERSIBLE_ALLOW) or (IRREVERSIBLE_MODE == "auto")
+            if not is_allowed:
+                # Chế độ log_only: log một lần duy nhất cho mỗi cặp (state, act_name / reason)
+                dedupe_key = (self._current_state, act_name or action.reason)
+                if dedupe_key not in self._logged_irreversible_actions:
+                    self._logged_irreversible_actions.add(dedupe_key)
+                    logger.info(
+                        f"[IRREVERSIBLE log_only] SẼ {action.type} tại {action.target} "
+                        f"vì '{action.reason}', mong đợi '{action.expected_next}' (KHÔNG TAP vì IRREVERSIBLE_MODE='log_only')"
+                    )
+
+                # Giới hạn tần suất lưu ảnh (IRREVERSIBLE_MAX_CAPTURES_PER_MIN) và dedupe theo (state, action)
+                now = time.time()
+                self._irreversible_capture_times = [t for t in self._irreversible_capture_times if now - t < 60.0]
+                if dedupe_key not in self._irreversible_captured_keys and len(self._irreversible_capture_times) < IRREVERSIBLE_MAX_CAPTURES_PER_MIN:
+                    self._irreversible_capture_times.append(now)
+                    self._irreversible_captured_keys.add(dedupe_key)
+                    self.save_debug_capture(screen, f"irreversible_log_only_{self._current_state}")
+
+                return ChaosAction.wait(
+                    1.0,
+                    reason=f"Dừng an toàn hành động không hoàn tác trên {self._current_state} (IRREVERSIBLE_MODE='log_only')",
+                )
 
         # 8. Chế độ Dry-Run
         if self.dry_run:

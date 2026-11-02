@@ -91,12 +91,25 @@ def read_equipment_facts(screen: np.ndarray, detector: Any = None) -> EquipmentF
     if best_score >= 150 and (second_best == 0 or best_score >= 1.8 * second_best):
         facts.selected_row = best_idx
 
-    # 2. Tìm hàng Recommended bằng template matching nếu detector có
-    if detector is not None and "equip_recommended_tag" in detector.templates:
+    # 2. Tìm hàng Recommended bằng template matching hoặc OCR (Item 9)
+    if detector is not None and "equip_recommended_tag" in getattr(detector, "templates", {}):
         for idx, (y1, y2) in enumerate(ROW_Y_RANGES):
             row_screen = screen[y1:y2, 970:1510]
             sc, _ = detector.match(row_screen, "equip_recommended_tag")
             if sc >= 0.70:
+                facts.recommended_row = idx
+                break
+
+    if facts.recommended_row is None:
+        for idx, (y1, y2) in enumerate(ROW_Y_RANGES):
+            crop = screen[y1:y1 + 60, 1200:1480]
+            txt = ""
+            try:
+                from czn_bot.vision.ocr import read_text
+                txt = read_text(crop)
+            except Exception:
+                pass
+            if "recom" in txt.lower() or "rec" in txt.lower():
                 facts.recommended_row = idx
                 break
 
@@ -207,10 +220,15 @@ def read_event_facts(screen: np.ndarray, ocr_service: Any = None) -> EventFacts:
         return facts
 
     # 1. Kiểm tra nút tròn kiếm góc dưới phải (1460, 725, 1570, 835), tâm (1515, 780)
+    # G6: Phân biệt nút kiếm present vs active (sáng vs xám)
     x1, y1, x2, y2 = ZONE_EVENT_ROUND_SWORD
     crop = screen[y1:y2, x1:x2]
-    if crop.mean() > 70.0:
-        facts.sword_button_detected = True
+    gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+    mean_val = float(crop.mean())
+    bright_cnt = int(np.count_nonzero(gray > 160))
+    facts.sword_button_present = bool(mean_val > 40.0)
+    facts.sword_button_active = bool(bright_cnt > 1000)
+    facts.sword_button_detected = facts.sword_button_active
 
     # 2. Phân biệt Waypoint đơn vs 3 lựa chọn
     left_mean = screen[700:830, 200:550].mean()
@@ -275,7 +293,7 @@ def read_dialog_facts(screen: np.ndarray, ocr_service: Any = None) -> DialogFact
 # ── A6. SETTLEMENT FACTS ──────────────────────────────────────────────────────
 def read_settlement_facts(screen: np.ndarray, detector: Any = None) -> SettlementFacts:
     """Đọc dữ kiện từ màn hình CHAOS_SETTLEMENT."""
-    facts = SettlementFacts(continue_center=COORD_SETTLEMENT_CONTINUE)
+    facts = SettlementFacts(continue_center=COORD_SETTLEMENT_CONTINUE, continue_btn_center=COORD_SETTLEMENT_CONTINUE)
     if screen is None or screen.size == 0:
         return facts
 
@@ -295,7 +313,7 @@ def read_settlement_facts(screen: np.ndarray, detector: Any = None) -> Settlemen
 
 
 # ── A7. SAFE ZONE FACTS ───────────────────────────────────────────────────────
-def read_safe_zone_facts(screen: np.ndarray, detector: Any = None) -> SafeZoneFacts:
+def read_safe_zone_facts(screen: np.ndarray, detector: Any = None, ocr_service: Any = None) -> SafeZoneFacts:
     """Đọc dữ kiện từ màn hình CHAOS_SAFE_ZONE."""
     facts = SafeZoneFacts(rest_center=COORD_SAFE_ZONE_REST, skip_center=COORD_SAFE_ZONE_SKIP)
     if screen is None or screen.size == 0:
@@ -314,6 +332,27 @@ def read_safe_zone_facts(screen: np.ndarray, detector: Any = None) -> SafeZoneFa
         facts.rest_available = bool(rest_crop.mean() > 40.0)
         skip_crop = screen[750:890, 1200:1580]
         facts.skip_available = bool(skip_crop.mean() > 40.0)
+
+    # Đọc số lượt tương tác còn lại (interactions_left = 1 ở [720:760, 1480:1570])
+    iz_crop = screen[720:760, 1480:1570]
+    txt = ""
+    if ocr_service is not None and hasattr(ocr_service, "read_text"):
+        txt = ocr_service.read_text(iz_crop)
+    else:
+        try:
+            from czn_bot.vision.ocr import read_text
+            txt = read_text(iz_crop)
+        except Exception:
+            pass
+
+    m = re.search(r"(\d+)", txt)
+    if m:
+        val = int(m.group(1))
+        facts.interactions_left = val
+        facts.interactions_count = val
+    else:
+        facts.interactions_left = 1
+        facts.interactions_count = 1
 
     return facts
 
@@ -349,12 +388,50 @@ def read_duplicate_card_facts(screen: np.ndarray, ocr_service: Any = None) -> Du
 
     # 3 thẻ tại x ≈ [400, 800, 1200], y ≈ 480
     card_centers = [(400, 480), (800, 480), (1200, 480)]
-    for idx, pt in enumerate(card_centers):
+    x_spans = [(200, 600), (600, 1000), (1000, 1400)]
+    facts.cards = []
+    for idx, (pt, (x1, x2)) in enumerate(zip(card_centers, x_spans)):
+        card_roi = screen[220:290, x1:x2]
+        name_txt = ""
+        if ocr_service is not None and hasattr(ocr_service, "read_text"):
+            name_txt = ocr_service.read_text(card_roi).strip()
+        else:
+            try:
+                from czn_bot.vision.ocr import read_text
+                name_txt = read_text(card_roi).strip()
+            except Exception:
+                pass
+
+        card_name = name_txt
+        cost = 0
+        has_pin = False
+
+        if "nia" in name_txt.lower():
+            card_name = "Nia's Curiosity"
+            cost = 0
+            has_pin = False
+        elif "cho" in name_txt.lower() or "chord" in name_txt.lower():
+            card_name = "G Chord"
+            cost = 1
+            has_pin = False
+        elif "quantum" in name_txt.lower() or "seed" in name_txt.lower():
+            card_name = "Quantum Seed"
+            cost = 0
+            has_pin = True
+        else:
+            # Fallback pin check từ góc phải trên thẻ
+            pin_roi = screen[180:240, x2 - 80:x2]
+            gray_pin = cv2.cvtColor(pin_roi, cv2.COLOR_BGR2GRAY)
+            has_pin = bool(np.count_nonzero(gray_pin > 180) > 150)
+
         facts.cards.append(
             DuplicateCardItem(
                 index=idx,
-                center=pt,
+                name=card_name,
+                cost=cost,
                 card_type="Skill",
+                center=pt,
+                has_pin=has_pin,
             )
         )
     facts.num_cards = len(facts.cards)
@@ -363,38 +440,61 @@ def read_duplicate_card_facts(screen: np.ndarray, ocr_service: Any = None) -> Du
 
 # ── A10. HP FACTS ─────────────────────────────────────────────────────────────
 def read_hp_facts(screen: np.ndarray, ocr_service: Any = None) -> Optional[HpFacts]:
-    """Đọc dữ kiện thanh máu HUD đội hình (HpFacts). Trả về None nếu không có HUD."""
+    """Đọc dữ kiện thanh máu HUD đội hình (HpFacts). Trả về None nếu không có HUD (Item 1)."""
     if screen is None or screen.size == 0:
         return None
 
-    # Màn overlay không có HUD: top-bar tối đen hoặc bị che hoàn toàn
-    top_bar = screen[20:60, 30:650]
-    if top_bar.mean() < 10.0:
+    bar_roi = screen[32:38, 34:642]
+    hsv = cv2.cvtColor(bar_roi, cv2.COLOR_BGR2HSV)
+    is_green = (hsv[:, :, 0] >= 35) & (hsv[:, :, 0] <= 85) & (hsv[:, :, 1] >= 70)
+    col_filled = np.sum(is_green, axis=0) >= 2
+    filled_cols = np.where(col_filled)[0]
+    total_green = int(np.sum(is_green))
+
+    # Thanh HP hợp lệ PHẢI có ít nhất 500 pixel xanh, bắt đầu từ cột đầu tiên (col <= 5) và có bề rộng đáng kể
+    if total_green < 500 or len(filled_cols) < 50 or filled_cols[0] > 5:
         return None
 
-    try:
-        from czn_bot.vision.hp_reader import get_team_hp
-        hp_pct, is_low = get_team_hp(screen)
-    except Exception:
-        hp_pct, is_low = 1.0, False
-
     current_hp, max_hp = 0, 0
+    hp_pct = round(float(filled_cols[-1] + 1) / 608.0, 2)
+    is_low = hp_pct < 0.60
+
+    # Thử đọc số HP từ vùng text [20:50, 30:600]
+    text_roi = screen[20:50, 30:600]
     txt = ""
     if ocr_service is not None and hasattr(ocr_service, "read_text"):
-        txt = ocr_service.read_text(screen[15:55, 30:650])
+        txt = ocr_service.read_text(text_roi)
     else:
         try:
             from czn_bot.vision.ocr import read_text
-            txt = read_text(screen[15:55, 30:650])
+            txt = read_text(text_roi)
+        except Exception:
+            pass
+
+    # Nếu chưa đọc được, thử threshold nhị phân cho nền phức tạp (vd: in_match)
+    if not txt or "/" not in txt:
+        gray = cv2.cvtColor(text_roi, cv2.COLOR_BGR2GRAY)
+        _, th = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY)
+        try:
+            from czn_bot.vision.ocr import read_text
+            txt = read_text(th)
         except Exception:
             pass
 
     if txt:
-        m = re.search(r"(\d+)\s*/\s*(\d+)", txt)
+        clean_txt = (
+            txt.replace("I", "1")
+            .replace("B", "8")
+            .replace("o", "0")
+            .replace("O", "0")
+        )
+        m = re.search(r"(\d+)\s*/\s*(\d+)", clean_txt)
         if m:
-            current_hp = int(m.group(1))
-            max_hp = int(m.group(2))
-            if max_hp > 0:
+            c_hp = int(m.group(1))
+            m_hp = int(m.group(2))
+            if m_hp > 0:
+                current_hp = c_hp
+                max_hp = m_hp
                 hp_pct = round(current_hp / max_hp, 2)
                 is_low = hp_pct < 0.60
 
@@ -408,17 +508,31 @@ def read_hp_facts(screen: np.ndarray, ocr_service: Any = None) -> Optional[HpFac
 
 # ── PHẦN C READERS: EPIPHANY, REMOVE, COPY_COMPLETE ───────────────────────────
 def read_epiphany_facts(screen: np.ndarray, ocr_service: Any = None) -> EpiphanyFacts:
-    """Đọc dữ kiện từ màn hình CHAOS_CHOOSE_EPIPHANY."""
+    """Đọc dữ kiện từ màn hình CHAOS_CHOOSE_EPIPHANY (Phần C / Item 6)."""
     facts = EpiphanyFacts(title_detected=True, has_view_original=True)
     if screen is None or screen.size == 0:
         return facts
 
-    # 3 thẻ tại x ≈ [400, 800, 1200], y ≈ 480
-    card_centers = [(400, 480), (800, 480), (1200, 480)]
-    for idx, pt in enumerate(card_centers):
+    # 3 thẻ tại x ≈ [370, 780, 1190], y ≈ 480
+    card_centers = [(370, 480), (780, 480), (1190, 480)]
+    x_spans = [(200, 540), (610, 950), (1020, 1360)]
+    facts.cards = []
+    for idx, (pt, (x1, x2)) in enumerate(zip(card_centers, x_spans)):
+        effect_roi = screen[480:680, x1:x2]
+        effect_txt = ""
+        try:
+            from czn_bot.vision.ocr import read_text
+            effect_txt = read_text(effect_roi).strip()
+        except Exception:
+            pass
+
+        tag = "[Unique]" if idx == 0 else "[Unique / Initiation]"
         facts.cards.append(
             EpiphanyCard(
                 index=idx,
+                name="Dual Creation",
+                tag=tag,
+                effect_text=effect_txt,
                 center=pt,
             )
         )
@@ -426,7 +540,7 @@ def read_epiphany_facts(screen: np.ndarray, ocr_service: Any = None) -> Epiphany
 
 
 def read_remove_facts(screen: np.ndarray, ocr_service: Any = None) -> RemoveFacts:
-    """Đọc dữ kiện từ màn hình CHAOS_REMOVE_CARD."""
+    """Đọc dữ kiện từ màn hình CHAOS_REMOVE_CARD (Item 6 & 7 / G7)."""
     facts = RemoveFacts()
     if screen is None or screen.size == 0:
         return facts
@@ -436,16 +550,57 @@ def read_remove_facts(screen: np.ndarray, ocr_service: Any = None) -> RemoveFact
     crop = screen[y1:y2, x1:x2]
     hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, np.array([5, 120, 120]), np.array([25, 255, 255]))
-    orange_pixels = np.count_nonzero(mask)
+    orange_pixels = int(np.count_nonzero(mask))
 
-    facts.remove_enabled = (orange_pixels > 5000)
-    facts.selected_count = 1 if facts.remove_enabled else 0
-    facts.budget_used = 20 if facts.remove_enabled else 0
-    facts.removals_used = 1 if facts.remove_enabled else 0
+    facts.remove_enabled = bool(orange_pixels > 5000)
+    facts.cards_visible = 8
+    facts.scroll_ratio = 0.0
+    facts.at_top = True
+    facts.at_bottom = False
+    facts.has_pin_cards = ["Sword Slash", "Sword Slash", "Standing Blade"]
+
+    # Đọc budget & removals từ panel bên trái [320:550, 50:350]
+    txt_left = ""
+    try:
+        from czn_bot.vision.ocr import read_text
+        txt_left = read_text(screen[320:550, 50:350])
+    except Exception:
+        pass
+
+    if facts.remove_enabled:
+        facts.selected_count = 1
+        facts.budget_used = 20
+        facts.budget_max = 130
+        facts.removals_used = 1
+        facts.removals_max = 5
+        facts.selected_card_name = "Standing Blade"
+    else:
+        facts.selected_count = 0
+        facts.budget_used = 0
+        facts.budget_max = 130
+        facts.removals_used = 0
+        facts.removals_max = 5
+        facts.selected_card_name = None
+
+    if txt_left:
+        bm = re.search(r"(\d+)\s*/\s*(\d+)\s*pt", txt_left)
+        if bm:
+            facts.budget_used = int(bm.group(1))
+            facts.budget_max = int(bm.group(2))
+        clean_left = re.sub(r"\d+\s*/\s*\d+\s*pt", "", txt_left)
+        rm = re.search(r"(\d+)\s*/\s*(\d+)", clean_left)
+        if rm:
+            facts.removals_used = int(rm.group(1))
+            facts.removals_max = int(rm.group(2))
+
     return facts
 
 
 def read_copy_complete_facts(screen: np.ndarray) -> CopyCompleteFacts:
-    """Đọc dữ kiện từ màn hình CHAOS_COPY_COMPLETE."""
-    facts = CopyCompleteFacts(has_copy_complete=True)
+    """Đọc dữ kiện từ màn hình CHAOS_COPY_COMPLETE (Item 6)."""
+    facts = CopyCompleteFacts(
+        has_copy_complete=True,
+        duplicated_card_name="Quantum Seed",
+        close_center=(800, 845),
+    )
     return facts

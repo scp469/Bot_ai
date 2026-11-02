@@ -30,6 +30,20 @@ DEFAULT_DRY_RUN: bool = False       # Chế độ chạy thử không gửi tap
 # ── 3.1 Cấu hình bảo vệ hành động không hoàn tác & kết thúc lượt ──────────────
 ALLOW_LEAVE: bool = False           # Mặc định False: kết thúc cả lượt chạy, chỉ log "sẵn sàng Leave"
 IRREVERSIBLE_MODE: str = "log_only" # "log_only" | "auto" (Mặc định log_only: không phát tap cho hành động irreversible)
+IRREVERSIBLE_ALLOW: List[str] = []  # Danh sách tên hành động được phép tap thật ngay cả khi log_only
+IRREVERSIBLE_MAX_CAPTURES_PER_MIN: int = 5 # Giới hạn lưu ảnh tối đa 5 ảnh / phút để tránh spam disk
+
+# Danh mục từ khóa OCR tiếng Anh (English UI)
+OCR_KEYWORDS: Dict[str, List[str]] = {
+    "obtain": ["Obtain", "BATTLE END"],
+    "settlement": ["Settlement", "Continue", "Temporary Return", "Leave"],
+    "safe_zone": ["Available Safe Zone Interactions", "Rest", "Skip"],
+    "fate": ["Choose Fate", "Confirm"],
+    "duplicate": ["Select a card to Duplicate.", "Skip"],
+    "epiphany": ["Choose Epiphany Effect.", "View original"],
+    "remove_card": ["Select 1 card(s) to Remove.", "Remove", "Cancel"],
+    "copy_complete": ["Copy Card Complete", "Tap to close the window"],
+}
 
 # ── 4. Tọa độ & Vùng cấm theo màn hình (ĐO TRỰC TIẾP TRÊN FIXTURE 1600x900) ───
 
@@ -100,6 +114,8 @@ ZONE_EVENT_ROUND_SWORD: Tuple[int, int, int, int] = (1460, 725, 1570, 835)
 # 4.8 SAFE ZONE
 COORD_SAFE_ZONE_REST: Tuple[int, int] = (380, 680)
 COORD_SAFE_ZONE_SKIP: Tuple[int, int] = (1426, 825)
+ZONE_SAFE_ZONE_SHOP: Tuple[int, int, int, int] = (600, 200, 1000, 550)       # CẤM TAP SHOP
+ZONE_SAFE_ZONE_TRAINING: Tuple[int, int, int, int] = (1050, 100, 1450, 450)   # CẤM TAP TRAINING
 
 # 4.9 MAP
 # Tọa độ tap an toàn vào thân đảo (3 làn)

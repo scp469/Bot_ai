@@ -30,7 +30,12 @@ class TapGuard:
     def __init__(self, registry: Optional[Dict[str, ScreenDef]] = None):
         self.registry = registry or SCREEN_REGISTRY
 
-    def validate_action(self, action: ChaosAction, current_state: str) -> GuardDecision:
+    def validate_action(
+        self,
+        action: ChaosAction,
+        current_state: str,
+        context: Optional[Dict[str, Any]] = None,
+    ) -> GuardDecision:
         """
         Kiểm tra tính an toàn của Action trước khi thực thi.
         Nếu action không phải là tap -> Luôn cho phép.
@@ -43,11 +48,21 @@ class TapGuard:
             return GuardDecision(allowed=False, reason="Tap action has no target coordinates (None)")
 
         x, y = action.target
-        return self.validate_coords(x, y, current_state)
+        ctx = context or action.details.get("context")
+        return self.validate_coords(x, y, current_state, context=ctx)
 
-    def validate_coords(self, x: int, y: int, current_state: str) -> GuardDecision:
+    def validate_coords(
+        self,
+        x: int,
+        y: int,
+        current_state: str,
+        context: Optional[Dict[str, Any]] = None,
+    ) -> GuardDecision:
         """
         Kiểm tra tọa độ tap (x, y) độc lập đối với state hiện tại.
+        Hỗ trợ context:
+          - dialog_active=True: Hộp thoại modal đang mở -> Chỉ cho phép Confirm/Cancel của dialog (Item 5).
+          - active_lanes=[...]: Kiểm tra làn hợp lệ trên CHAOS_MAP (Item 5).
         """
         # 1. Kiểm tra biên màn hình 1600x900
         if not (0 <= x < SCREEN_WIDTH and 0 <= y < SCREEN_HEIGHT):
@@ -62,6 +77,36 @@ class TapGuard:
             msg = f"Không cho phép tap khi màn hình ở trạng thái chưa xác định: {current_state}"
             logger.warning(f"[GUARD BLOCKED] {msg}")
             return GuardDecision(allowed=False, reason=msg)
+
+        # 2.1 Kiểm tra lớp phủ Modal Dialog (Item 5)
+        # Khi có dialog mở (rest_dialog, settlement_confirm_dialog, settlement_dialog_leave):
+        # Chỉ có vùng Confirm (800-1310, 500-700) và Cancel (300-800, 500-700) được phép tap!
+        # Tọa độ hợp lệ của dialog được cho qua ngay, ghi đè vùng hợp lệ của state nền.
+        if context and context.get("dialog_active", False):
+            in_dialog_confirm = (800 <= x <= 1310 and 500 <= y <= 700)
+            in_dialog_cancel = (300 <= x <= 800 and 500 <= y <= 700)
+            if in_dialog_confirm or in_dialog_cancel:
+                return GuardDecision(allowed=True, reason=f"Tap ({x}, {y}) hợp lệ vào nút Modal Dialog")
+            msg = f"Hộp thoại Modal đang mở: Chỉ được phép tap Confirm hoặc Cancel, chặn tap ngoài dialog ({x}, {y})"
+            logger.warning(f"[GUARD BLOCKED] {msg}")
+            return GuardDecision(allowed=False, reason=msg, zone_name="MODAL_DIALOG_OVERLAY")
+
+        # 2.2 Kiểm tra giới hạn làn trên CHAOS_MAP (Item 5)
+        if current_state == "CHAOS_MAP" and context and "active_lanes" in context:
+            active_lanes = context["active_lanes"]
+            # Làn 0 (Top: y in 120-280), Làn 1 (Mid: y in 400-550), Làn 2 (Bot: y in 650-800)
+            target_lane = None
+            if 120 <= y <= 280:
+                target_lane = 0
+            elif 400 <= y <= 550:
+                target_lane = 1
+            elif 650 <= y <= 800:
+                target_lane = 2
+
+            if target_lane is not None and target_lane not in active_lanes:
+                msg = f"Làn {target_lane} không tồn tại trên bản đồ (làn khả dụng: {active_lanes})"
+                logger.warning(f"[GUARD BLOCKED] {msg}")
+                return GuardDecision(allowed=False, reason=msg, zone_name="MAP_INACTIVE_LANE")
 
         # 3. Kiểm tra các vùng CẤM (forbidden_tap_zones) của state
         for zone in screen_def.forbidden_tap_zones:

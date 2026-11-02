@@ -285,15 +285,29 @@ class TestBotEngine(unittest.TestCase):
 
     @patch("time.sleep", return_value=None)
     def test_handle_chaos_equipment_equips_and_confirms(self, mock_sleep):
-        """Verify that CHAOS_EQUIPMENT selects equipment, equips, and taps confirm."""
+        """Verify reactive CHAOS_EQUIPMENT flow: selects combatant row, confirms when orange."""
         self.engine.mode = Mode.CHAOS
+        self.engine.current_state = State.CHAOS_EQUIPMENT
         details = {
-            "confirm_coord": (1360, 806),
+            "select_combatant": True,
+            "target_row": 1,
+            "confirm_coord": (1425, 838),
+            "is_confirm_ready": True
         }
-        result = self.engine._handle_chaos_equipment(self.dummy_screen, details)
-        self.assertTrue(result)
-        # Must tap confirm coord
-        self.mock_adb.tap.assert_any_call(1360, 806)
+        # Step 1: Screen ready -> Tap combatant row 2
+        r1 = self.engine._handle_chaos_equipment(self.dummy_screen, details)
+        self.assertTrue(r1)
+        self.mock_adb.tap.assert_any_call(1100, 470)
+
+        # Step 2: Row changed -> Advances to wait confirm
+        changed_screen = np.full((900, 1600, 3), 100, dtype=np.uint8)
+        r2 = self.engine._handle_chaos_equipment(changed_screen, details)
+        self.assertTrue(r2)
+
+        # Step 3: Tap confirm
+        r3 = self.engine._handle_chaos_equipment(changed_screen, details)
+        self.assertTrue(r3)
+        self.mock_adb.tap.assert_any_call(1425, 838)
 
     # ── Pre-match & Unknown Handlers ──────────────────────────────────
 

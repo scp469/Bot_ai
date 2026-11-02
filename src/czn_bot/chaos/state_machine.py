@@ -110,6 +110,7 @@ class ChaosStateMachine:
                     "CHAOS_MAP": ChaosState.STATE_MAP_CHOOSING,
                     "CHAOS_EQUIPMENT": ChaosState.STATE_EQUIPMENT,
                     "CHAOS_CHOOSE_EPIPHANY": ChaosState.STATE_CARD_REWARD,
+                    "CHAOS_CHOOSE_FATE": ChaosState.STATE_EVENT,
                     "CHAOS_AFTER_BATTLE": ChaosState.STATE_RESULT,
                     "CHAOS_OBTAIN_REWARD": ChaosState.STATE_RESULT,
                     "CHAOS_SAFE_ZONE": ChaosState.STATE_EVENT,
@@ -261,7 +262,13 @@ class ChaosStateMachine:
             self.log(f"[AI Chọn Đường] Đã chọn Đảo {target_island_str.upper()} | Lý do: {reason}")
 
             # Tìm tọa độ đảo (ưu tiên nhận diện 3D thực tế)
-            dynamic_islands = detect_3d_island_coords(screen)
+            dynamic_islands = detect_3d_island_coords(
+                screen,
+                expected_choices=list(roots.keys()) if isinstance(roots, dict) else list(roots),
+                pin_score=0.90,
+                has_equipment_title=False,
+                state="CHAOS_MAP"
+            )
             chosen_coord = None
             try:
                 target_choice = IslandChoice(target_island_str)

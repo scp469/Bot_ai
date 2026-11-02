@@ -40,7 +40,7 @@ TAP_COORDS = {
     "chaos_safe_zone_skip":   (1415, 825),  # Skip button (do NOT tap in auto rest!)
     "chaos_safe_zone_confirm": (1055, 642), # Modal confirmation in Safe Zone
     "chaos_safe_zone_cancel":  (544, 642),  # Modal cancel in Safe Zone
-    "equipment_confirm":      (1360, 806),  # Confirm button for Chaos equipment screen
+    "equipment_confirm":      (1425, 838),  # Confirm button for Chaos equipment screen
     "modal_close_button":     (800, 837),   # Close button on info modal
     "tap_to_close":           (800, 850),   # Tap to close dialog
     "chaos_card_reward_combatant_1": (800, 300),  # Top combatant on Card Reward screen

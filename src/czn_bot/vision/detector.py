@@ -76,7 +76,7 @@ class ScreenDetector:
             _, max_val, _, max_loc = cv2.minMaxLoc(res)
             cx = rx + max_loc[0] + tw // 2
             cy = ry + max_loc[1] + th // 2
-            return float(max_val), (cx, cy)
+            score, pt = float(max_val), (cx, cy)
         else:
             th, tw = templ.shape[:2]
             if screen.shape[0] < th or screen.shape[1] < tw:
@@ -85,7 +85,64 @@ class ScreenDetector:
             _, max_val, _, max_loc = cv2.minMaxLoc(res)
             cx = max_loc[0] + tw // 2
             cy = max_loc[1] + th // 2
-            return float(max_val), (cx, cy)
+            score, pt = float(max_val), (cx, cy)
+
+        # [Item 2] OCR cross-check cho nút cam góc dưới phải khi template matching mơ hồ
+        bottom_right_ocr_map = {
+            "chaos_leave_button": ["leave", "rời", "thoát"],
+            "chaos_continue_button": ["continue", "tiếp", "tiếp tục"],
+            "chaos_settlement_button": ["settlement", "kết toán", "tổng kết", "xác nhận"],
+            "chaos_obtain_button": ["obtain", "nhận"],
+            "chaos_safe_zone_skip": ["skip", "bỏ qua"],
+            "chaos_event_battle_btn": ["battle", "chiến"],
+        }
+        if templ_key in bottom_right_ocr_map:
+            th = self._get_threshold(templ_key)
+            # CHỈ kiểm tra OCR khi template matching mơ hồ (điểm sát ngưỡng th: th - 0.08 <= score < th + 0.06)
+            if (th - 0.08) <= score < (th + 0.06):
+                box_to_check = pt if pt else (region if region else (1100, 750, 480, 140))
+                expected = bottom_right_ocr_map[templ_key]
+                is_verified = self.verify_button(screen, box_to_check, expected)
+                if is_verified:
+                    logger.debug(
+                        f"[OCR Cross-Check] Template '{templ_key}' mơ hồ ({score:.2f} gần {th:.2f}) "
+                        f"-> OCR xác nhận từ khóa {expected} -> Nâng score lên 0.88"
+                    )
+                    score = max(score, 0.88)
+                else:
+                    logger.debug(
+                        f"[OCR Cross-Check] Template '{templ_key}' mơ hồ ({score:.2f} gần {th:.2f}) "
+                        f"-> OCR KHÔNG xác nhận từ khóa {expected} -> Hạ score xuống {th - 0.12:.2f}"
+                    )
+                    score = min(score, th - 0.12)
+
+        return score, pt
+
+    def detect_modal_dialog(self, screen: Optional[np.ndarray]) -> Tuple[bool, Optional[Tuple[int, int]]]:
+        """
+        Phát hiện popup hộp thoại xác nhận (Loot voucher dialog, Rest dialog)
+        bằng cách tìm nút Confirm màu cam trong dải dialog (x 800-1300, y 500-700) bằng HSV.
+        Trả về (is_modal_open, confirm_coord).
+        """
+        if screen is None or screen.size == 0:
+            return False, None
+        h, w = screen.shape[:2]
+        if h < 700 or w < 1400:
+            return False, None
+
+        roi = screen[500:700, 800:1300]
+        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, (5, 120, 120), (25, 255, 255))
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        for c in contours:
+            area = cv2.contourArea(c)
+            if 15000 < area < 45000:
+                bx, by, bw, bh = cv2.boundingRect(c)
+                if 4.0 <= (bw / float(max(1, bh))) <= 9.0 and bw >= 300 and bh >= 40:
+                    cx = 800 + bx + bw // 2
+                    cy = 500 + by + bh // 2
+                    return True, (cx, cy)
+        return False, None
 
     def find_close_x(self, screen: np.ndarray) -> Tuple[int, int]:
         """Search top-right area for the close 'X' button."""
@@ -410,7 +467,7 @@ class ScreenDetector:
 
             elif state_enum == State.CHAOS_EQUIPMENT:
                 details = {
-                    "confirm_coord": TAP_COORDS.get("equipment_confirm", (1360, 806)),
+                    "confirm_coord": TAP_COORDS.get("equipment_confirm", (1425, 838)),
                 }
 
             elif state_enum == State.CHAOS_SAFE_ZONE:
@@ -420,6 +477,11 @@ class ScreenDetector:
                 )
                 is_modal_open = sc_conf >= 0.70
                 confirm_coord = pt_conf if is_modal_open else TAP_COORDS.get("chaos_safe_zone_confirm", (1055, 642))
+                if not is_modal_open:
+                    has_dialog, d_pt = self.detect_modal_dialog(screen)
+                    if has_dialog and d_pt:
+                        is_modal_open = True
+                        confirm_coord = d_pt
 
                 # 2. Phát hiện nút Rest trên màn hình Trạm nghỉ (Camp)
                 sc_rest, pt_rest = self.match(
@@ -442,6 +504,25 @@ class ScreenDetector:
                     "skip_coord": skip_coord,
                 }
 
+            elif state_enum == State.CHAOS_SETTLEMENT:
+                is_modal, modal_coord = self.detect_modal_dialog(screen)
+                continue_coord = (
+                    clf_res.best_coords.get("chaos_continue_button")
+                    or clf_res.best_coords.get("chaos_settlement_button")
+                    or (1425, 835)
+                )
+                details = {
+                    "is_modal_open": is_modal,
+                    "confirm_coord": modal_coord if is_modal else None,
+                    "continue_coord": continue_coord,
+                }
+
+            elif state_enum == State.CHAOS_SELECT_DUPLICATE_CARD:
+                details = {
+                    "type": "duplicate_card",
+                    "card_coord": (400, 480),
+                }
+
             elif state_enum == State.CHAOS_EVENT:
                 ev_coord = (
                     clf_res.best_coords.get("chaos_event_icon")
@@ -456,6 +537,13 @@ class ScreenDetector:
             elif state_enum == State.CHAOS_OBTAIN_REWARD:
                 details = {
                     "obtain_coord": clf_res.best_coords.get("chaos_obtain_button", TAP_COORDS["chaos_obtain_button"]),
+                }
+
+            elif state_enum == State.CHAOS_CHOOSE_FATE:
+                details = {
+                    "type": "choose_fate",
+                    "epiphany_type": "choose_fate",
+                    "score_choose_fate": clf_res.evidence.get("choose_fate_title", 0.0),
                 }
 
             elif state_enum == State.CHAOS_CHOOSE_EPIPHANY:

@@ -88,8 +88,8 @@ class TestChaosIntegration(unittest.TestCase):
 
         self.assertTrue(self.mock_adb.tap.called)
         tap_args = self.mock_adb.tap.call_args_list[0][0]
-        # Detected centroids for 3 islands (banner targets)
-        valid_dynamic_coords = [(1213, 143), (1441, 402), (1070, 707)]
+        # Detected centroids for 3 islands (banner targets or safe body points)
+        valid_dynamic_coords = [(1213, 143), (1441, 402), (1070, 707), (1070, 200), (1290, 475), (1090, 730)]
         self.assertIn(tap_args, valid_dynamic_coords)
 
 

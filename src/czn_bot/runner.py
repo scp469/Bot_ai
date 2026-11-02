@@ -35,6 +35,13 @@ from czn_bot.constants import (
     FRAME_STABILITY_DELAY,
     ENABLE_TRANSITION_VALIDATION,
     INVALID_TRANSITION_CONFIRM_FRAMES,
+    STATE_SETTLING_FRAMES,
+    PER_STATE_SETTLING_FRAMES,
+    SETTLEMENT_TEMP_RETURN_BOX,
+    SETTLEMENT_OBTAIN_VOUCHER_BOX,
+    OBTAIN_SKIP_BOX,
+    DUPLICATE_SKIP_BOX,
+    EVENT_SWORD_BTN_BOX,
 )
 from czn_bot.states import State, Mode, LeftButton
 from czn_bot.device.adb import ADBClient
@@ -55,6 +62,54 @@ from czn_bot.flows.chaos import ChaosFlow
 from czn_bot.chaos.pathfinder import IslandChoice
 
 logger = logging.getLogger("ChaosBot.Runner")
+
+TAP_ZONE_GUARDS: List[Dict[str, Any]] = [
+    {
+        "id": "chaos_island",
+        "name": "Chaos Island Selection",
+        "keywords": ["island", "chose island", "đảo", "chaos_island"],
+        "box": (680, 80, 1480, 780),
+        "require_keyword": True,
+        "allowed_states": {State.CHAOS_MAP},
+        "require_settled": True,
+    },
+    {
+        "id": "chaos_equip_char",
+        "name": "Equipment Character Assign",
+        "keywords": ["assign to", "chọn nhân vật", "equip character", "equip_character", "combatant", "equip select combatant", "combatant row"],
+        "box": (972, 183, 1508, 758),
+        "require_keyword": True,
+        "allowed_states": {State.CHAOS_EQUIPMENT},
+        "require_settled": True,
+    },
+    {
+        "id": "chaos_equip_extract",
+        "name": "Equipment Extract Button",
+        "keywords": ["extract", "hủy trang bị", "extract equipment"],
+        "box": (912, 805, 1260, 870),
+        "require_keyword": True,
+        "allowed_states": {State.CHAOS_EQUIPMENT},
+        "require_settled": False,
+    },
+    {
+        "id": "chaos_equip_confirm",
+        "name": "Equipment Confirm Button",
+        "keywords": ["xác nhận trang bị", "confirm equipment", "confirm_equip", "equip confirm"],
+        "box": (1275, 805, 1577, 870),
+        "require_keyword": True,
+        "allowed_states": {State.CHAOS_EQUIPMENT},
+        "require_settled": True,
+    },
+    {
+        "id": "settlement_continue",
+        "name": "Settlement Continue Button",
+        "keywords": ["settlement", "continue", "tiếp tục"],
+        "box": (1200, 750, 1580, 890),
+        "require_keyword": True,
+        "allowed_states": {State.CHAOS_SETTLEMENT, State.CHAOS_AFTER_BATTLE},
+        "require_settled": True,
+    },
+]
 
 
 class BotRunner:
@@ -282,6 +337,11 @@ class BotRunner:
                 pass
 
     def _dispatch_state(self, state: State, screen: Any, details: Dict[str, Any]) -> bool:
+        self.current_state = state
+        if hasattr(self, "temporal_filter") and self.temporal_filter:
+            push_count = getattr(self.temporal_filter, "need", 3) + STATE_SETTLING_FRAMES
+            for _ in range(push_count):
+                self.temporal_filter.push(state)
         if self._last_state and self._last_state != state:
             if not self.is_transition_allowed(self._last_state, state):
                 self.logger.warning(
@@ -313,7 +373,7 @@ class BotRunner:
         # Non-Chaos modes ignore Chaos-specific states
         if self.mode != Mode.CHAOS and state in (
             State.CHAOS_MAP, State.CHAOS_AFTER_BATTLE, State.CHAOS_EQUIPMENT,
-            State.CHAOS_SAFE_ZONE, State.CHAOS_CHOOSE_EPIPHANY, State.CHAOS_OBTAIN_REWARD, State.CHAOS_EVENT
+            State.CHAOS_SAFE_ZONE, State.CHAOS_CHOOSE_EPIPHANY, State.CHAOS_CHOOSE_FATE, State.CHAOS_OBTAIN_REWARD, State.CHAOS_EVENT
         ):
             return True
 
@@ -322,7 +382,7 @@ class BotRunner:
             self._last_action = None
             self._same_action_count = 0
 
-        if state in (State.TRANSITIONING, State.CHAOS_CHOOSE_EPIPHANY, State.CHAOS_EVENT):
+        if state in (State.TRANSITIONING, State.CHAOS_CHOOSE_EPIPHANY, State.CHAOS_CHOOSE_FATE, State.CHAOS_EVENT):
             self._unknown_streak = 0
 
         # State-specific limit / condition checks
@@ -561,6 +621,9 @@ class BotRunner:
     def _handle_chaos_choose_epiphany(self, screen: Any, details: Dict[str, Any]) -> bool:
         return self._dispatch_state(State.CHAOS_CHOOSE_EPIPHANY, screen, details)
 
+    def _handle_chaos_choose_fate(self, screen: Any, details: Dict[str, Any]) -> bool:
+        return self._dispatch_state(State.CHAOS_CHOOSE_FATE, screen, details)
+
     def _handle_chaos_obtain_reward(self, screen: Any, details: Dict[str, Any]) -> bool:
         return self._dispatch_state(State.CHAOS_OBTAIN_REWARD, screen, details)
 
@@ -710,6 +773,119 @@ class BotRunner:
         self._halt(f"Kẹt tại {confirmed_state.value} quá {elapsed_stall:.1f}s", freq=800, duration=600)
         return False
 
+    def _check_tap_guards(
+        self,
+        action_name: str,
+        x: int,
+        y: int,
+        allowed_states: Optional[Any] = None,
+        action_extra: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[bool, Optional[str]]:
+        """
+        [P0 Guard] Kiểm tra tính hợp lệ của tọa độ và hành động tap đối với state hiện tại.
+        Ngăn chặn click nhầm giữa trang bị và đảo bản đồ, và bảo vệ nút Extract.
+        """
+        cur_state = getattr(self, "current_state", None)
+        cur_name = cur_state.name if hasattr(cur_state, "name") else (cur_state.value if hasattr(cur_state, "value") else str(cur_state))
+        temporal_filter = getattr(self, "temporal_filter", None)
+
+        # 0. Safety Guards cho các nút nguy hiểm (Giai đoạn 2.5)
+        # a) Chặn mọi tap rơi vào vùng nút Extract (912, 805, 1260, 870) trừ khi có explicit_extract=True
+        extract_box = (912, 805, 1260, 870)
+        if extract_box[0] <= x <= extract_box[2] and extract_box[1] <= y <= extract_box[3]:
+            if cur_state == State.CHAOS_EQUIPMENT or "extract" in action_name.lower():
+                has_explicit_extract = False
+                if action_extra and isinstance(action_extra, dict):
+                    has_explicit_extract = action_extra.get("explicit_extract", False)
+                if not has_explicit_extract:
+                    return False, (
+                        f"TAP BLOCKED: {action_name}, tọa độ ({x}, {y}) nằm trong vùng nút Extract (hủy trang bị). "
+                        f"Thao tác bị chặn để bảo vệ trang bị (cần explicit_extract=True)."
+                    )
+
+        # b) Nút Temporary Return tại Settlement
+        if SETTLEMENT_TEMP_RETURN_BOX[0] <= x <= SETTLEMENT_TEMP_RETURN_BOX[2] and SETTLEMENT_TEMP_RETURN_BOX[1] <= y <= SETTLEMENT_TEMP_RETURN_BOX[3]:
+            if cur_state == State.CHAOS_SETTLEMENT or "temporary return" in action_name.lower() or "rời tạm thời" in action_name.lower():
+                return False, f"TAP BLOCKED: {action_name}, tọa độ ({x}, {y}) nằm trong vùng nút Temporary Return."
+
+        # c) Nút Obtain-voucher tại Settlement
+        if SETTLEMENT_OBTAIN_VOUCHER_BOX[0] <= x <= SETTLEMENT_OBTAIN_VOUCHER_BOX[2] and SETTLEMENT_OBTAIN_VOUCHER_BOX[1] <= y <= SETTLEMENT_OBTAIN_VOUCHER_BOX[3]:
+            if cur_state == State.CHAOS_SETTLEMENT or "voucher" in action_name.lower():
+                return False, f"TAP BLOCKED: {action_name}, tọa độ ({x}, {y}) nằm trong vùng nút Obtain-voucher."
+
+        # d) Nút Skip trắng trong Obtain Reward
+        if OBTAIN_SKIP_BOX[0] <= x <= OBTAIN_SKIP_BOX[2] and OBTAIN_SKIP_BOX[1] <= y <= OBTAIN_SKIP_BOX[3]:
+            if cur_state == State.CHAOS_OBTAIN_REWARD or "obtain skip" in action_name.lower():
+                return False, f"TAP BLOCKED: {action_name}, tọa độ ({x}, {y}) nằm trong vùng nút Skip của Obtain Reward."
+
+        # e) Nút Skip trong Duplicate Card
+        if DUPLICATE_SKIP_BOX[0] <= x <= DUPLICATE_SKIP_BOX[2] and DUPLICATE_SKIP_BOX[1] <= y <= DUPLICATE_SKIP_BOX[3]:
+            if cur_state == State.CHAOS_SELECT_DUPLICATE_CARD or "duplicate skip" in action_name.lower():
+                return False, f"TAP BLOCKED: {action_name}, tọa độ ({x}, {y}) nằm trong vùng nút Skip của Duplicate Card."
+
+        # f) Nút chiến đấu Event (kiếm tròn)
+        if EVENT_SWORD_BTN_BOX[0] <= x <= EVENT_SWORD_BTN_BOX[2] and EVENT_SWORD_BTN_BOX[1] <= y <= EVENT_SWORD_BTN_BOX[3]:
+            if cur_state == State.CHAOS_EVENT or "sword" in action_name.lower():
+                has_explicit_battle = False
+                if action_extra and isinstance(action_extra, dict):
+                    has_explicit_battle = action_extra.get("explicit_battle", False)
+                if not has_explicit_battle:
+                    return False, f"TAP BLOCKED: {action_name}, tọa độ ({x}, {y}) nằm trong nút chiến đấu Event (cần explicit_battle=True)." 
+
+        # 1. Kiểm tra allowed_states được chỉ định tường minh trên Action
+        if allowed_states is not None:
+            allowed_set = allowed_states if isinstance(allowed_states, (set, list, tuple)) else {allowed_states}
+            allowed_names = {s.name if hasattr(s, "name") else (s.value if hasattr(s, "value") else str(s)) for s in allowed_set}
+            if cur_state not in allowed_set and cur_name not in allowed_names:
+                expected_str = ", ".join(sorted(allowed_names))
+                return False, f"TAP BLOCKED: {action_name}, state={cur_name}, cần={expected_str}"
+
+            req_settling = PER_STATE_SETTLING_FRAMES.get(cur_name, STATE_SETTLING_FRAMES)
+            if temporal_filter and hasattr(temporal_filter, "is_settled"):
+                if not temporal_filter.is_settled(min_frames=req_settling):
+                    return False, f"TAP BLOCKED: {action_name}, state={cur_name} chưa ổn định (cần >={req_settling} frames)"
+
+            return True, None
+
+        # 2. Kiểm tra qua bảng TAP_ZONE_GUARDS (bằng keywords hoặc theo box nếu không có require_keyword)
+        name_lower = action_name.lower()
+        matched_guards = []
+        for g in TAP_ZONE_GUARDS:
+            kw_match = any(kw in name_lower for kw in g.get("keywords", []))
+            g_box = g.get("box")
+            box_match = g_box and (g_box[0] <= x <= g_box[2] and g_box[1] <= y <= g_box[3])
+            if kw_match or (box_match and not g.get("require_keyword", False)):
+                matched_guards.append(g)
+        if matched_guards:
+            for g in matched_guards:
+                g_allowed = g["allowed_states"]
+                g_names = {s.name if hasattr(s, "name") else (s.value if hasattr(s, "value") else str(s)) for s in g_allowed}
+                if cur_state in g_allowed or cur_name in g_names:
+                    req_settling = PER_STATE_SETTLING_FRAMES.get(cur_name, STATE_SETTLING_FRAMES)
+                    if g.get("require_settled", True) and temporal_filter and hasattr(temporal_filter, "is_settled"):
+                        if not temporal_filter.is_settled(min_frames=req_settling):
+                            return False, f"TAP BLOCKED: {action_name}, state={cur_name} chưa ổn định (cần >={req_settling} frames)"
+                    return True, None
+
+            expected_str = ", ".join(sorted({s.name for g in matched_guards for s in g["allowed_states"]}))
+            return False, f"TAP BLOCKED: {action_name}, state={cur_name}, cần={expected_str}"
+
+        # 3. Guard tọa độ rơi vào box đảo (680, 80, 1480, 780) khi không có allowed_states và không khớp keyword:
+        # Trong chế độ CHAOS: Chặn mặc định nếu state hiện tại không phải là CHAOS_MAP
+        if getattr(self, "mode", None) == Mode.CHAOS:
+            island_box = (680, 80, 1480, 780)
+            if island_box[0] <= x <= island_box[2] and island_box[1] <= y <= island_box[3]:
+                if cur_state != State.CHAOS_MAP and cur_name != "CHAOS_MAP":
+                    return False, (
+                        f"TAP BLOCKED: {action_name}, state={cur_name}, cần=CHAOS_MAP "
+                        f"(tọa độ ({x}, {y}) nằm trong box đảo nhưng thiếu allowed_states)"
+                    )
+                req_settling = PER_STATE_SETTLING_FRAMES.get(cur_name, STATE_SETTLING_FRAMES)
+                if temporal_filter and hasattr(temporal_filter, "is_settled"):
+                    if not temporal_filter.is_settled(min_frames=req_settling):
+                        return False, f"TAP BLOCKED: {action_name}, state={cur_name} chưa ổn định (cần >={req_settling} frames)"
+
+        return True, None
     def _execute_tap(
         self,
         action_name: str,
@@ -717,9 +893,31 @@ class BotRunner:
         y: int,
         screen: Any = None,
         expected_words: Any = None,
-        score: Optional[float] = None
+        score: Optional[float] = None,
+        allowed_states: Optional[Any] = None,
+        action_extra: Optional[Dict[str, Any]] = None,
     ) -> bool:
-        """Execute a direct tap with stall detection, template bypass, and 2-strike Hybrid OCR fallback."""
+        """Execute a direct tap with stall detection, template bypass, tap zone guards, and 2-strike Hybrid OCR fallback."""
+        # 0. Tap Zone Guards: Chặn tap sai state hoặc khi frame chưa ổn định
+        is_allowed, reject_reason = self._check_tap_guards(
+            action_name=action_name,
+            x=x,
+            y=y,
+            allowed_states=allowed_states,
+            action_extra=action_extra,
+        )
+        if not is_allowed:
+            self.logger.warning(reject_reason)
+            self.log(f"⚠️ {reject_reason}")
+            return False
+
+        # Guard: Chặn tap trong CHAOS_SAFE_ZONE nếu độ tin cậy quá thấp (< 0.60)
+        cur_state = getattr(self, "current_state", None)
+        if cur_state == State.CHAOS_SAFE_ZONE and score is not None and score < 0.60:
+            self.logger.warning(f"TAP BLOCKED: {action_name}, CHAOS_SAFE_ZONE độ tin cậy quá thấp ({score:.2f} < 0.60)")
+            self.log(f"⚠️ TAP BLOCKED: {action_name}, CHAOS_SAFE_ZONE độ tin cậy quá thấp ({score:.2f} < 0.60)")
+            return False
+
         # 1. Template High Confidence Bypass: Nếu template đã khớp rất cao (>= 0.88), tin tưởng template và bỏ qua OCR
         skip_ocr = False
         if score is not None and score >= 0.88:
@@ -1023,22 +1221,38 @@ class BotRunner:
                     is_stable, diff_val = self.check_frame_stability(screen, self._last_raw_screen)
 
             if not is_stable:
-                state = State.TRANSITIONING
-                details = {
-                    "transitioning": True,
-                    "diff": diff_val,
-                    "reason": "frame_unstable",
-                    "score": 0.0,
-                    "confidence": 0.0,
-                    "margin": 0.0,
-                    "recognizer": "frame_stability_check",
-                    "runner_up": None,
-                    "ranked": [("TRANSITIONING", 1.0)],
-                }
-                self.logger.debug(
-                    f"[FrameStability] Màn hình chưa ổn định (diff={diff_val:.1f} >= {self.frame_stability_thresh}) -> Chờ khung hình ổn định (TRANSITIONING)"
-                )
+                self._transition_wait_count = getattr(self, "_transition_wait_count", 0) + 1
+                max_transition_waits = getattr(self, "max_transition_wait_count", 4)
+                if self._transition_wait_count <= max_transition_waits:
+                    state = State.TRANSITIONING
+                    details = {
+                        "transitioning": True,
+                        "diff": diff_val,
+                        "reason": "frame_unstable",
+                        "wait_count": self._transition_wait_count,
+                        "score": 0.0,
+                        "confidence": 0.0,
+                        "margin": 0.0,
+                        "recognizer": "frame_stability_check",
+                        "runner_up": None,
+                        "ranked": [("TRANSITIONING", 1.0)],
+                    }
+                    self.logger.debug(
+                        f"[FrameStability] Màn hình chưa ổn định (diff={diff_val:.1f} >= {self.frame_stability_thresh}, "
+                        f"lần {self._transition_wait_count}/{max_transition_waits}) -> Chờ ~300ms (TRANSITIONING)"
+                    )
+                    if self._stop_event.wait(0.3):
+                        break
+                else:
+                    self.logger.warning(
+                        f"[FrameStability] Đã chờ chuyển cảnh quá {max_transition_waits} lần (~{max_transition_waits * 0.3:.1f}s, "
+                        f"diff={diff_val:.1f}) -> Bỏ qua nhiễu nền/khói/mây, tiến hành nhận diện state bình thường!"
+                    )
+                    self._transition_wait_count = 0
+                    is_stable = True
+                    state, details = self._detect_state(screen)
             else:
+                self._transition_wait_count = 0
                 state, details = self._detect_state(screen)
 
             self._last_raw_screen = screen.copy() if screen is not None and getattr(screen, "size", 0) > 0 else None
@@ -1064,7 +1278,7 @@ class BotRunner:
                     )
 
             if hasattr(self, "temporal_filter") and self.temporal_filter:
-                self.temporal_filter.push(state)
+                self.temporal_filter.push(state, is_unstable=(not is_stable))
 
             if not (len(frame_history) >= required_confirm and all(f[0] == state for f in frame_history[-required_confirm:])):
                 if self._stop_event.wait(min(0.2, max(0.05, self.loop_delay))):
@@ -1208,10 +1422,14 @@ class BotRunner:
                 action.y,
                 screen=screen,
                 expected_words=action.extra.get("expected_words"),
-                score=action.extra.get("score")
+                score=action.extra.get("score"),
+                allowed_states=action.extra.get("allowed_states"),
+                action_extra=action.extra,
             )
             if not success:
-                return False
+                if not getattr(self, "is_running", True):
+                    return False
+                return True
 
             if action.extra.get("halt_after"):
                 self._halt(action.extra.get("reason", "Dừng theo yêu cầu của Flow"), freq=1200, duration=300)
@@ -1223,9 +1441,19 @@ class BotRunner:
                 time.sleep(0.4)
                 if extra_act[0] == "tap":
                     tx, ty = extra_act[1]
-                    self.adb.tap(tx, ty)
-                    self.actions_done += 1
-                    self.stats.record_action()
+                    extra_name = extra_act[2] if len(extra_act) > 2 else f"Extra Tap ({tx}, {ty})"
+                    extra_allowed = extra_act[3] if len(extra_act) > 3 else action.extra.get("allowed_states")
+                    success_extra = self._execute_tap(
+                        action_name=extra_name,
+                        x=tx,
+                        y=ty,
+                        screen=screen,
+                        allowed_states=extra_allowed,
+                        action_extra={"explicit_extract": False},
+                    )
+                    if not success_extra:
+                        self.logger.warning(f"TAP BLOCKED on extra_action: {extra_name}")
+                        break
 
             if action.extra.get("dialogue_skip"):
                 self._last_action = None

@@ -35,10 +35,59 @@ STALL_TIMEOUT = 30.0          # Watchdog default timeout in seconds
 # Per-state watchdog timeouts (replaces indefinite STALL_EXEMPT)
 STATE_STALL_TIMEOUTS = {
     "IN_MATCH": 300.0,              # Max 5 minutes for active battle
-    "CHAOS_CHOOSE_EPIPHANY": 60.0,   # Max 60 seconds for card / fate choice
+    "CHAOS_CHOOSE_EPIPHANY": 60.0,   # Max 60 seconds for card choice
+    "CHAOS_CHOOSE_FATE": 60.0,       # Max 60 seconds for fate choice
     "CHAOS_EVENT": 60.0,             # Max 60 seconds for random event choice
     "STORY_DIALOGUE": 90.0,         # Max 90 seconds for dialogue progression
+    "CHAOS_SETTLEMENT": 60.0,       # Max 60 seconds for settlement screen
+    "CHAOS_SELECT_DUPLICATE_CARD": 60.0, # Max 60 seconds for duplicate card choice
 }
+
+# ── Chaos Mode Safety Guards (P0) ──────────────────────────────
+CHAOS_MAP_MIN_PIN_SCORE = 0.75           # Ngưỡng tin cậy tối thiểu của ghim minimap (ngăn cách 0.607 âm và 0.889 dương)
+EQUIP_SUBSTEP_TIMEOUT = 5.0              # Timeout tối đa (giây) cho mỗi bước chọn trang bị
+MAX_EQUIP_SUBSTEP_ATTEMPTS = 5           # Số lần thử tối đa cho mỗi sub-step trang bị
+MAX_EQUIP_CONFIRM_WAIT_ATTEMPTS = 4      # Số lần chờ tối đa màn hình rời khỏi CHAOS_EQUIPMENT sau khi Confirm (~1.2s)
+STATE_SETTLING_FRAMES = 1                # Số frame ổn định tối thiểu trước khi cho phép tap nhạy cảm
+# Nguồn sự thật duy nhất (single source of truth) về số frame ổn định yêu cầu theo state
+PER_STATE_SETTLING_FRAMES = {
+    "CHAOS_MAP": 1,
+    "CHAOS_EQUIPMENT": 1,
+    "CHAOS_SAFE_ZONE": 1,
+    "CHAOS_EVENT": 1,
+    "CHAOS_CHOOSE_FATE": 1,
+    "CHAOS_CHOOSE_EPIPHANY": 1,
+    "CHAOS_CARD_REWARD": 1,
+    "CHAOS_OBTAIN_REWARD": 1,
+    "CHAOS_AFTER_BATTLE": 1,
+    "CHAOS_SETTLEMENT": 2,
+    "CHAOS_SELECT_DUPLICATE_CARD": 2,
+}
+
+# ── Chaos Equipment Screen Constants (1600x900) ───────────────
+EQUIP_CHAR_ROWS = [(1100, 270), (1100, 470), (1100, 670)]      # Tâm 3 hàng thẻ combatant
+EQUIP_COMBATANT_CARD_TOPS = [183, 383, 583]                     # Tọa độ đỉnh y của 3 thẻ combatant
+EQUIP_RECOMMENDED_LABEL_OFFSET_Y = 5                            # Offset nhãn Recommended từ đỉnh thẻ (~+5)
+EQUIP_SELECT_COMBATANT_ROI = (1365, 105, 1575, 138)             # Dòng "Select combatant." (1365,105,1575,138)
+EQUIP_EXTRACT_BTN_ROI = (912, 805, 1260, 870)                   # Nút Extract màu đỏ (912-1260, 805-870)
+EQUIP_CONFIRM_BTN_ROI = (1275, 805, 1577, 870)                  # Nút Confirm màu cam (1275-1577, 805-870)
+EQUIP_CONFIRM_COORD = (1425, 838)                               # Tọa độ tap tâm nút Confirm (1425, 838)
+EQUIP_AVG_SIG_COST_ROI = (110, 820, 360, 855)                  # Vùng nhãn Avg. Sig. Card Cost (110,820,360,855)
+EQUIP_RECOMMENDED_TAG_CROP = (1330, 362, 1520, 394)             # Vùng crop nhãn Recommended trên thẻ giữa
+EQUIP_RECOMMENDED_SEARCH_ROI = (1320, 160, 1525, 760)           # Vùng TÌM nhãn Recommended trên cả 3 thẻ
+EQUIP_COMBATANTS_BOX = (972, 183, 1508, 758)                    # Bounding box của cả 3 thẻ combatant
+EQUIP_CONFIRM_ORANGE_THRESHOLD = 0.15                           # Ngưỡng tỷ lệ pixel cam HSV của nút Confirm
+
+
+# ── Chaos Mode Guard Boxes & Constants (Giai đoạn 2.5) ────────
+AUTO_CONFIRM_LOOT_DIALOG = True          # Tự động Confirm loot dialog (không dùng thẻ loot voucher)
+SETTLEMENT_TEMP_RETURN_BOX = (824, 792, 1126, 858)   # Nút Temporary Return ở Settlement
+SETTLEMENT_OBTAIN_VOUCHER_BOX = (1272, 318, 1572, 378) # Nút Obtain-voucher ở Settlement
+OBTAIN_SKIP_BOX = (945, 790, 1247, 860)              # Nút Skip trắng ở Obtain
+DUPLICATE_SKIP_BOX = (1450, 810, 1560, 870)          # Nút Skip ở Duplicate Card
+EVENT_SWORD_BTN_BOX = (1450, 715, 1580, 845)         # Nút tròn chiến đấu (kiếm) ở Event
+MAX_OBTAIN_SAME_COUNT_TAPS = 3           # Số lần tap Obtain tối đa nếu số đếm không đổi
+MAX_OBTAIN_TOTAL_TAPS = 6                # Giới hạn tổng số lần tap Obtain mỗi màn
 
 # ── Feature Flags ─────────────────────────────────────────────
 ENABLE_DYNAMIC_ISLAND_DETECTION = True
@@ -92,6 +141,14 @@ TEMPLATE_THRESHOLDS = {
     "chaos_event_badge":     0.75,
     "chaos_event_star_icon": 0.70,
     "chaos_event_battle_btn": 0.75,
+    "equip_select_combatant": 0.75,
+    "equip_extract_button":   0.75,
+    "equip_avg_sig_cost":     0.75,
+    "equip_recommended_tag":  0.75,
+    "equip_confirm_ready":    0.75,
+    "equip_confirm_disabled": 0.75,
+    "settlement_title":        0.75,
+    "duplicate_card_title":    0.75,
 }
 
 # ── Template File Names ───────────────────────────────────────
@@ -154,5 +211,14 @@ TEMPLATES = {
     "chaos_event_badge":     "chaos_event_badge.png",
     "chaos_event_star_icon": "chaos_event_star_icon.png",
     "chaos_event_battle_btn": "chaos_event_battle_btn.png",
+    # TODO: User cung cấp 6 template trang bị mới dưới đây
+    "equip_select_combatant": "equip_select_combatant.png",
+    "equip_extract_button":   "equip_extract_button.png",
+    "equip_avg_sig_cost":     "equip_avg_sig_cost.png",
+    "equip_recommended_tag":  "equip_recommended_tag.png",
+    "equip_confirm_ready":    "equip_confirm_ready.png",
+    "equip_confirm_disabled": "equip_confirm_disabled.png",
+    "settlement_title":        "settlement_title.png",
+    "duplicate_card_title":    "duplicate_card_title.png",
 }
 

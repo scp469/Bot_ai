@@ -56,11 +56,12 @@ def extract_minimap(screen: np.ndarray) -> Optional[np.ndarray]:
 
 _PIN_TEMPLATE = None
 _BOSS_TEMPLATE = None
+_EQUIP_TITLE_TEMPLATE = None
 
 
 def _get_templates():
     global _PIN_TEMPLATE, _BOSS_TEMPLATE
-    if _PIN_TEMPLATE is None:
+    if _PIN_TEMPLATE is None or _BOSS_TEMPLATE is None:
         search_dirs = [DATA_TEMPLATES_DIR, TEMPLATES_DIR, LEGACY_TEMPLATES_DIR]
         for d in search_dirs:
             pin_p = os.path.join(d, "chaos_node_pin.png")
@@ -72,6 +73,31 @@ def _get_templates():
             if _PIN_TEMPLATE is not None and _BOSS_TEMPLATE is not None:
                 break
     return _PIN_TEMPLATE, _BOSS_TEMPLATE
+
+
+def _get_settlement_template() -> Optional[np.ndarray]:
+    from czn_bot.constants import DATA_TEMPLATES_DIR, TEMPLATES_DIR, LEGACY_TEMPLATES_DIR
+    search_dirs = [DATA_TEMPLATES_DIR, TEMPLATES_DIR, LEGACY_TEMPLATES_DIR]
+    for d in search_dirs:
+        if not d or not os.path.exists(d):
+            continue
+        p = os.path.join(d, "settlement_title.png")
+        if os.path.isfile(p):
+            img = cv2.imread(p)
+            if img is not None:
+                return img
+    return None
+
+def _get_equipment_template():
+    global _EQUIP_TITLE_TEMPLATE
+    if _EQUIP_TITLE_TEMPLATE is None:
+        search_dirs = [DATA_TEMPLATES_DIR, TEMPLATES_DIR, LEGACY_TEMPLATES_DIR]
+        for d in search_dirs:
+            eq_p = os.path.join(d, "equipment_title.png")
+            if os.path.exists(eq_p):
+                _EQUIP_TITLE_TEMPLATE = cv2.imread(eq_p)
+                break
+    return _EQUIP_TITLE_TEMPLATE
 
 
 def is_chaos_map_screen(screen: np.ndarray) -> bool:
@@ -284,91 +310,130 @@ def parse_chaos_minimap(
 def detect_3d_island_coords(
     screen: np.ndarray,
     expected_choices: Optional[List[IslandChoice]] = None,
+    pin_score: Optional[float] = None,
+    has_equipment_title: Optional[bool] = None,
+    state: Optional[Any] = None,
 ) -> Dict[IslandChoice, Tuple[int, int]]:
-    """Tìm tọa độ thực tế của các bong bóng biểu tượng trên các hòn đảo 3D."""
+    """
+    Tìm tọa độ thực tế của các hòn đảo 3D dựa trên:
+    - Mũi tên định hướng cyan (▶) tại 3 làn: TOP (795, 211), MID (1021, 477), BOT (793, 742)
+    - Sự hiện diện của cờ / thân đảo tại các ROI tương ứng
+    - Trả về tọa độ điểm tap an toàn sâu trong thân đảo (>=40px cách mép đảo)
+    """
+    from czn_bot.constants import CHAOS_MAP_MIN_PIN_SCORE
+
     if screen is None or screen.size == 0:
         return {}
+
+    # Guard 1: State validation nếu được truyền
+    if state is not None:
+        state_str = getattr(state, "name", str(state))
+        if state_str != "CHAOS_MAP":
+            logger.warning(f"[MapReader] Guard chặn detect_3d_island_coords: state={state_str} != CHAOS_MAP")
+            return {}
+
+    # Guard 2: Minimap pin score check (ngưỡng 0.75 phân định rõ màn Map thật và màn khác)
+    if pin_score is not None and pin_score < CHAOS_MAP_MIN_PIN_SCORE:
+        logger.warning(
+            f"[MapReader] Guard chặn detect_3d_island_coords: Điểm ghim pin_score={pin_score:.2f} < {CHAOS_MAP_MIN_PIN_SCORE}"
+        )
+        return {}
+
+    # Guard 3: Neo âm equipment_title
+    if has_equipment_title is True:
+        logger.warning("[MapReader] Guard chặn detect_3d_island_coords: Phát hiện equipment_title trên màn hình")
+        return {}
+
+    if has_equipment_title is None:
+        try:
+            eq_tpl = _get_equipment_template()
+            if eq_tpl is not None and screen.shape[0] >= 180 and screen.shape[1] >= 1000:
+                eq_crop = screen[70:180, 650:1000]
+                if eq_crop.shape[0] >= eq_tpl.shape[0] and eq_crop.shape[1] >= eq_tpl.shape[1]:
+                    res = cv2.matchTemplate(eq_crop, eq_tpl, cv2.TM_CCOEFF_NORMED)
+                    _, max_eq, _, _ = cv2.minMaxLoc(res)
+                    if max_eq >= 0.65:
+                        logger.warning(
+                            f"[MapReader] Guard chặn detect_3d_island_coords: Tự phát hiện equipment_title (score={max_eq:.2f} >= 0.65)"
+                        )
+                        return {}
+        except Exception as e_eq:
+            logger.debug(f"Lỗi kiểm tra equipment_title trong detect_3d_island_coords: {e_eq}")
+
+    # Guard 4: Neo âm settlement_title
+    try:
+        st_tpl = _get_settlement_template()
+        if st_tpl is not None and screen.shape[0] >= 120 and screen.shape[1] >= 1100:
+            st_crop = screen[30:120, 780:1100]
+            if st_crop.shape[0] >= st_tpl.shape[0] and st_crop.shape[1] >= st_tpl.shape[1]:
+                res_st = cv2.matchTemplate(st_crop, st_tpl, cv2.TM_CCOEFF_NORMED)
+                _, max_st, _, _ = cv2.minMaxLoc(res_st)
+                if max_st >= 0.65:
+                    logger.warning(
+                        f"[MapReader] Guard chặn detect_3d_island_coords: Tự phát hiện settlement_title (score={max_st:.2f} >= 0.65)"
+                    )
+                    return {}
+    except Exception as e_st:
+        logger.debug(f"Lỗi kiểm tra settlement_title trong detect_3d_island_coords: {e_st}")
 
     h, w = screen.shape[:2]
     if (h, w) != (900, 1600):
         screen = cv2.resize(screen, (1600, 900), interpolation=cv2.INTER_AREA)
 
-    roi_x1, roi_y1, roi_x2, roi_y2 = 680, 80, 1480, 780
-    roi = screen[roi_y1:roi_y2, roi_x1:roi_x2]
-    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+    # 1. Phát hiện mũi tên cyan ▶ tại 3 làn (TOP: 795, 211; MID: 1021, 477; BOT: 793, 742)
+    hsv = cv2.cvtColor(screen, cv2.COLOR_BGR2HSV)
+    cyan_mask = cv2.inRange(hsv, (75, 30, 80), (110, 255, 255))
 
-    icon_mask = ((hsv[:, :, 1] > 110) & (hsv[:, :, 2] > 120)).astype(np.uint8) * 255
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (25, 25))
-    closed = cv2.morphologyEx(icon_mask, cv2.MORPH_CLOSE, kernel)
+    top_arrow = np.sum(cyan_mask[185:235, 770:820] > 0)
+    mid_arrow = np.sum(cyan_mask[450:500, 995:1045] > 0)
+    bot_arrow = np.sum(cyan_mask[715:765, 770:820] > 0)
 
-    contours, _ = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    candidates = []
-    for cnt in contours:
-        area = cv2.contourArea(cnt)
-        if 250 < area < 20000:
-            M = cv2.moments(cnt)
-            if M["m00"] > 0:
-                cx = roi_x1 + int(M["m10"] / M["m00"])
-                cy = roi_y1 + int(M["m01"] / M["m00"])
-                candidates.append((cx, cy + 10, area))
+    # 2. Kiểm tra cờ / thân đảo tại ROI 3 làn
+    # TOP: x: 1150-1260, y: 65-200
+    # MID: x: 1390-1490, y: 316-460
+    # BOT: x: 1150-1260, y: 585-735
+    top_flag = screen[65:200, 1150:1260].mean()
+    mid_flag = screen[316:460, 1390:1490].mean()
+    bot_flag = screen[585:735, 1150:1260].mean()
 
-    candidates.sort(key=lambda pt: pt[1])
+    has_top = (top_arrow > 100) and (top_flag > 55.0)
+    has_mid = (mid_arrow > 100) and (mid_flag > 55.0)
+    has_bot = (bot_arrow > 100) and (bot_flag > 55.0)
 
-    filtered: List[Tuple[int, int]] = []
-    for pt in candidates:
-        if not filtered or abs(pt[1] - filtered[-1][1]) >= 90:
-            filtered.append((pt[0], pt[1]))
+    # Tọa độ điểm tap an toàn nằm trong thân đảo (>= 40px từ viền đảo)
+    BODY_POINTS = {
+        IslandChoice.TOP: (1070, 200),
+        IslandChoice.MIDDLE: (1290, 475),
+        IslandChoice.BOTTOM: (1090, 730),
+    }
+
+    active_lanes: List[IslandChoice] = []
+    if has_top:
+        active_lanes.append(IslandChoice.TOP)
+    if has_mid:
+        active_lanes.append(IslandChoice.MIDDLE)
+    if has_bot:
+        active_lanes.append(IslandChoice.BOTTOM)
+
+    # Fallback dự phòng nếu mũi tên nhấp nháy đúng frame chụp
+    if not active_lanes:
+        if mid_flag > 55.0:
+            active_lanes.append(IslandChoice.MIDDLE)
+        if top_flag > 55.0:
+            active_lanes.append(IslandChoice.TOP)
+        if bot_flag > 55.0:
+            active_lanes.append(IslandChoice.BOTTOM)
 
     result: Dict[IslandChoice, Tuple[int, int]] = {}
-    if not filtered:
-        return result
+    for lane in active_lanes:
+        result[lane] = BODY_POINTS[lane]
 
     if expected_choices:
-        order = [IslandChoice.TOP, IslandChoice.MIDDLE, IslandChoice.BOTTOM]
-        sorted_choices = [c for c in order if c in expected_choices]
-
-        if len(sorted_choices) == 1 and filtered:
-            target_choice = sorted_choices[0]
-            if len(filtered) == 1:
-                result[target_choice] = filtered[0]
-            elif target_choice == IslandChoice.BOTTOM:
-                result[target_choice] = filtered[-1]
-            elif target_choice == IslandChoice.TOP:
-                result[target_choice] = filtered[0]
-            else:
-                result[target_choice] = filtered[len(filtered) // 2]
-            return result
-
-        if len(filtered) == len(sorted_choices):
-            for choice, pt in zip(sorted_choices, filtered):
-                result[choice] = pt
-            return result
-        elif len(filtered) > len(sorted_choices):
-            for choice in sorted_choices:
-                if choice == IslandChoice.TOP:
-                    pts = [p for p in filtered if p[1] < 350]
-                    if pts:
-                        result[choice] = pts[0]
-                elif choice == IslandChoice.MIDDLE:
-                    pts = [p for p in filtered if 350 <= p[1] <= 650]
-                    if pts:
-                        result[choice] = pts[0]
-                elif choice == IslandChoice.BOTTOM:
-                    pts = [p for p in filtered if p[1] > 650]
-                    if pts:
-                        result[choice] = pts[-1]
-            if len(result) == len(sorted_choices):
-                return result
-
-    if len(filtered) == 1:
-        result[IslandChoice.MIDDLE] = filtered[0]
-    elif len(filtered) == 2:
-        result[IslandChoice.TOP] = filtered[0]
-        result[IslandChoice.BOTTOM] = filtered[1]
-    elif len(filtered) >= 3:
-        result[IslandChoice.TOP] = filtered[0]
-        result[IslandChoice.MIDDLE] = filtered[1]
-        result[IslandChoice.BOTTOM] = filtered[2]
+        filtered: Dict[IslandChoice, Tuple[int, int]] = {}
+        for c in expected_choices:
+            if c in result:
+                filtered[c] = result[c]
+        if filtered:
+            return filtered
 
     return result
-

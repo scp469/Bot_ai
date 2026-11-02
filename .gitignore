@@ -7,6 +7,7 @@ __pycache__/
 # Sensitive Configs & Local Settings
 ai_config.json
 .antigravity/
+.claude/
 
 # Logs & Debug Screenshots
 logs/*

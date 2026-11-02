@@ -53,11 +53,11 @@ class ReplayFlow(Flow):
 
         if state in (State.POPUP_EFFECT, State.POPUP_DRAW_PILE, State.POPUP_STAGE_INFO, State.POPUP_PAUSE):
             close_coord = details.get("close_coord") or TAP_COORDS["close_x_default"]
-            return Action.tap(*close_coord, name=f"Close {state.value}")
+            return Action.tap(*close_coord, name=f"Close {state.value}", extra={"allowed_states": {state}})
 
         if state == State.POPUP_MONSTER_INFO:
             coord = details.get("close_coord") or TAP_COORDS["close_monster_info"]
-            return Action.tap(*coord, name="Dismiss Monster Info")
+            return Action.tap(*coord, name="Dismiss Monster Info", extra={"allowed_states": {State.POPUP_MONSTER_INFO}})
 
         if state in (State.PRE_MATCH_MISSION, State.PRE_MATCH_TEAM):
             if self.auto_start_match:

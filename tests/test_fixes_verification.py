@@ -192,7 +192,7 @@ class TestFixesVerification(unittest.TestCase):
 
             screen = np.zeros((900, 1600, 3), dtype=np.uint8)
             st, details = self.detector.detect(screen)
-            self.assertEqual(st, State.CHAOS_CHOOSE_EPIPHANY)
+            self.assertEqual(st, State.CHAOS_CHOOSE_FATE)
             self.assertEqual(details.get("type"), "choose_fate")
 
     def test_item4_safe_zone_always_heals(self):

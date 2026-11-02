@@ -62,8 +62,10 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
     StateSpec(
         state="CHAOS_SAFE_ZONE",
         anchors=(
-            Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.75, weight=1.0),
-            Anchor("chaos_safe_zone_rest_icon", (250, 620, 350, 130), 0.75, weight=1.2),
+            Anchor("chaos_safe_zone_rest_icon", (250, 620, 350, 130), 0.75, weight=1.5),
+            Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.75, weight=0.5),
+            Anchor("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
@@ -72,6 +74,10 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("choose_fate_title", (600, 800, 400, 100), 0.65, negative=True),
             Anchor("chaos_event_badge", (0, 100, 160, 200), 0.65, negative=True),
             Anchor("chaos_event_icon", (0, 100, 160, 200), 0.65, negative=True),
+            Anchor("chaos_settlement_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_leave_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_continue_button", (1200, 750, 380, 140), 0.70, negative=True),
+            Anchor("chaos_obtain_button", (1100, 750, 490, 140), 0.65, negative=True),
         ),
         min_hits=1,
         priority=10,
@@ -84,6 +90,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_safe_zone_confirm_btn", (800, 590, 510, 100), 0.75, weight=1.5),
             Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.75, weight=0.8),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("card_reward_title", (500, 50, 600, 130), 0.65, negative=True),
@@ -91,11 +98,48 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("choose_fate_title", (600, 800, 400, 100), 0.65, negative=True),
             Anchor("chaos_event_badge", (0, 100, 160, 200), 0.65, negative=True),
             Anchor("chaos_event_icon", (0, 100, 160, 200), 0.65, negative=True),
+            Anchor("chaos_settlement_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_leave_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_continue_button", (1200, 750, 380, 140), 0.70, negative=True),
+            Anchor("chaos_obtain_button", (1100, 750, 490, 140), 0.65, negative=True),
         ),
         min_hits=1,
         priority=10,
     ),
 
+    # 1c. CHAOS_SETTLEMENT: Màn hình kết toán phần thưởng (Settlement)
+    StateSpec(
+        state="CHAOS_SETTLEMENT",
+        anchors=(
+            Anchor("settlement_title", (800, 30, 280, 80), 0.75, weight=1.5),
+            Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            Anchor("chaos_event_icon", (0, 100, 160, 200), 0.65, negative=True),
+            Anchor("choose_fate_title", (600, 800, 400, 100), 0.65, negative=True),
+            Anchor("chaos_safe_zone_rest_icon", (250, 620, 350, 130), 0.65, negative=True),
+            Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
+            Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
+        ),
+        min_hits=1,
+        priority=10,
+    ),
+
+    # 1d. CHAOS_SELECT_DUPLICATE_CARD: Màn hình chọn thẻ sao chép (Duplicate)
+    StateSpec(
+        state="CHAOS_SELECT_DUPLICATE_CARD",
+        anchors=(
+            Anchor("duplicate_card_title", (600, 85, 450, 70), 0.75, weight=1.5),
+            Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
+            Anchor("chaos_event_icon", (0, 100, 160, 200), 0.65, negative=True),
+            Anchor("choose_fate_title", (600, 800, 400, 100), 0.65, negative=True),
+            Anchor("chaos_safe_zone_rest_icon", (250, 620, 350, 130), 0.65, negative=True),
+            Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
+            Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
+        ),
+        min_hits=1,
+        priority=10,
+    ),
     # 2. CHAOS_EQUIPMENT: Màn hình gắn trang bị
     StateSpec(
         state="CHAOS_EQUIPMENT",
@@ -108,6 +152,11 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("card_reward_title", (500, 50, 600, 130), 0.65, negative=True),
             Anchor("epiphany_title", (500, 50, 600, 130), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
+            Anchor("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            Anchor("chaos_settlement_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_leave_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_continue_button", (1200, 750, 380, 140), 0.70, negative=True),
         ),
         min_hits=1,
         priority=10,
@@ -122,6 +171,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.65, negative=True),
             Anchor("chaos_settlement_button", (1200, 750, 400, 150), 0.70, negative=True),
             Anchor("chaos_leave_button", (1200, 750, 400, 150), 0.70, negative=True),
@@ -137,6 +187,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.65, negative=True),
             Anchor("chaos_settlement_button", (1200, 750, 400, 150), 0.70, negative=True),
             Anchor("chaos_leave_button", (1200, 750, 400, 150), 0.70, negative=True),
@@ -152,6 +203,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.65, negative=True),
             Anchor("chaos_settlement_button", (1200, 750, 400, 150), 0.70, negative=True),
             Anchor("chaos_leave_button", (1200, 750, 400, 150), 0.70, negative=True),
@@ -168,6 +220,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_boss", (0, 500, 700, 400), 0.70, weight=1.0),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.65, negative=True),
             Anchor("card_reward_title", (500, 50, 600, 130), 0.65, negative=True),
             Anchor("epiphany_title", (500, 50, 600, 130), 0.65, negative=True),
@@ -184,6 +237,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("epiphany_title", (500, 50, 600, 130), 0.75, weight=1.0),
             Anchor("view_original", (1200, 20, 380, 160), 0.75, weight=1.0),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
@@ -196,6 +250,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("card_epiphany_title", (500, 50, 600, 130), 0.75, weight=1.0),
             Anchor("view_original", (1200, 20, 380, 160), 0.75, weight=1.0),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
@@ -208,6 +263,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("epiphany_text_white", (600, 750, 350, 130), 0.75, weight=1.0),
             Anchor("view_original_white", (1200, 20, 380, 160), 0.75, weight=1.0),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
@@ -219,17 +275,20 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
         anchors=(
             Anchor("card_reward_title", (500, 50, 600, 130), 0.78, weight=1.2),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
         min_hits=1,
         priority=7,
     ),
+    # 5b. CHAOS_CHOOSE_FATE: Lựa chọn định mệnh (Tách riêng khỏi Epiphany)
     StateSpec(
-        state="CHAOS_CHOOSE_EPIPHANY",
+        state="CHAOS_CHOOSE_FATE",
         anchors=(
             Anchor("choose_fate_title", (600, 800, 400, 100), 0.75, weight=1.2),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
@@ -241,6 +300,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
         anchors=(
             Anchor("select_attribute_title", (600, 80, 400, 80), 0.78, weight=1.2),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
@@ -252,6 +312,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
         anchors=(
             Anchor("etched_memory_title", (550, 70, 500, 100), 0.75, weight=1.2),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
@@ -263,6 +324,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
         anchors=(
             Anchor("remove_card_title", (80, 10, 470, 80), 0.75, weight=1.2),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
         ),
@@ -279,6 +341,11 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("chaos_event_badge", (0, 100, 160, 200), 0.65, negative=True),
             Anchor("card_reward_title", (500, 50, 600, 130), 0.65, negative=True),
+            Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
+            Anchor("chaos_settlement_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_leave_button", (1200, 750, 400, 150), 0.70, negative=True),
+            Anchor("chaos_continue_button", (1200, 750, 380, 140), 0.70, negative=True),
         ),
         min_hits=1,
         priority=8,
@@ -293,6 +360,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("chaos_event_badge", (0, 100, 160, 200), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
         ),
         min_hits=1,
         priority=8,
@@ -305,6 +373,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("chaos_event_badge", (0, 100, 160, 200), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
         ),
         min_hits=1,
         priority=8,
@@ -317,6 +386,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("chaos_event_badge", (0, 100, 160, 200), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
         ),
         min_hits=1,
         priority=8,
@@ -329,6 +399,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
             Anchor("in_match_check", (1320, 680, 200, 200), 0.70, weight=1.2),
             Anchor("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             Anchor("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            Anchor("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             Anchor("chaos_safe_zone_skip", (1200, 750, 380, 140), 0.65, negative=True),
             Anchor("chaos_leave_button", (1250, 750, 350, 150), 0.65, negative=True),
             Anchor("chaos_continue_button", (1200, 750, 380, 140), 0.65, negative=True),
@@ -481,7 +552,7 @@ DEFAULT_STATE_SPECS: Tuple[StateSpec, ...] = (
 DEFAULT_ALLOWED_TRANSITIONS: Dict[str, Set[str]] = {
     "CHAOS_MAP": {
         "IN_MATCH", "CHAOS_EVENT", "CHAOS_SAFE_ZONE", "CHAOS_EQUIPMENT",
-        "CHAOS_CHOOSE_EPIPHANY", "CHAOS_OBTAIN_REWARD", "POPUP_EFFECT",
+        "CHAOS_CHOOSE_EPIPHANY", "CHAOS_CHOOSE_FATE", "CHAOS_OBTAIN_REWARD", "CHAOS_SETTLEMENT", "POPUP_EFFECT",
         "TRANSITIONING", "CHAOS_MAP"
     },
     "IN_MATCH": {
@@ -489,25 +560,38 @@ DEFAULT_ALLOWED_TRANSITIONS: Dict[str, Set[str]] = {
         "POPUP_PAUSE", "POPUP_DRAW_PILE", "TRANSITIONING", "IN_MATCH"
     },
     "CHAOS_AFTER_BATTLE": {
-        "CHAOS_EQUIPMENT", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_OBTAIN_REWARD",
+        "CHAOS_SETTLEMENT",
+        "CHAOS_EQUIPMENT", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_CHOOSE_FATE", "CHAOS_OBTAIN_REWARD",
         "CHAOS_MAP", "CHAOS_EVENT", "POPUP_EFFECT", "TRANSITIONING", "CHAOS_AFTER_BATTLE"
     },
     "CHAOS_EQUIPMENT": {
-        "CHAOS_MAP", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_AFTER_BATTLE",
+        "CHAOS_SETTLEMENT",
+        "CHAOS_MAP", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_CHOOSE_FATE", "CHAOS_AFTER_BATTLE",
         "POPUP_EFFECT", "TRANSITIONING", "CHAOS_EQUIPMENT"
     },
     "CHAOS_SAFE_ZONE": {
         "CHAOS_MAP", "POPUP_EFFECT", "TRANSITIONING", "CHAOS_SAFE_ZONE"
     },
     "CHAOS_EVENT": {
-        "CHAOS_MAP", "CHAOS_AFTER_BATTLE", "IN_MATCH", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_OBTAIN_REWARD",
+        "CHAOS_MAP", "CHAOS_AFTER_BATTLE", "IN_MATCH", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_CHOOSE_FATE", "CHAOS_OBTAIN_REWARD",
         "POPUP_EFFECT", "TRANSITIONING", "CHAOS_EVENT"
     },
     "CHAOS_CHOOSE_EPIPHANY": {
         "CHAOS_MAP", "CHAOS_EQUIPMENT", "CHAOS_OBTAIN_REWARD",
         "POPUP_EFFECT", "TRANSITIONING", "CHAOS_CHOOSE_EPIPHANY"
     },
+    "CHAOS_CHOOSE_FATE": {
+        "CHAOS_MAP", "CHAOS_EQUIPMENT", "CHAOS_OBTAIN_REWARD",
+        "POPUP_EFFECT", "TRANSITIONING", "CHAOS_CHOOSE_FATE"
+    },
+    "CHAOS_SETTLEMENT": {
+        "CHAOS_MAP", "TRANSITIONING", "CHAOS_SETTLEMENT"
+    },
+    "CHAOS_SELECT_DUPLICATE_CARD": {
+        "CHAOS_OBTAIN_REWARD", "CHAOS_SETTLEMENT", "CHAOS_MAP", "TRANSITIONING", "CHAOS_SELECT_DUPLICATE_CARD"
+    },
     "CHAOS_OBTAIN_REWARD": {
+        "CHAOS_SETTLEMENT", "CHAOS_SELECT_DUPLICATE_CARD",
         "CHAOS_MAP", "CHAOS_AFTER_BATTLE", "POPUP_EFFECT", "TRANSITIONING", "CHAOS_OBTAIN_REWARD"
     },
     "PRE_MATCH_MISSION": {
@@ -529,7 +613,8 @@ DEFAULT_ALLOWED_TRANSITIONS: Dict[str, Set[str]] = {
     },
     "POPUP_EFFECT": {
         "CHAOS_MAP", "IN_MATCH", "STORY_MAP", "CHAOS_AFTER_BATTLE", "CHAOS_EVENT",
-        "CHAOS_SAFE_ZONE", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_OBTAIN_REWARD", "CHAOS_EQUIPMENT",
+        "CHAOS_SAFE_ZONE", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_CHOOSE_FATE", "CHAOS_OBTAIN_REWARD", "CHAOS_EQUIPMENT",
+        "CHAOS_SETTLEMENT", "CHAOS_SELECT_DUPLICATE_CARD",
         "PRE_MATCH_MISSION", "PRE_MATCH_TEAM", "MATCH_DONE", "STORY_DIALOGUE",
         "POPUP_EFFECT", "TRANSITIONING"
     },
@@ -539,7 +624,8 @@ DEFAULT_ALLOWED_TRANSITIONS: Dict[str, Set[str]] = {
     "POPUP_PAUSE": {"IN_MATCH", "POPUP_PAUSE", "TRANSITIONING"},
     "TRANSITIONING": {
         "IN_MATCH", "CHAOS_MAP", "CHAOS_AFTER_BATTLE", "CHAOS_EQUIPMENT",
-        "CHAOS_OBTAIN_REWARD", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_SAFE_ZONE",
+        "CHAOS_OBTAIN_REWARD", "CHAOS_CHOOSE_EPIPHANY", "CHAOS_CHOOSE_FATE", "CHAOS_SAFE_ZONE",
+        "CHAOS_SETTLEMENT", "CHAOS_SELECT_DUPLICATE_CARD",
         "CHAOS_EVENT", "STORY_MAP", "STORY_DIALOGUE", "MATCH_DONE",
         "PRE_MATCH_MISSION", "PRE_MATCH_TEAM", "POPUP_EFFECT", "TRANSITIONING"
     },
@@ -658,15 +744,47 @@ class TemporalFilter:
         self.allowed = allowed if allowed is not None else DEFAULT_ALLOWED_TRANSITIONS
         self.stable: Optional[str] = None
         self.last_settled: Optional[str] = None
+        self.frames_since_change: int = 0
 
-    def push(self, r: Any) -> Optional[str]:
+    def push(self, r: Any, is_unstable: bool = False) -> Optional[str]:
+        if is_unstable:
+            # Khung hình không ổn định (đang lia camera / chuyển cảnh):
+            # Đánh dấu TRANSITIONING tức thì để chặn tap bảo vệ an toàn, đồng thời đưa vào buffer
+            self.buf.append("TRANSITIONING")
+            self.stable = "TRANSITIONING"
+            self.frames_since_change = 0
+            return self.stable
+
         state_str = r.state if hasattr(r, "state") else (r.value if hasattr(r, "value") else str(r))
+
+        # [Item 3] Xử lý độ trễ TemporalFilter sau chuyển cảnh:
+        # Khi vừa thoát TRANSITIONING (màn hình đã ổn định), dọn dẹp các mục TRANSITIONING cũ
+        # để trạng thái mới hội tụ nhanh chóng, đồng thời vẫn bảo đảm ràng buộc bước nhảy hợp lệ.
+        if self.stable == "TRANSITIONING":
+            self.buf = deque([s for s in self.buf if s != "TRANSITIONING"], maxlen=self.buf.maxlen)
+            ref = self.last_settled if (self.last_settled and self.last_settled not in (AMBIGUOUS, UNKNOWN, "TRANSITIONING")) else None
+            if ref and state_str != ref and state_str not in (AMBIGUOUS, UNKNOWN, "TRANSITIONING") and self.allowed:
+                if state_str not in self.allowed.get(ref, {state_str}):
+                    logger.debug(f"[TemporalFilter] Chuyển state {ref} -> {state_str} sau TRANSITIONING không hợp lệ, chặn bước nhảy!")
+                    self.frames_since_change += 1
+                    return self.stable
+            self.buf.append(state_str)
+            if state_str not in (AMBIGUOUS, UNKNOWN, "TRANSITIONING"):
+                self.stable = state_str
+                self.last_settled = state_str
+                self.frames_since_change = 1
+                return self.stable
+
         self.buf.append(state_str)
         votes = Counter(s for s in self.buf if s not in (AMBIGUOUS, UNKNOWN))
         if not votes:
+            if self.stable is not None:
+                self.frames_since_change += 1
             return self.stable
         cand, n = votes.most_common(1)[0]
         if n < self.need:
+            if self.stable is not None:
+                self.frames_since_change += 1
             return self.stable
 
         # Ràng buộc bước nhảy hợp lệ: đối chiếu với state ổn định gần nhất
@@ -674,17 +792,31 @@ class TemporalFilter:
         if ref and cand != ref and cand not in (AMBIGUOUS, UNKNOWN, "TRANSITIONING") and self.allowed:
             if cand not in self.allowed.get(ref, {cand}):
                 logger.debug(f"[TemporalFilter] Chuyển state {ref} -> {cand} không hợp lệ, giữ nguyên {self.stable}")
+                self.frames_since_change += 1
                 return self.stable
 
+        old_stable = self.stable
         self.stable = cand
+        if cand != old_stable:
+            self.frames_since_change = 0
+        else:
+            self.frames_since_change += 1
+
         if cand not in (AMBIGUOUS, UNKNOWN, "TRANSITIONING"):
             self.last_settled = cand
         return self.stable
+
+    def is_settled(self, min_frames: int = 1) -> bool:
+        """Kiểm tra state đã thực sự ổn định qua ít nhất min_frames liên tiếp (không phải TRANSITIONING/UNKNOWN)."""
+        if self.stable in (None, "TRANSITIONING", "UNKNOWN", AMBIGUOUS):
+            return False
+        return self.frames_since_change >= min_frames
 
     def reset(self):
         self.buf.clear()
         self.stable = None
         self.last_settled = None
+        self.frames_since_change = 0
 
 
 def screen_changed(

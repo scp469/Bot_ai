@@ -171,14 +171,36 @@ class TestChaosFlow(unittest.TestCase):
         self.assertEqual(action.y, TAP_COORDS["chaos_island_1_middle"][1])
 
     def test_chaos_equipment_selection(self):
-        details = {"confirm_coord": (1360, 806)}
-        action = self.flow.handle(State.CHAOS_EQUIPMENT, details, self.dummy_screen)
-        self.assertEqual(action.type, ActionType.TAP)
-        # Extra actions include equipping character and confirming
-        self.assertTrue(len(action.extra.get("extra_actions", [])) >= 2)
-        confirm_tap = action.extra["extra_actions"][-1]
-        self.assertEqual(confirm_tap[0], "tap")
-        self.assertEqual(confirm_tap[1], (1360, 806))
+        """Test reactive equipment selection: ready check -> select combatant row -> confirm orange."""
+        details = {
+            "select_combatant": True,
+            "target_row": 1,
+            "confirm_coord": (1425, 838),
+            "is_confirm_ready": True
+        }
+        # Step 1: Screen ready -> Tap combatant row 2 (1100, 470) (khi hàng 0 đang selected)
+        action1 = self.flow.handle(State.CHAOS_EQUIPMENT, details, self.dummy_screen)
+        self.assertEqual(action1.type, ActionType.TAP)
+        self.assertEqual((action1.x, action1.y), (1100, 470))
+        self.assertEqual(self.flow._equip_step, "WAIT_ROW_SELECTED")
+        self.assertIn(State.CHAOS_EQUIPMENT, action1.extra.get("allowed_states", set()))
+
+        # Step 2: Row selected / screen changed -> Advance to wait confirm
+        changed_screen = np.full((900, 1600, 3), 100, dtype=np.uint8)
+        action2 = self.flow.handle(State.CHAOS_EQUIPMENT, details, changed_screen)
+        self.assertEqual(action2.type, ActionType.WAIT)
+        self.assertEqual(self.flow._equip_step, "WAIT_CONFIRM_BUTTON")
+
+        # Step 3: Confirm is ready (orange) -> Tap confirm (1425, 838) -> Advance to WAIT_LEAVE_EQUIPMENT
+        action3 = self.flow.handle(State.CHAOS_EQUIPMENT, details, changed_screen)
+        self.assertEqual(action3.type, ActionType.TAP)
+        self.assertEqual((action3.x, action3.y), (1425, 838))
+        self.assertEqual(self.flow._equip_step, "WAIT_LEAVE_EQUIPMENT")
+        self.assertIn(State.CHAOS_EQUIPMENT, action3.extra.get("allowed_states", set()))
+
+        # Step 4: Leaving CHAOS_EQUIPMENT resets sub-step to IDLE
+        self.flow.handle(State.CHAOS_MAP, {}, self.dummy_screen)
+        self.assertEqual(self.flow._equip_step, "IDLE")
 
     def test_chaos_safe_zone_always_heals(self):
         details = {
@@ -241,9 +263,9 @@ class TestChaosFlow(unittest.TestCase):
         """Verify distinct sub-screen handling for choose_fate, select_attribute, remove_card, etched_memory."""
         self.flow.auto_pick_epiphany = True
 
-        # 1. choose_fate
+        # 1. choose_fate (Hỗ trợ cả State.CHAOS_CHOOSE_FATE và State.CHAOS_CHOOSE_EPIPHANY)
         self.flow._epiphany_wait_count = 2
-        act_fate = self.flow.handle(State.CHAOS_CHOOSE_EPIPHANY, {"type": "choose_fate"}, self.dummy_screen)
+        act_fate = self.flow.handle(State.CHAOS_CHOOSE_FATE, {"type": "choose_fate"}, self.dummy_screen)
         self.assertEqual(act_fate.type, ActionType.TAP)
         self.assertIn("Choose Fate", act_fate.name)
         self.assertEqual(act_fate.extra["extra_actions"][0], ("tap", (1425, 835)))

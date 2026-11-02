@@ -147,11 +147,11 @@ class TestChaosDetector(unittest.TestCase):
                 self.assertIn("confirm_coord", details)
 
     def test_detect_choose_fate(self):
-        """Verify that Choose your fate screen is detected as CHAOS_CHOOSE_EPIPHANY."""
+        """Verify that Choose your fate screen is detected as CHAOS_CHOOSE_FATE."""
         img = cv2.imread(os.path.join(self.fixture_dir, "chaos_choose_fate.png"))
         self.assertIsNotNone(img)
         state, details = self.detector.detect(img)
-        self.assertEqual(state, State.CHAOS_CHOOSE_EPIPHANY)
+        self.assertEqual(state, State.CHAOS_CHOOSE_FATE)
         self.assertGreaterEqual(details.get("score_choose_fate", 0), 0.75)
 
     def test_detect_remove_card(self):

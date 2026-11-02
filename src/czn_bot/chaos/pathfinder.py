@@ -7,30 +7,7 @@ from enum import Enum
 from typing import Dict, List, Optional, Set, Tuple, Any
 
 
-class ChaosNodeType(Enum):
-    NORMAL = "normal"      # Quái thường (kiếm ⚔)
-    ELITE = "elite"        # Quái tinh anh (mặt quỷ tím)
-    REST = "rest"          # Lửa trại / Trạm nghỉ (ngọn lửa 🔥)
-    EVENT = "event"        # Sự kiện (?)
-    BOSS = "boss"          # Trùm / Đích cột cuối
-    OTHER = "other"        # Shop, Waypoint, etc. (0 điểm, hợp lệ)
-    UNKNOWN = "unknown"    # Ô lạ / không nhận diện được (làm hỏng nhánh)
-
-
-class IslandChoice(Enum):
-    TOP = "top"
-    MIDDLE = "middle"
-    BOTTOM = "bottom"
-
-
-@dataclass
-class ChaosNode:
-    node_id: str
-    node_type: ChaosNodeType
-    col_idx: int = 0
-    row_idx: int = 0
-    x: int = 0
-    y: int = 0
+from czn_bot.vision.map_reader import ChaosNode, ChaosNodeType, IslandChoice
 
 
 @dataclass

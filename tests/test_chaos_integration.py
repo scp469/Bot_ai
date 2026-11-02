@@ -35,6 +35,7 @@ class TestChaosIntegration(unittest.TestCase):
         self.engine.enable_hybrid_verification = False
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_chaos_map_3_islands_dispatch(self, mock_sleep):
         """Verify that in Mode.CHAOS with static config, map 3 islands triggers tap on selected island."""
         self.engine.mode = Mode.CHAOS
@@ -65,6 +66,7 @@ class TestChaosIntegration(unittest.TestCase):
         self.assertIn(tap_args, valid_coords)
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_chaos_map_3_islands_dynamic_dispatch(self, mock_sleep):
         """Verify that with dynamic 3D detection enabled, it taps the detected centroid."""
         self.engine.mode = Mode.CHAOS
@@ -94,6 +96,7 @@ class TestChaosIntegration(unittest.TestCase):
 
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_chaos_map_2_islands_dispatch(self, mock_sleep):
         """Verify that in Mode.CHAOS with 2 islands, it taps (1330, 420) or (1250, 240), NEVER (1100, 800)."""
         self.engine.mode = Mode.CHAOS
@@ -127,6 +130,7 @@ class TestChaosIntegration(unittest.TestCase):
         self.assertNotEqual(tap_args, (1100, 800))
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_chaos_leave_button_dispatch(self, mock_sleep):
         """Verify that in Mode.CHAOS, reward screen with Leave button triggers tap on Leave."""
         self.engine.mode = Mode.CHAOS
@@ -153,6 +157,7 @@ class TestChaosIntegration(unittest.TestCase):
         self.assertAlmostEqual(tap_y, 828, delta=60)
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_chaos_obtain_screen_taps_obtain(self, mock_sleep):
         """Verify that in Mode.CHAOS, reward screen with Obtain taps obtain button."""
         self.engine.mode = Mode.CHAOS
@@ -177,6 +182,13 @@ class TestChaosIntegration(unittest.TestCase):
         tap_x, tap_y = self.mock_adb.tap.call_args[0]
         self.assertAlmostEqual(tap_x, 1380, delta=60)
         self.assertAlmostEqual(tap_y, 830, delta=60)
+
+    def test_chaos_mode_shows_under_construction_and_stops(self):
+        """Mode.CHAOS should display notice and stop safely without crashing."""
+        self.engine.is_running = False
+        self.engine.mode = Mode.CHAOS
+        self.engine.start()
+        self.assertFalse(self.engine.is_running)
 
     @patch("time.sleep", return_value=None)
     def test_replay_mode_ignores_chaos_map(self, mock_sleep):

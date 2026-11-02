@@ -50,18 +50,26 @@ from czn_bot.vision.state_classifier import DEFAULT_ALLOWED_TRANSITIONS, Tempora
 from czn_bot.stats import StatsTracker
 from czn_bot.notifier import Notifier
 from czn_bot.recovery import RecoveryManager
-from czn_bot.chaos.rules import ChaosRuleManager
-from czn_bot.chaos.decisions import ChaosVision
-from czn_bot.chaos.ai_brain import ChaosAIBrain
 from czn_bot.coords import TAP_COORDS
 from czn_bot.flows.base import Flow, Action, ActionType
 from czn_bot.flows.replay import ReplayFlow
 from czn_bot.flows.progress import ProgressFlow
 from czn_bot.flows.story import StoryFlow
-from czn_bot.flows.chaos import ChaosFlow
-from czn_bot.chaos.pathfinder import IslandChoice
 
 logger = logging.getLogger("ChaosBot.Runner")
+
+class _PlaceholderChaosFlow(Flow):
+    def handle(self, state: State, details: Dict[str, Any], screen: Any) -> Action:
+        return Action(ActionType.NONE)
+
+
+class _DummyRuleManager:
+    def get_api_key(self) -> str:
+        return ""
+
+    def get_team_characters(self) -> List[str]:
+        return ["Rossweisse", "Tiphera", "Nia"]
+
 
 TAP_ZONE_GUARDS: List[Dict[str, Any]] = [
     {
@@ -144,9 +152,9 @@ class BotRunner:
         self.max_unknown_screenshots: int = MAX_UNKNOWN_SCREENSHOTS
 
         # AI & Tactical
-        self.rule_manager = ChaosRuleManager()
-        self.chaos_vision = ChaosVision(rule_manager=self.rule_manager)
-        self.chaos_brain = ChaosAIBrain(rule_manager=self.rule_manager)
+        self.rule_manager = _DummyRuleManager()
+        self.chaos_vision = None
+        self.chaos_brain = None
         self.enable_chaos_ai: bool = True
         self.enable_ai_vision_detection: bool = False
         self.last_ai_decision: Optional[Dict[str, Any]] = None
@@ -254,15 +262,9 @@ class BotRunner:
             flow._mode = Mode.STORY
             return flow
         elif self.mode == Mode.CHAOS:
-            flow = ChaosFlow(
-                strategy=self.chaos_strategy,
-                auto_pick_epiphany=self.auto_pick_epiphany,
-                enable_dynamic_islands=self.enable_dynamic_islands,
-                rule_manager=self.rule_manager,
-                ai_brain=self.chaos_brain,
-                vision=self.chaos_vision,
-                max_matches=self.max_retries,
-            )
+            self.logger.warning("Chế độ Chaos đang được viết lại (chaos2), chưa khả dụng")
+            self.log("⚠️ Chế độ Chaos đang được viết lại (chaos2), chưa khả dụng")
+            flow = _PlaceholderChaosFlow()
             flow._mode = Mode.CHAOS
             return flow
         flow = ReplayFlow()
@@ -272,6 +274,10 @@ class BotRunner:
     def start(self) -> None:
         """Start the bot execution thread."""
         if self.is_running:
+            return
+        if self.mode == Mode.CHAOS:
+            self.logger.warning("Chế độ Chaos đang được viết lại (chaos2), chưa khả dụng")
+            self.log("⚠️ Chế độ Chaos đang được viết lại (chaos2), chưa khả dụng")
             return
         if self._thread and self._thread.is_alive():
             self._stop_event.set()
@@ -500,14 +506,12 @@ class BotRunner:
 
         # 5. Quét ô lựa chọn sự kiện nếu có
         try:
-            from czn_bot.chaos.decisions import ChaosVision
             vision = getattr(self.active_flow, "vision", None)
-            if vision is None:
-                vision = ChaosVision(rule_manager=getattr(self, "rule_manager", None))
-            choices = vision.extract_event_choices(screen)
-            if choices and len(choices) > 0:
-                first_choice = choices[0]
-                return ("Ô lựa chọn sự kiện", first_choice.tap_coord[0], first_choice.tap_coord[1])
+            if vision is not None and hasattr(vision, "extract_event_choices"):
+                choices = vision.extract_event_choices(screen)
+                if choices and len(choices) > 0:
+                    first_choice = choices[0]
+                    return ("Ô lựa chọn sự kiện", first_choice.tap_coord[0], first_choice.tap_coord[1])
         except Exception:
             pass
 
@@ -519,7 +523,7 @@ class BotRunner:
         self.logger.warning(f"Màn hình UNKNOWN (streak={self._unknown_streak}/3)")
 
         # 1. Multi-modal AI Vision analysis if configured
-        if getattr(self, "enable_chaos_ai", True) and hasattr(self, "chaos_brain") and self.rule_manager.get_api_key():
+        if getattr(self, "enable_chaos_ai", True) and getattr(self, "chaos_brain", None) is not None and getattr(self, "rule_manager", None) and hasattr(self.rule_manager, "get_api_key") and self.rule_manager.get_api_key():
             try:
                 last_st_name = self._last_state.value if hasattr(self._last_state, "value") else str(self._last_state or "")
                 self.logger.info("[Vision] Gặp màn hình UNKNOWN -> Phân tích màn hình...")
@@ -606,30 +610,6 @@ class BotRunner:
     def _handle_popup(self, screen: Any, details: Dict[str, Any], state: State = State.POPUP_EFFECT) -> bool:
         return self._dispatch_state(state, screen, details)
 
-    def _handle_chaos_map(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_MAP, screen, details)
-
-    def _handle_chaos_after_battle(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_AFTER_BATTLE, screen, details)
-
-    def _handle_chaos_equipment(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_EQUIPMENT, screen, details)
-
-    def _handle_chaos_safe_zone(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_SAFE_ZONE, screen, details)
-
-    def _handle_chaos_choose_epiphany(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_CHOOSE_EPIPHANY, screen, details)
-
-    def _handle_chaos_choose_fate(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_CHOOSE_FATE, screen, details)
-
-    def _handle_chaos_obtain_reward(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_OBTAIN_REWARD, screen, details)
-
-    def _handle_chaos_event(self, screen: Any, details: Dict[str, Any]) -> bool:
-        return self._dispatch_state(State.CHAOS_EVENT, screen, details)
-
     def _handle_pre_match(self, screen: Any, details: Dict[str, Any], state: State = State.PRE_MATCH_MISSION) -> bool:
         return self._dispatch_state(state, screen, details)
 
@@ -637,39 +617,17 @@ class BotRunner:
         return self._dispatch_state(State.STORY_MAP, screen, details)
 
     def _handle_story_dialogue(self, screen: Any, details: Dict[str, Any]) -> bool:
+        if self.mode == Mode.CHAOS:
+            skip_coord = details.get("skip_coord") or TAP_COORDS.get("story_dialogue_skip", (1272, 48))
+            auto_coord = details.get("auto_coord") or TAP_COORDS.get("story_dialogue_auto", (1395, 48))
+            self.adb.tap(*auto_coord)
+            self.adb.tap(*skip_coord)
+            self._last_action = None
+            return True
         return self._dispatch_state(State.STORY_DIALOGUE, screen, details)
 
     def _handle_transitioning(self, screen: Any, details: Dict[str, Any]) -> bool:
         return self._dispatch_state(State.TRANSITIONING, screen, details)
-
-    @staticmethod
-    def _resolve_chaos_island_coord(
-        island: IslandChoice,
-        num_roots: int,
-        available_islands: Optional[set] = None
-    ) -> Tuple[Tuple[int, int], str]:
-        available = available_islands or set()
-        if num_roots == 1:
-            return TAP_COORDS["chaos_island_1_middle"], "Đảo Duy Nhất"
-        if num_roots == 2:
-            if IslandChoice.TOP in available and IslandChoice.MIDDLE in available:
-                if island == IslandChoice.TOP:
-                    return TAP_COORDS["chaos_island_2_top"], "Đảo Trên"
-                return TAP_COORDS["chaos_island_2_middle"], "Đảo GIỮA"
-            elif IslandChoice.MIDDLE in available and IslandChoice.BOTTOM in available:
-                if island == IslandChoice.MIDDLE:
-                    return TAP_COORDS["chaos_island_2_middle"], "Đảo GIỮA"
-                return TAP_COORDS["chaos_island_2_bottom"], "Đảo Dưới"
-            else:
-                if island == IslandChoice.TOP:
-                    return TAP_COORDS["chaos_island_2_top"], "Đảo Trên"
-                return TAP_COORDS["chaos_island_2_bottom"], "Đảo Dưới"
-        # Default 3 islands
-        if island == IslandChoice.TOP:
-            return TAP_COORDS["chaos_island_3_top"], "Đảo Trên"
-        elif island == IslandChoice.BOTTOM:
-            return TAP_COORDS["chaos_island_3_bottom"], "Đảo Dưới"
-        return TAP_COORDS["chaos_island_3_middle"], "Đảo GIỮA"
 
     @staticmethod
     def _cleanup_unknown_screenshots(logs_dir: str = LOGS_DIR, max_keep: int = 50) -> int:
@@ -1143,7 +1101,10 @@ class BotRunner:
         has_ai = (
             getattr(self, "enable_ai_vision_detection", True)
             and getattr(self, "enable_chaos_ai", True)
-            and self.rule_manager.get_api_key()
+            and getattr(self, "rule_manager", None) is not None
+            and hasattr(self.rule_manager, "get_api_key")
+            and bool(self.rule_manager.get_api_key())
+            and getattr(self, "chaos_brain", None) is not None
         )
 
         if has_ai:

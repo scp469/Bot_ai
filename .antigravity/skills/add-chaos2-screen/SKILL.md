@@ -65,3 +65,4 @@ Trong `src/czn_bot/chaos2/registry.py`, thêm một mục `ScreenDef`:
 3. Đảm bảo:
    - State mới nhận diện đúng 100% với confidence >= 0.75 và margin rõ ràng.
    - Không gây false positive (nhận nhầm) sang bất kỳ fixture nào khác trong 21 fixtures hiện tại.
+

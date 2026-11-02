@@ -117,6 +117,7 @@ class TestBotEngine(unittest.TestCase):
 
     # ── Chaos Island Resolution Tests ─────────────────────────────────
 
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_resolve_chaos_island_coords(self):
         """Verify static method coordinate resolution for 1, 2, and 3 islands."""
         # 1 island
@@ -143,6 +144,7 @@ class TestBotEngine(unittest.TestCase):
         self.assertEqual(coord3_mid, TAP_COORDS["chaos_island_3_middle"])
 
 
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_map_ignores_when_not_chaos_mode(self):
         """Chaos map should be ignored if bot is in REPLAY or PROGRESS mode."""
         self.engine.mode = Mode.REPLAY
@@ -152,6 +154,7 @@ class TestBotEngine(unittest.TestCase):
 
     @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
     @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=([], {}, {}, []))
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_map_invalid_minimap_halts(self, mock_parse, mock_hp):
         """If parse_chaos_minimap returns empty roots repeatedly, halts bot safely after retries."""
         self.engine.mode = Mode.CHAOS
@@ -163,6 +166,7 @@ class TestBotEngine(unittest.TestCase):
 
     @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
     @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=([], {}, {}, []))
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_map_minimap_transition_retries(self, mock_parse, mock_hp):
         """Verify that first empty minimap doesn't immediately halt, but waits for camera transition."""
         self.engine.mode = Mode.CHAOS
@@ -174,6 +178,7 @@ class TestBotEngine(unittest.TestCase):
     @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
     @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=([0, 1], {}, {}, [10]))
     @patch("czn_bot.flows.chaos.select_best_island", return_value=(None, {}))
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_map_no_safe_path_halts(self, mock_path, mock_parse, mock_hp):
         """If select_best_island returns None, halts bot safely."""
         self.engine.mode = Mode.CHAOS
@@ -185,6 +190,7 @@ class TestBotEngine(unittest.TestCase):
     @patch("czn_bot.flows.chaos.get_team_hp", return_value=(0.85, False))
     @patch("czn_bot.flows.chaos.parse_chaos_minimap", return_value=({IslandChoice.MIDDLE: "c1_r3"}, {}, {}, ["boss"]))
     @patch("czn_bot.flows.chaos.select_best_island", return_value=(None, {}))
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_map_single_island_fallback_when_no_path(self, mock_path, mock_parse, mock_hp):
         """If select_best_island returns None but there's only 1 island, bot falls back to that island instead of halting."""
         self.engine.mode = Mode.CHAOS
@@ -206,6 +212,7 @@ class TestBotEngine(unittest.TestCase):
         self.assertFalse(self.engine.is_running)
         self.mock_adb.tap.assert_not_called()
 
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_after_battle(self):
         """In Mode.CHAOS, after-battle screen taps Leave button."""
         self.engine.mode = Mode.CHAOS
@@ -215,6 +222,7 @@ class TestBotEngine(unittest.TestCase):
         self.assertTrue(result)
         self.mock_adb.tap.assert_called_once_with(*TAP_COORDS["chaos_leave_button"])
 
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_obtain_reward(self):
         """CHAOS_OBTAIN_REWARD taps the obtain button."""
         self.engine.mode = Mode.CHAOS
@@ -223,6 +231,7 @@ class TestBotEngine(unittest.TestCase):
         self.mock_adb.tap.assert_called_once_with(1380, 830)
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_choose_epiphany_waits_for_user(self, mock_sleep):
         """CHAOS_CHOOSE_EPIPHANY should wait without tapping, reset unknown counter, and return True."""
         self.engine.mode = Mode.CHAOS
@@ -237,6 +246,7 @@ class TestBotEngine(unittest.TestCase):
         self.mock_adb.tap.assert_not_called()
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_choose_epiphany_auto_pick_when_enabled(self, mock_sleep):
         """When auto_pick_epiphany is explicitly True, bot auto-picks card after 2 iterations."""
         self.engine.mode = Mode.CHAOS
@@ -250,6 +260,7 @@ class TestBotEngine(unittest.TestCase):
         self.engine._handle_chaos_choose_epiphany(self.dummy_screen, details)
         self.assertEqual(self.mock_adb.tap.call_count, 2)
 
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_after_battle_max_retries(self):
         """In Mode.CHAOS, reaching max_retries halts bot."""
         self.engine.mode = Mode.CHAOS
@@ -260,6 +271,7 @@ class TestBotEngine(unittest.TestCase):
         self.assertFalse(self.engine.is_running)
         self.mock_adb.tap.assert_not_called()
 
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_after_battle_ignored_in_other_mode(self):
         """In other modes, after-battle screen is ignored."""
         self.engine.mode = Mode.REPLAY
@@ -268,6 +280,7 @@ class TestBotEngine(unittest.TestCase):
         self.mock_adb.tap.assert_not_called()
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_safe_zone_always_heals(self, mock_sleep):
         """Verify that CHAOS_SAFE_ZONE taps Rest and confirm, not skip."""
         from czn_bot.coords import TAP_COORDS
@@ -284,6 +297,7 @@ class TestBotEngine(unittest.TestCase):
         self.mock_adb.tap.assert_any_call(*TAP_COORDS["chaos_safe_zone_confirm"])
 
     @patch("time.sleep", return_value=None)
+    @unittest.skip("skip in 2a before deletion in 2b: legacy chaos decoupling")
     def test_handle_chaos_equipment_equips_and_confirms(self, mock_sleep):
         """Verify reactive CHAOS_EQUIPMENT flow: selects combatant row, confirms when orange."""
         self.engine.mode = Mode.CHAOS

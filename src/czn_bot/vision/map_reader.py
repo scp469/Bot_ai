@@ -9,10 +9,37 @@ from typing import Dict, List, Optional, Set, Tuple
 import cv2
 import numpy as np
 
+from dataclasses import dataclass
+from enum import Enum
 from czn_bot.constants import TEMPLATES_DIR, DATA_TEMPLATES_DIR, LEGACY_TEMPLATES_DIR
-from czn_bot.chaos.pathfinder import ChaosNode, ChaosNodeType, IslandChoice
 
 logger = logging.getLogger("ChaosBot.MapReader")
+
+
+class ChaosNodeType(Enum):
+    NORMAL = "normal"
+    ELITE = "elite"
+    REST = "rest"
+    EVENT = "event"
+    BOSS = "boss"
+    OTHER = "other"
+    UNKNOWN = "unknown"
+
+
+class IslandChoice(Enum):
+    TOP = "top"
+    MIDDLE = "middle"
+    BOTTOM = "bottom"
+
+
+@dataclass
+class ChaosNode:
+    node_id: str
+    node_type: ChaosNodeType
+    col_idx: int = 0
+    row_idx: int = 0
+    x: int = 0
+    y: int = 0
 
 # Bounding box of Mini-map on 1600x900 resolution
 MINIMAP_X1 = 20

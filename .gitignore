@@ -10,6 +10,8 @@ ai_config.json
 # Logs & Debug Screenshots
 logs/*
 !logs/.gitkeep
+debug_captures/*
+!debug_captures/.gitkeep
 scratch/
 tools/archive/
 tools/archive_templates/

@@ -32,12 +32,19 @@ class MapFacts:
 
 @dataclass
 class ObtainFacts:
-    count: Optional[int] = None                 # Số đếm panel OCR (3, 2, 1)
+    button_count: Optional[int] = None          # Số đếm trên nút Obtain đọc bằng OCR (3, 2, 1)
+    count: Optional[int] = None                 # Giữ tương thích ngược với code cũ
     obtain_btn_center: Tuple[int, int] = (1426, 825)
     battle_end_detected: bool = False
     skip_detected: bool = False
     confidence: float = 1.0
     raw_details: Dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self):
+        if self.button_count is not None and self.count is None:
+            self.count = self.button_count
+        elif self.count is not None and self.button_count is None:
+            self.button_count = self.count
 
 
 @dataclass
@@ -109,10 +116,78 @@ class FateFacts:
 
 
 @dataclass
-class DuplicateCardFacts:
+class DuplicateCardItem:
+    index: int                                  # 0, 1, 2
+    name: str = ""
+    cost: int = 0
+    card_type: str = "Skill"
+    center: Tuple[int, int] = (0, 0)
+    has_pin: bool = False                       # Biểu tượng ghim ở góc phải trên
+
+
+@dataclass
+class DuplicateFacts:
     title_detected: bool = False
     skip_detected: bool = False
-    cards: List[Dict[str, Any]] = field(default_factory=list)
+    cards: List[DuplicateCardItem] = field(default_factory=list)
+    num_cards: int = 0
+    confidence: float = 1.0
+    raw_details: Dict[str, Any] = field(default_factory=dict)
+
+
+# Alias tương thích ngược
+DuplicateCardFacts = DuplicateFacts
+
+
+@dataclass
+class HpFacts:
+    current_hp: int = 0
+    max_hp: int = 0
+    hp_fraction: float = 1.0
+    is_low_hp: bool = False
+    confidence: float = 1.0
+    raw_details: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class EpiphanyCard:
+    index: int                                  # 0, 1, 2
+    name: str = ""                              # vd: "Dual Creation"
+    tag: str = ""                               # vd: "[Unique]" hoặc "[Unique / Initiation]"
+    effect_text: str = ""                       # Nội dung hiệu ứng đầy đủ
+    center: Tuple[int, int] = (0, 0)
+
+
+@dataclass
+class EpiphanyFacts:
+    title_detected: bool = False
+    cards: List[EpiphanyCard] = field(default_factory=list)
+    has_view_original: bool = False
+    confidence: float = 1.0
+    raw_details: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class RemoveFacts:
+    remove_enabled: bool = False                # False = Nút Remove xám; True = sáng cam sau khi đã chọn thẻ
+    selected_count: int = 0                     # 0 hoặc 1
+    budget_used: int = 0                        # 0pt hoặc 20pt
+    budget_max: int = 130
+    removals_used: int = 0                      # 0 hoặc 1
+    removals_max: int = 5
+    cancel_center: Tuple[int, int] = (205, 830)
+    remove_center: Tuple[int, int] = (1400, 830)
+    selected_card_name: Optional[str] = None
+    has_scroll_bar: bool = True                 # Lưới thẻ cuộn được
+    confidence: float = 1.0
+    raw_details: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class CopyCompleteFacts:
+    has_copy_complete: bool = False
+    duplicated_card_name: Optional[str] = None
+    close_center: Tuple[int, int] = (800, 845)  # "Tap to close the window"
     confidence: float = 1.0
     raw_details: Dict[str, Any] = field(default_factory=dict)
 

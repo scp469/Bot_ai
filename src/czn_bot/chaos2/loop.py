@@ -23,6 +23,7 @@ from .config import (
     K_FRAMES_DEFAULT,
     MAX_ACTION_RETRIES,
     MAX_UNKNOWN_FRAMES,
+    IRREVERSIBLE_MODE,
 )
 from .guard import TapGuard
 from .registry import SCREEN_REGISTRY, ScreenDef
@@ -172,6 +173,19 @@ class ChaosLoop:
             self.save_debug_capture(screen, "tap_blocked_by_guard")
             logger.warning(f"[TAP BLOCKED] {guard_res.reason}")
             return ChaosAction.stop(f"Guard CHẶN hành động: {guard_res.reason}")
+
+        # 7.1 Kiểm tra hành động không hoàn tác IRREVERSIBLE_MODE (G5)
+        is_irrev = getattr(sdef, "is_irreversible", False) or action.details.get("irreversible", False)
+        if is_irrev and IRREVERSIBLE_MODE == "log_only" and action.type == "tap":
+            self.save_debug_capture(screen, f"irreversible_log_only_{self._current_state}")
+            logger.info(
+                f"[IRREVERSIBLE log_only] SẼ {action.type} tại {action.target} "
+                f"vì '{action.reason}', mong đợi '{action.expected_next}' (KHÔNG TAP vì IRREVERSIBLE_MODE='log_only')"
+            )
+            return ChaosAction.wait(
+                1.0,
+                reason=f"Dừng an toàn hành động không hoàn tác trên {self._current_state} (IRREVERSIBLE_MODE='log_only')",
+            )
 
         # 8. Chế độ Dry-Run
         if self.dry_run:

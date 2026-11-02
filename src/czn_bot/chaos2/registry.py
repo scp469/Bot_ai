@@ -23,6 +23,8 @@ from .config import (
     K_FRAMES_OBTAIN,
     K_FRAMES_EQUIPMENT,
     K_FRAMES_SETTLEMENT,
+    K_FRAMES_REMOVE,
+    K_FRAMES_EPIPHANY,
     ZONE_EQUIP_CONFIRM,
     ZONE_EQUIP_EXTRACT,
     ZONE_OBTAIN_BUTTON,
@@ -34,6 +36,9 @@ from .config import (
     ZONE_FATE_CONFIRM,
     ZONE_FATE_ROUND_PLAY,
     ZONE_EVENT_ROUND_SWORD,
+    ZONE_EPIPHANY_VIEW_ORIGINAL,
+    ZONE_REMOVE_CANCEL,
+    ZONE_REMOVE_EXECUTE,
 )
 
 
@@ -76,6 +81,7 @@ class ScreenDef:
     valid_tap_zones: Tuple[Zone, ...] = ()                  # Bounding boxes được phép tap
     forbidden_tap_zones: Tuple[Zone, ...] = ()              # Bounding boxes CẤM TUYỆT ĐỐI tap
     allowed_next_states: Set[str] = field(default_factory=set)
+    is_irreversible: bool = False                           # True nếu hành động trên màn này không thể hoàn tác (G5)
 
     @property
     def positive_anchors(self) -> Tuple[AnchorDef, ...]:
@@ -166,6 +172,7 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
             "CHAOS_SETTLEMENT",
             "CHAOS_EQUIPMENT",
         },
+        is_irreversible=True,
     ),
 
     # 3. CHAOS_OBTAIN_REWARD: Nhận phần thưởng sau trận
@@ -250,6 +257,7 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
             "CHAOS_CHOOSE_FATE",
             "CHAOS_EVENT",
         },
+        is_irreversible=True,
     ),
 
     # 5. CHAOS_SAFE_ZONE: Trạm nghỉ đốm lửa
@@ -324,6 +332,7 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
             "CHAOS_OBTAIN_REWARD",
             "CHAOS_CHOOSE_FATE",
         },
+        is_irreversible=True,
     ),
 
     # 7. CHAOS_SELECT_DUPLICATE_CARD: Chọn thẻ sao chép
@@ -336,6 +345,7 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
         negative_anchors=(
             AnchorDef("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
             AnchorDef("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
+            AnchorDef("remove_card_title", (80, 10, 470, 80), 0.65, negative=True),
             AnchorDef("chaos_event_icon", (0, 100, 160, 200), 0.65, negative=True),
             AnchorDef("chaos_safe_zone_rest_icon", (250, 620, 350, 130), 0.65, negative=True),
             AnchorDef("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
@@ -350,10 +360,12 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
             Zone(*ZONE_DUPLICATE_SKIP, "Nút Skip bên phải - CẤM TAP BỎ QUA DUPLICATE"),
         ),
         allowed_next_states={
+            "CHAOS_COPY_COMPLETE",
             "CHAOS_OBTAIN_REWARD",
             "CHAOS_SETTLEMENT",
             "CHAOS_MAP",
         },
+        is_irreversible=True,
     ),
 
     # 8. CHAOS_SETTLEMENT: Màn hình kết toán phần thưởng
@@ -366,6 +378,7 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
         negative_anchors=(
             AnchorDef("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
             AnchorDef("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            AnchorDef("remove_card_title", (80, 10, 470, 80), 0.65, negative=True),
             AnchorDef("chaos_event_icon", (0, 100, 160, 200), 0.65, negative=True),
             AnchorDef("choose_fate_title", (600, 800, 400, 100), 0.65, negative=True),
             AnchorDef("chaos_safe_zone_rest_icon", (250, 620, 350, 130), 0.65, negative=True),
@@ -400,6 +413,7 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
             AnchorDef("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
             AnchorDef("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             AnchorDef("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            AnchorDef("remove_card_title", (80, 10, 470, 80), 0.65, negative=True),
             AnchorDef("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             AnchorDef("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
         ),
@@ -427,30 +441,91 @@ SCREEN_REGISTRY: Dict[str, ScreenDef] = {
             (AnchorDef("epiphany_text_white", (600, 750, 350, 130), 0.75, weight=1.0),),
             (AnchorDef("select_attribute_title", (600, 80, 400, 80), 0.78, weight=1.2),),
             (AnchorDef("etched_memory_title", (550, 70, 500, 100), 0.75, weight=1.2),),
-            (AnchorDef("remove_card_title", (80, 10, 470, 80), 0.75, weight=1.2),),
         ),
         negative_anchors=(
             AnchorDef("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
             AnchorDef("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
             AnchorDef("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            AnchorDef("remove_card_title", (80, 10, 470, 80), 0.65, negative=True),
+            AnchorDef("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
+            AnchorDef("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
+        ),
+        k_frames=K_FRAMES_EPIPHANY,
+        handler=None,
+        valid_tap_zones=(
+            Zone(200, 200, 1400, 800, "Vùng thẻ lựa chọn"),
+        ),
+        forbidden_tap_zones=(
+            Zone(*ZONE_EPIPHANY_VIEW_ORIGINAL, "Nút View original - CẤM TAP"),
+        ),
+        allowed_next_states={
+            "CHAOS_MAP",
+            "CHAOS_EQUIPMENT",
+            "CHAOS_OBTAIN_REWARD",
+        },
+        is_irreversible=True,
+    ),
+
+    # 11. CHAOS_REMOVE_CARD: Xóa thẻ bài
+    "CHAOS_REMOVE_CARD": ScreenDef(
+        id="CHAOS_REMOVE_CARD",
+        name="Xóa thẻ bài (Remove Card)",
+        positive_layouts=(
+            (AnchorDef("remove_card_title", (80, 10, 470, 80), 0.75, weight=1.2),),
+        ),
+        negative_anchors=(
+            AnchorDef("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            AnchorDef("epiphany_title", (500, 50, 600, 130), 0.65, negative=True),
+            AnchorDef("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
+            AnchorDef("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
+            AnchorDef("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
+            AnchorDef("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
+        ),
+        k_frames=K_FRAMES_REMOVE,
+        handler=None,
+        valid_tap_zones=(
+            Zone(100, 120, 1500, 780, "Vùng thẻ bài hiển thị"),
+        ),
+        forbidden_tap_zones=(
+            Zone(*ZONE_REMOVE_CANCEL, "Nút Cancel xóa thẻ - CẤM TAP"),
+            Zone(*ZONE_REMOVE_EXECUTE, "Nút Remove xóa thẻ - CẤM TAP MẶC ĐỊNH"),
+        ),
+        allowed_next_states={
+            "CHAOS_MAP",
+            "CHAOS_REMOVE_CARD",
+            "CHAOS_CHOOSE_EPIPHANY",
+        },
+        is_irreversible=True,
+    ),
+
+    # 12. CHAOS_COPY_COMPLETE: Hoàn tất nhân bản thẻ
+    "CHAOS_COPY_COMPLETE": ScreenDef(
+        id="CHAOS_COPY_COMPLETE",
+        name="Nhân bản thẻ hoàn tất (Copy Complete)",
+        positive_layouts=(
+            (AnchorDef("tap_to_close", (600, 800, 400, 100), 0.70, weight=1.2),),
+        ),
+        negative_anchors=(
+            AnchorDef("duplicate_card_title", (600, 85, 450, 70), 0.65, negative=True),
+            AnchorDef("settlement_title", (800, 30, 280, 80), 0.65, negative=True),
+            AnchorDef("equipment_title", (650, 70, 350, 110), 0.65, negative=True),
             AnchorDef("chaos_node_pin", (0, 500, 700, 400), 0.65, negative=True),
             AnchorDef("in_match_check", (1320, 680, 200, 200), 0.65, negative=True),
         ),
         k_frames=K_FRAMES_DEFAULT,
         handler=None,
         valid_tap_zones=(
-            Zone(200, 200, 1400, 800, "Vùng thẻ lựa chọn"),
-            Zone(1275, 803, 1578, 872, "Nút Confirm cam"),
+            Zone(650, 800, 960, 880, "Vùng chạm để đóng Tap to close"),
         ),
         forbidden_tap_zones=(),
         allowed_next_states={
-            "CHAOS_MAP",
-            "CHAOS_EQUIPMENT",
             "CHAOS_OBTAIN_REWARD",
+            "CHAOS_MAP",
+            "CHAOS_SETTLEMENT",
         },
     ),
 
-    # 11. IN_MATCH: Đang trong trận đấu
+    # 13. IN_MATCH: Đang trong trận đấu
     "IN_MATCH": ScreenDef(
         id="IN_MATCH",
         name="Đang trong trận đấu",
